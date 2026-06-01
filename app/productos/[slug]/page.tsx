@@ -129,10 +129,15 @@ export default function ProductPage({ params }: ProductPageProps) {
             </p>
             <p className="mt-4 text-gray-mid">{product.shortDescription}</p>
 
-            {/* Notes pyramid */}
+            {/* Add to cart (client component) */}
             <div className="mt-8">
+              <AddToCartWrapper product={product} firstVariant={firstVariant} hasDiscount={hasDiscount} />
+            </div>
+
+            {/* Notes pyramid — below AddToCart */}
+            <div className="mt-10">
               <h2 className="font-serif text-xl mb-4">Notas olfativas</h2>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-2">
                 <div className="text-center">
                   <p className="text-xs text-gold uppercase tracking-wider mb-2 flex items-center justify-center gap-1">
                     <span className="w-2 h-2 rounded-full bg-gold" />
@@ -177,32 +182,6 @@ export default function ProductPage({ params }: ProductPageProps) {
                 </div>
               </div>
             </div>
-
-            {/* Variant + Add to cart */}
-            <div className="mt-8">
-              <SizeSelector variants={product.variants} selectedVariant={firstVariant} />
-            </div>
-
-            {/* Price display */}
-            <div className="mt-4">
-              {hasDiscount ? (
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl font-semibold text-gold-dark">
-                    {formatPrice(firstVariant.price * (1 - product.discount_percent / 100))}
-                  </span>
-                  <span className="text-lg text-gray-mid line-through">
-                    {formatPrice(firstVariant.price)}
-                  </span>
-                </div>
-              ) : (
-                <span className="text-2xl font-semibold">{formatPrice(firstVariant.price)}</span>
-              )}
-            </div>
-
-            {/* Add to cart (client component) */}
-            <div className="mt-8">
-              <AddToCartWrapper product={product} firstVariant={firstVariant} hasDiscount={hasDiscount} />
-            </div>
           </div>
         </div>
       </div>
@@ -211,5 +190,4 @@ export default function ProductPage({ params }: ProductPageProps) {
 }
 
 import { AddToCartWrapper } from "@/components/product/AddToCartWrapper";
-import { SizeSelector } from "@/components/product/SizeSelector";
 import type { Variant } from "@/types";

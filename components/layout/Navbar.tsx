@@ -10,6 +10,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { SearchOverlay } from "@/components/layout/SearchOverlay";
+import { SCROLL_THRESHOLD } from "@/lib/constants";
 
 const navLinks = [
   { href: "/productos?family=Floral", label: "Mujer" },
@@ -30,12 +31,13 @@ export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  const itemCount = useCartStore((s) => s.getItemCount());
+  const openCart = useCartStore((s) => s.openCart);
+  const itemCount = useCartStore((s) => s.items.reduce((sum, item) => sum + item.quantity, 0));
   const wishlistCount = useWishlistStore((s) => s.productIds.length);
   const cartHydrated = useCartStore((s) => s._hasHydrated);
   const wishlistHydrated = useWishlistStore((s) => s._hasHydrated);
 
-  const scrolled = scrollY > 50;
+  const scrolled = scrollY > SCROLL_THRESHOLD;
   const isSolid = scrolled || !isHeroPage;
 
   useEffect(() => {
@@ -46,7 +48,7 @@ export function Navbar() {
     <nav
       className={cn(
         "fixed left-0 right-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300",
-        isSolid
+        !isHeroPage
           ? "top-0 bg-[#FAF7F2]/95 backdrop-blur-md shadow-card border-b border-warm-200/20"
           : "top-[37px] bg-transparent"
       )}
@@ -106,10 +108,10 @@ export function Navbar() {
               <Search className="w-5 h-5" />
             </button>
 
-            <button
-              type="button"
+            <Link
+              href="/favoritos"
               className={cn(
-                "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300 active:scale-95",
+                "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300",
                 isSolid
                   ? "text-[#1A1A1A]/80 hover:text-gold"
                   : "text-[#FAF7F2]/80 hover:text-gold"
@@ -122,10 +124,10 @@ export function Navbar() {
                   {wishlistCount}
                 </span>
               )}
-            </button>
+            </Link>
 
             <button
-              onClick={() => useCartStore.getState().openCart()}
+              onClick={openCart}
               className={cn(
                 "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300",
                 isSolid

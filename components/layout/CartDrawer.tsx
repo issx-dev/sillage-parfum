@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 import { Skeleton } from "@/components/ui/Skeleton";
 
 interface CartDrawerProps {
@@ -16,13 +17,14 @@ interface CartDrawerProps {
 
 export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const items = useCartStore((s) => s.items);
-  const total = useCartStore((s) => s.getTotal());
-  const freeShippingRemaining = useCartStore((s) => s.getFreeShippingRemaining());
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const cartHydrated = useCartStore((s) => s._hasHydrated);
 
-  const shippingProgress = Math.min(100, (total / 50) * 100);
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const freeShippingRemaining = Math.max(0, FREE_SHIPPING_THRESHOLD - total);
+
+  const shippingProgress = Math.min(100, (total / FREE_SHIPPING_THRESHOLD) * 100);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -125,12 +127,12 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               <div className="mb-4">
                 <div className="flex justify-between text-xs text-gray-mid mb-1">
                   <span>Te faltan {formatPrice(freeShippingRemaining)} para envío gratis</span>
-                  <span>{formatPrice(50 - total)} / {formatPrice(50)}</span>
+                  <span>{formatPrice(FREE_SHIPPING_THRESHOLD - total)} / {formatPrice(FREE_SHIPPING_THRESHOLD)}</span>
                 </div>
                 <div className="h-1 bg-gray-light rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gold origin-left transition-transform duration-300"
-                    style={{ transform: `scaleX(${shippingProgress / 100})` }}
+                    style={{ transform: `scaleX(${Math.min(shippingProgress / 100, 1)})` }}
                   />
                 </div>
               </div>

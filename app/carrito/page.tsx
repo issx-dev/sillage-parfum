@@ -126,7 +126,7 @@ export default function CarritoPage() {
           {/* Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-card shadow-card p-6 sticky top-24">
-              <h2 className="font-serif text-xl mb-4">Resumo del pedido</h2>
+              <h2 className="font-serif text-xl mb-4">Resumen del pedido</h2>
 
               {/* Free shipping bar */}
               {freeShippingRemaining > 0 ? (

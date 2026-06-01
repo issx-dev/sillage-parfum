@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartItem } from "@/types";
+import { FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 
 interface CartStore {
   items: CartItem[];
@@ -74,7 +75,7 @@ export const useCartStore = create<CartStore>()(
       },
 
       getFreeShippingRemaining: () => {
-        return Math.max(0, 50 - get().getTotal());
+        return Math.max(0, FREE_SHIPPING_THRESHOLD - get().getTotal());
       },
 
       setHasHydrated: (state) => set({ _hasHydrated: state }),

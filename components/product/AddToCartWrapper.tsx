@@ -45,6 +45,21 @@ export function AddToCartWrapper({ product, firstVariant, hasDiscount }: Props) 
         selectedVariant={selectedVariant}
         onSelect={setSelectedVariant}
       />
+      {/* Price display — reacts to size selection */}
+      <div className="mt-4">
+        {hasDiscount ? (
+          <div className="flex items-center gap-3">
+            <span className="text-2xl font-semibold text-gold-dark">
+              {formatPrice(selectedVariant.price * (1 - product.discount_percent / 100))}
+            </span>
+            <span className="text-lg text-gray-mid line-through">
+              {formatPrice(selectedVariant.price)}
+            </span>
+          </div>
+        ) : (
+          <span className="text-2xl font-semibold">{formatPrice(selectedVariant.price)}</span>
+        )}
+      </div>
       <div className="flex gap-4">
         <AddToCartButton
           item={{

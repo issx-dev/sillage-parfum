@@ -47,10 +47,10 @@ export function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed left-0 right-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300",
-        !isHeroPage
+        "fixed left-0 right-0 z-50 transition-[background-color,box-shadow,backdrop-filter,top] duration-300",
+        isSolid
           ? "top-0 bg-[#FAF7F2]/95 backdrop-blur-md shadow-card border-b border-warm-200/20"
-          : "top-[37px] bg-transparent"
+          : "top-[37px] bg-transparent border-b border-transparent shadow-none"
       )}
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">

@@ -1,0 +1,233 @@
+Eres un desarrollador fullstack senior. Crea la primera versión funcional 
+de un e-commerce de perfumería llamado "SILLAGE" que corra 100% en local 
+sin depender de ningún servicio externo.
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+⚙️ STACK — SOLO LO ESENCIAL
+━━━━━━━━━━━━━━━━━━━━━━━━
+- Next.js 14 App Router + TypeScript
+- Tailwind CSS + shadcn/ui
+- Datos en un archivo JSON local (sin base de datos)
+- Estado global con Zustand (carrito + wishlist en localStorage)
+- Stripe en modo TEST con Stripe CLI para webhooks locales
+- Sin auth por ahora (el checkout es como invitado)
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+📁 ESTRUCTURA DE ARCHIVOS
+━━━━━━━━━━━━━━━━━━━━━━━━
+Genera cada archivo con su código completo, no esqueletos vacíos.
+
+/app
+  layout.tsx
+  page.tsx                         → homepage completa
+  /productos
+    page.tsx                       → catálogo con filtros
+    /[slug]
+      page.tsx                     → ficha de producto
+  /carrito
+    page.tsx
+  /checkout
+    page.tsx
+  /checkout/success
+    page.tsx                       → confirmación con número de pedido
+  /api/stripe/checkout
+    route.ts                       → crea Checkout Session
+  /api/stripe/webhook
+    route.ts                       → escucha eventos Stripe test
+
+/components
+  /layout
+    Navbar.tsx                     → sticky, badge carrito en tiempo real
+    Footer.tsx
+    CartDrawer.tsx                 → carrito lateral con shadcn Drawer
+  /home
+    HeroSection.tsx
+    CategoryGrid.tsx
+    FeaturedProducts.tsx
+    BrandCarousel.tsx
+    Testimonials.tsx
+  /product
+    ProductCard.tsx
+    ProductGrid.tsx
+    SizeSelector.tsx               → cambia precio según ml seleccionado
+    AddToCartButton.tsx            → Toast al añadir
+    WishlistButton.tsx             → toggle con localStorage
+
+/lib
+  /data
+    products.json                  → array con 12 productos completos
+    brands.json                    → array con 10 marcas
+  stripe.ts                        → cliente Stripe server-side
+  utils.ts                         → cn(), formatPrice()
+
+/store
+  cartStore.ts                     → Zustand, persiste en localStorage
+  wishlistStore.ts                 → Zustand, persiste en localStorage
+
+/types
+  index.ts                         → Product, Variant, CartItem, Order
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+📦 DATOS: products.json
+━━━━━━━━━━━━━━━━━━━━━━━━
+Genera el array completo con estos 12 productos reales con todos sus campos:
+
+[
+  {
+    id, slug, name, brand, family, shortDescription,
+    badge: null | "nuevo" | "oferta" | "top_ventas",
+    images: ["/images/placeholder.jpg"],
+    variants: [
+      { id, size_ml: 30, price: 65,  stock: 10, sku: "CHN5-030" },
+      { id, size_ml: 50, price: 95,  stock: 8,  sku: "CHN5-050" },
+      { id, size_ml: 100, price: 135, stock: 5, sku: "CHN5-100" }
+    ],
+    discount_percent: 0,
+    notes: { top: [], heart: [], base: [] }
+  },
+  ...
+]
+
+Incluye estos productos con datos reales de notas olfativas:
+1.  Chanel Nº5 EDP         → Floral Aldehído  — top_ventas
+2.  Sauvage Dior EDT        → Amaderado        — oferta 20%
+3.  Black Orchid Tom Ford   → Oriental         — null
+4.  Acqua di Giò Armani     → Acuático         — null
+5.  Libre YSL EDP           → Floral           — nuevo
+6.  Flowerbomb V&R EDP      → Floral Gourmand  — null
+7.  Bleu de Chanel EDP      → Amaderado        — top_ventas
+8.  Alien Thierry Mugler    → Oriental         — oferta 15%
+9.  La Vie Est Belle Lancôme→ Gourmand         — null
+10. Baccarat Rouge 540      → Amaderado        — nuevo
+11. Aventus Creed           → Chipre           — null
+12. Light Blue Dolce&Gabbana→ Fresco           — null
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+🛒 STORE: cartStore.ts (Zustand)
+━━━━━━━━━━━━━━━━━━━━━━━━
+Genera el store completo con:
+
+interface CartItem {
+  variantId: string
+  productId: string
+  slug: string
+  name: string
+  brand: string
+  image: string
+  size_ml: number
+  price: number
+  quantity: number
+}
+
+interface CartStore {
+  items: CartItem[]
+  addItem: (item: CartItem) => void        → si ya existe suma cantidad
+  removeItem: (variantId: string) => void
+  updateQuantity: (variantId: string, quantity: number) => void
+  clearCart: () => void
+  getTotal: () => number
+  getItemCount: () => number
+  getFreeShippingRemaining: () => number   → umbral 50€
+}
+
+Usar persist middleware de Zustand para localStorage.
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+💳 STRIPE (modo TEST)
+━━━━━━━━━━━━━━━━━━━━━━━━
+Genera el código completo de:
+
+1. /api/stripe/checkout/route.ts (POST)
+   - Recibe: { items: [{variantId, productId, name, image, 
+                        size_ml, price, quantity}] }
+   - Crea Stripe Checkout Session con:
+     · line_items construidos desde el body
+     · mode: 'payment'
+     · success_url: /checkout/success?session_id={CHECKOUT_SESSION_ID}
+     · cancel_url: /carrito
+     · shipping_address_collection: ['ES']
+     · metadata: { items: JSON.stringify(items) }
+   - Devuelve { url }
+
+2. /api/stripe/webhook/route.ts (POST)
+   - Verifica firma con stripe.webhooks.constructEvent
+   - En checkout.session.completed:
+     · Loguea el pedido en consola con número de sesión y total
+     · (En v1 no hay DB, solo log)
+   - Devuelve 200
+
+3. /checkout/page.tsx
+   - Muestra resumen del carrito
+   - Botón "Pagar con Stripe" que llama a /api/stripe/checkout
+   - Redirige a Stripe Checkout
+   - Datos de tarjeta de prueba visibles en pantalla:
+     "Modo test · Usa: 4242 4242 4242 4242 · Exp: 12/34 · CVC: 123"
+
+4. /checkout/success/page.tsx
+   - Recibe session_id por query param
+   - Llama a Stripe para recuperar la sesión y mostrar:
+     · "¡Pedido confirmado! 🎉"
+     · Número de pedido (session_id truncado)
+     · Total pagado
+     · Email del cliente
+   - Limpia el carrito con clearCart()
+   - Botón "Seguir comprando"
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+🔑 VARIABLES DE ENTORNO
+━━━━━━━━━━━━━━━━━━━━━━━━
+Genera .env.local.example:
+
+# Stripe - obtener en https://dashboard.stripe.com/test/apikeys
+STRIPE_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+
+# Stripe webhook - obtener ejecutando: stripe listen --forward-to localhost:3000/api/stripe/webhook
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# URL base
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PACKAGE.JSON
+━━━━━━━━━━━━━━━━━━━━━━━━
+Genera package.json con scripts y dependencias exactas:
+
+scripts:
+  "dev": "next dev"
+  "build": "next build"
+  "start": "next start"
+
+dependencies:
+  next@14, react@18, react-dom@18, typescript,
+  tailwindcss, @shadcn/ui (Drawer, Toast, Badge, 
+  Dialog, Sheet, Skeleton, Button),
+  zustand,
+  stripe, @stripe/stripe-js,
+  clsx, tailwind-merge,
+  lucide-react
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+🚀 README.md
+━━━━━━━━━━━━━━━━━━━━━━━━
+Genera README con pasos exactos para correr en local:
+
+1. npm install
+2. Copiar .env.local.example → .env.local y rellenar keys de Stripe test
+3. npm run dev
+4. En otra terminal: stripe listen --forward-to localhost:3000/api/stripe/webhook
+   (copia el whsec_... que te da y pégalo en .env.local)
+5. Abrir http://localhost:3000
+6. Para probar pago: tarjeta 4242 4242 4242 4242
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+✅ CRITERIOS DE ÉXITO
+━━━━━━━━━━━━━━━━━━━━━━━━
+La versión se considera completa cuando:
+- [ ] npm run dev arranca sin errores de TypeScript
+- [ ] El catálogo muestra los 12 productos con filtro por familia
+- [ ] Añadir al carrito actualiza el badge del navbar en tiempo real
+- [ ] El carrito persiste al recargar la página
+- [ ] El checkout redirige a Stripe y acepta la tarjeta de test
+- [ ] La página de éxito muestra los datos del pedido y limpia el carrito
+- [ ] El webhook recibe el evento y loguea el pedido en consola

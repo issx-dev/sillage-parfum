@@ -1,0 +1,17 @@
+[
+  { "id": "chanel", "name": "Chanel", "logo_slug": "chanel" },
+  { "id": "dior", "name": "Dior", "logo_slug": "dior" },
+  { "id": "ysl", "name": "YSL", "logo_slug": "ysl" },
+  { "id": "tom-ford", "name": "Tom Ford", "logo_slug": "tom-ford" },
+  { "id": "armani", "name": "Armani", "logo_slug": "armani" },
+  { "id": "lancome", "name": "Lancôme", "logo_slug": "lancome" },
+  { "id": "prada", "name": "Prada", "logo_slug": "prada" },
+  { "id": "gucci", "name": "Gucci", "logo_slug": "gucci" },
+  { "id": "hermes", "name": "Hermès", "logo_slug": "hermes" },
+  { "id": "calvin-klein", "name": "Calvin Klein", "logo_slug": "calvin-klein" },
+  { "id": "versace", "name": "Versace", "logo_slug": "versace" },
+  { "id": "givenchy", "name": "Givenchy", "logo_slug": "givenchy" },
+  { "id": "valentino", "name": "Valentino", "logo_slug": "valentino" },
+  { "id": "bulgari", "name": "Bulgari", "logo_slug": "bulgari" },
+  { "id": "hugo-boss", "name": "Hugo Boss", "logo_slug": "hugo-boss" }
+]

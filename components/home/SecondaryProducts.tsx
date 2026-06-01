@@ -98,10 +98,10 @@ export function SecondaryProducts({ products }: SecondaryProductsProps) {
                 continuación
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-warm-50 tracking-wide mt-2">
-                Descubrí más
+                Descubre más
               </h2>
               <p className="text-sm font-light text-warm-400 mt-4 leading-relaxed max-w-[50ch]">
-                Explorá nuestra selección de fragancias que definen tendências.
+                Explora nuestra selección de fragancias que definen tendencias.
               </p>
             </div>
 

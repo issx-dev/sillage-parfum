@@ -13,7 +13,7 @@ export function HeroSection() {
       {/* Background Media */}
       {reducedMotion ? (
         <div className="absolute inset-0 w-full h-full z-0">
-<Image
+          <Image
             src="/images/hero/hero-desktop.png"
             alt="Sillage Cinematic Campaign Background"
             fill

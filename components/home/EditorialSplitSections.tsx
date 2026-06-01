@@ -67,7 +67,7 @@ const sections: EditorialSection[] = [
     label: "les nouveautés",
     title: "la vanguardia olfativa",
     description:
-      "explorá nuestras últimas creaciones. acordes innovadores que desafían las convenciones y trazan el futuro del diseño de fragancias.",
+      "explora nuestras últimas creaciones. acordes innovadores que desafían las convenciones y trazan el futuro del diseño de fragancias.",
     ctaText: "descubrir nuevos lanzamientos",
     href: "/productos?new=true",
     imageSrc: "/images/collections/new-arrival.png",

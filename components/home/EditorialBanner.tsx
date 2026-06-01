@@ -9,17 +9,17 @@ const PILLARS = [
     number: "01",
     title: "Encuentra tu firma olfativa",
     description:
-      "Respondé 3 preguntas sobre tu personalidad y los aromas que te atraen.",
+      "Responde 3 preguntas sobre tu personalidad y los aromas que te atraen.",
   },
   {
     number: "02",
-    title: "Recibí tu selección curada",
+    title: "Recibe tu selección curada",
     description:
-      "Nuestro algoritmo editorial filtra el catálogo y elige las fragancias que resuenan con vos.",
+      "Nuestro algoritmo editorial filtra el catálogo y elige las fragancias que resuenan contigo.",
   },
   {
     number: "03",
-    title: "Explorá con confianza",
+    title: "Explora con confianza",
     description:
       "Cada recomendación incluye notas olfativas, intensidad y las ocasiones ideales de uso.",
   },

@@ -57,13 +57,13 @@ export function CategoriesGrid() {
         <ScrollReveal>
           <div className="text-center mb-12 lg:mb-16">
             <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-gold">
-              explorá
+              explora
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-warm-900 tracking-wide mt-2">
-              Encontrá tu familia
+              Encuentra tu familia
             </h2>
             <p className="text-sm font-light text-warm-600 mt-4 max-w-[50ch] mx-auto">
-              Descubrí fragancias organizadas por carácter y personalidad.
+              Descubre fragancias organizadas por carácter y personalidad.
             </p>
           </div>
         </ScrollReveal>

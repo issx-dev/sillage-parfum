@@ -91,7 +91,7 @@ export function PromoBar() {
 
   return (
     <div
-      className="w-full bg-[#0B0A08] border-b border-warm-900/60 py-2.5 px-4 overflow-hidden relative z-50 select-none group/bar"
+      className="w-full bg-[#0B0A08] border-b border-warm-900/60 py-2 px-4 overflow-hidden relative z-50 select-none group/bar"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -111,7 +111,7 @@ export function PromoBar() {
         {/* Dynamic sliding promotion container */}
         <div className="flex-1 flex justify-center items-center overflow-hidden py-0.5">
           <div
-            className={`flex items-center justify-center gap-2.5 transition-[opacity,transform] duration-300 ease-out ${
+            className={`flex items-center justify-center gap-2 transition-[opacity,transform] duration-300 ease-out ${
               prefersReducedMotion
                 ? "opacity-100"
                 : isTransitioning
@@ -122,8 +122,8 @@ export function PromoBar() {
             }`}
           >
             {currentPromo.icon}
-            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center">
-              <span className="text-[10px] sm:text-[11px] font-sans font-light tracking-[0.2em] text-[#FAF7F2]/90 uppercase">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-center">
+              <span className="text-xs sm:text-sm font-sans font-light tracking-[0.2em] text-[#FAF7F2]/90 uppercase whitespace-nowrap overflow-hidden text-ellipsis max-w-[180px] sm:max-w-none">
                 {currentPromo.text}
               </span>
               {currentPromo.ctaText && (
@@ -132,7 +132,7 @@ export function PromoBar() {
                   {currentPromo.promoCode ? (
                     <button
                       onClick={(e) => handleCopyCode(currentPromo.promoCode!, e)}
-                      className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-sans font-medium tracking-[0.25em] text-[#C9A96E] hover:text-[#FAF7F2] uppercase transition-colors duration-300 relative pb-0.5 border-b border-[#C9A96E]/30 hover:border-[#FAF7F2]/40 min-h-[44px]"
+                      className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-sans font-medium tracking-[0.25em] text-[#C9A96E] hover:text-[#FAF7F2] uppercase transition-colors duration-300 relative pb-0.5 border-b border-[#C9A96E]/30 hover:border-[#FAF7F2]/40 min-h-[32px] sm:min-h-[44px]"
                     >
                       {copied ? (
                         <>
@@ -149,7 +149,7 @@ export function PromoBar() {
                   ) : (
                     <Link
                       href={currentPromo.href || "#"}
-                      className="text-[10px] sm:text-[11px] font-sans font-medium tracking-[0.25em] text-[#C9A96E] hover:text-[#FAF7F2] uppercase transition-colors duration-300 relative pb-0.5 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-right after:scale-x-0 after:bg-[#FAF7F2] after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100"
+                      className="text-[10px] sm:text-xs font-sans font-medium tracking-[0.25em] text-[#C9A96E] hover:text-[#FAF7F2] uppercase transition-colors duration-300 relative pb-0.5 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-right after:scale-x-0 after:bg-[#FAF7F2] after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100"
                     >
                       {currentPromo.ctaText}
                     </Link>

@@ -52,7 +52,7 @@ export function Newsletter() {
             {/* Incentive */}
             <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-full">
               <span className="text-xs font-semibold text-gold">10% OFF</span>
-              <span className="text-xs text-warm-600">en tu primera compra como miembro</span>
+              <span className="text-xs text-warm-600 ml-1">en tu primera compra como miembro</span>
             </div>
 
             {/* Form */}
@@ -107,7 +107,7 @@ export function Newsletter() {
 
             {/* Privacy note */}
             <p className="mt-5 text-[11px] text-warm-500 max-w-[44ch] mx-auto leading-relaxed">
-              Al unirte aceptas nuestra política de privacidad. Podés darte de baja en cualquier momento.
+              Al unirte aceptas nuestra política de privacidad. Puedes darte de baja en cualquier momento.
             </p>
           </div>
         </div>

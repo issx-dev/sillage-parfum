@@ -8,19 +8,11 @@ import type { Product } from "@/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
 
-interface FeaturedProductsProps {
+interface SecondaryProductsProps {
   products: Product[];
-  title?: string;
-  subtitle?: string;
 }
 
-const badgeLabels: Record<string, string> = {
-  nuevo: "NUEVO",
-  oferta: "OFERTA",
-  top_ventas: "TOP VENTAS",
-};
-
-export function FeaturedProducts({ products, title = "Lo más elegido", subtitle = "Bestsellers y novedades selecionados por su carácter excepcional." }: FeaturedProductsProps) {
+export function SecondaryProducts({ products }: SecondaryProductsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [isAtStart, setIsAtStart] = useState(true);
@@ -96,20 +88,20 @@ export function FeaturedProducts({ products, title = "Lo más elegido", subtitle
   if (!products || products.length === 0) return null;
 
   return (
-    <section className="py-20 lg:py-28 bg-warm-50 overflow-hidden">
+    <section className="py-20 lg:py-28 bg-black overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Elegant header */}
+        {/* Header */}
         <ScrollReveal>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 lg:mb-16 gap-6">
             <div className="max-w-xl text-left">
-              <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-gold">
-                selección sillage
+              <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-gold/80">
+                continuación
               </span>
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-warm-900 tracking-wide mt-2">
-                {title}
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-warm-50 tracking-wide mt-2">
+                Descubrí más
               </h2>
-              <p className="text-sm font-light text-warm-600 mt-4 leading-relaxed max-w-[50ch]">
-                {subtitle}
+              <p className="text-sm font-light text-warm-400 mt-4 leading-relaxed max-w-[50ch]">
+                Explorá nuestra selección de fragancias que definen tendências.
               </p>
             </div>
 
@@ -119,7 +111,7 @@ export function FeaturedProducts({ products, title = "Lo más elegido", subtitle
                 onClick={() => handleScroll("left")}
                 disabled={isAtStart}
                 className={cn(
-                  "w-12 h-12 rounded-full border border-warm-300 flex items-center justify-center text-warm-600 transition-[color,border-color] duration-300 bg-white shadow-sm active:scale-95 min-w-[44px] min-h-[44px]",
+                  "w-12 h-12 rounded-full border border-warm-700 flex items-center justify-center text-warm-400 transition-[color,border-color] duration-300 bg-white/5 active:scale-95 min-w-[44px] min-h-[44px]",
                   isAtStart
                     ? "opacity-30 cursor-not-allowed pointer-events-none"
                     : "hover:text-gold hover:border-gold"
@@ -132,7 +124,7 @@ export function FeaturedProducts({ products, title = "Lo más elegido", subtitle
                 onClick={() => handleScroll("right")}
                 disabled={isAtEnd}
                 className={cn(
-                  "w-12 h-12 rounded-full border border-warm-300 flex items-center justify-center text-warm-600 transition-[color,border-color] duration-300 bg-white shadow-sm active:scale-95 min-w-[44px] min-h-[44px]",
+                  "w-12 h-12 rounded-full border border-warm-700 flex items-center justify-center text-warm-400 transition-[color,border-color] duration-300 bg-white/5 active:scale-95 min-w-[44px] min-h-[44px]",
                   isAtEnd
                     ? "opacity-30 cursor-not-allowed pointer-events-none"
                     : "hover:text-gold hover:border-gold"
@@ -163,7 +155,7 @@ export function FeaturedProducts({ products, title = "Lo más elegido", subtitle
                 const hasDiscount = product.discount_percent > 0;
                 const badgeLabel = hasDiscount
                   ? `OFERTA -${product.discount_percent}%`
-                  : badgeLabels[product.badge || ""] || null;
+                  : null;
                 const primaryVariant = product.variants.find((v) => v.stock > 0) || product.variants[0];
                 const currentPrice = hasDiscount
                   ? primaryVariant.price * (1 - product.discount_percent / 100)
@@ -175,9 +167,9 @@ export function FeaturedProducts({ products, title = "Lo más elegido", subtitle
                     className="w-[280px] sm:w-[320px] flex-shrink-0 snap-start pointer-events-none"
                   >
                     <Link href={`/productos/${product.slug}`} className="block pointer-events-auto">
-                      <div className="bg-white rounded-card overflow-hidden shadow-card transition-[transform,box-shadow] duration-300 hover:shadow-gold hover:scale-[1.03] group">
+                      <div className="bg-warm-900/30 rounded-card overflow-hidden border border-warm-800/50 transition-[transform,border-color] duration-300 hover:border-gold/30 hover:scale-[1.03] group">
                         {/* Image container */}
-                        <div className="relative aspect-square bg-gradient-to-br from-warm-100 to-warm-200 overflow-hidden">
+                        <div className="relative aspect-square overflow-hidden">
                           {badgeLabel && (
                             <span className="absolute top-3 left-3 px-2 py-1 bg-gold text-[10px] font-semibold text-black z-10 tracking-[0.1em] uppercase rounded-sm shadow-sm">
                               {badgeLabel}
@@ -195,16 +187,16 @@ export function FeaturedProducts({ products, title = "Lo más elegido", subtitle
                           </div>
                         </div>
 
-                        {/* Content - minimal Byredo-style: name + price only */}
-                        <div className="p-4">
+                        {/* Content */}
+                        <div className="p-4 border-t border-warm-800/50">
                           <p className="text-xs uppercase tracking-wider text-warm-500 mb-1">
                             {product.brand}
                           </p>
-                          <h3 className="font-serif text-lg text-warm-900">
+                          <h3 className="font-serif text-lg text-warm-50">
                             {product.name}
                           </h3>
                           <div className="mt-3 flex items-center gap-2">
-                            <span className="text-base font-semibold text-warm-900">
+                            <span className="text-base font-semibold text-warm-50">
                               {formatPrice(currentPrice)}
                             </span>
                             {hasDiscount && (
@@ -222,7 +214,7 @@ export function FeaturedProducts({ products, title = "Lo más elegido", subtitle
             </div>
 
             {/* Progress bar */}
-            <div className="mt-6 max-w-[320px] sm:max-w-[400px] mx-auto h-[1px] bg-warm-200/60 relative overflow-hidden rounded-full">
+            <div className="mt-6 max-w-[320px] sm:max-w-[400px] mx-auto h-[1px] bg-warm-800/60 relative overflow-hidden rounded-full">
               <div
                 className="absolute top-0 left-0 h-full w-full bg-gold origin-left transition-transform duration-150 ease-out"
                 style={{ transform: `scaleX(${scrollProgress / 100})` }}

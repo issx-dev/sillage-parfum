@@ -7,41 +7,38 @@ import { ChevronDown, Star, ArrowUpRight } from "lucide-react";
 
 export function HeroSection() {
   const reducedMotion = useReducedMotion();
-  const videoUrl =
-    "https://player.vimeo.com/external/334052093.hd.mp4?s=2536fe092589240b2acdc96460530a63b43020ac&profile_id=175";
 
   return (
     <section className="relative min-h-[100dvh] flex items-center overflow-hidden bg-black text-cream">
       {/* Background Media */}
       {reducedMotion ? (
-        <div className="absolute inset-0 w-full h-full z-0 opacity-60">
+        <div className="absolute inset-0 w-full h-full z-0">
           <Image
-            src="/images/hero/hero-desktop.png"
+            src="/images/hero/hero-poster.jpg"
             alt="Sillage Cinematic Campaign Background"
             fill
             priority
             sizes="100vw"
-            className="object-cover"
+            className="object-cover opacity-60"
           />
         </div>
       ) : (
-        <>
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            poster="/images/hero/hero-desktop.png"
-            className="absolute inset-0 w-full h-full object-cover z-0 opacity-50 select-none pointer-events-none"
-            aria-hidden="true"
-          >
-            <source src={videoUrl} type="video/mp4" />
-          </video>
-        </>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/images/hero/hero-poster.jpg"
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-50 select-none pointer-events-none"
+          aria-hidden="true"
+        >
+          <source src="/videos/hero-desktop.mp4" type="video/mp4" media="(min-width: 1024px)" />
+          <source src="/videos/hero-mobile.mp4" type="video/mp4" media="(max-width: 1023px)" />
+        </video>
       )}
 
       {/* Cinematic Vignette Overlay */}
-      <div 
+      <div
         className="absolute inset-0 z-[1] select-none pointer-events-none"
         style={{
           background:
@@ -49,16 +46,13 @@ export function HeroSection() {
         }}
       />
 
-      {/* Noise/Grain Overlay */}
-      <div className="absolute inset-0 z-[2] opacity-[0.03] pointer-events-none bg-[url('/images/placeholder.svg')] select-none" />
-
       {/* Content - premium asymmetric layout */}
       <div className="relative z-10 w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-12 gap-12 items-center">
-          
+
           {/* Left: Text content */}
           <div className="text-left lg:col-span-7 xl:col-span-8 flex flex-col justify-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/10 border border-gold/30 w-fit mb-6 animate-pulse">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/10 border border-gold/30 w-fit mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-gold" />
               <span className="text-xs font-sans tracking-[0.15em] uppercase text-gold">Alta Perfumería de Autor</span>
             </div>
@@ -73,11 +67,11 @@ export function HeroSection() {
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row items-start gap-6 sm:gap-10">
-              {/* Primary CTA — solid gold underline, no button box */}
+              {/* Primary CTA — solid gold underline */}
               <Link
                 href="/productos"
-                className="group relative inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] font-medium text-[#FAF7F2] hover:text-[#C9A96E] transition-colors duration-300 pb-2
-                           after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-[#C9A96E] after:origin-right after:scale-x-100"
+                className="group relative inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] font-medium text-cream hover:text-gold transition-colors duration-300 pb-2
+                           after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-gold after:origin-right after:scale-x-100"
               >
                 Descubrir colección
                 <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
@@ -86,8 +80,8 @@ export function HeroSection() {
               {/* Secondary CTA — sliding underline */}
               <Link
                 href="/productos"
-                className="group relative inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] font-light text-[#FAF7F2]/60 hover:text-[#FAF7F2] transition-colors duration-300 pb-2
-                           after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-[#FAF7F2]/40
+                className="group relative inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] font-light text-cream/60 hover:text-cream transition-colors duration-300 pb-2
+                           after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-cream/40
                            after:origin-right after:scale-x-0
                            after:transition-transform after:duration-500 after:ease-out
                            hover:after:origin-left hover:after:scale-x-100"
@@ -112,7 +106,7 @@ export function HeroSection() {
             <div className="relative w-full max-w-[350px] aspect-[3/4] rounded-card backdrop-blur-md bg-white/5 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_24px_48px_rgba(0,0,0,0.5)] p-8 flex flex-col justify-between overflow-hidden group hover:border-gold/30 transition-[border-color] duration-700">
               {/* Subtle animated background glow */}
               <div className="absolute -right-20 -top-20 w-44 h-44 rounded-full bg-gold/10 blur-3xl group-hover:bg-gold/20 transition-[background-color] duration-700" />
-              
+
               <div>
                 <span className="font-serif text-xs uppercase tracking-[0.25em] text-gold block mb-2">Colección Privada</span>
                 <h2 className="font-serif text-3xl text-cream leading-tight">
@@ -144,7 +138,7 @@ export function HeroSection() {
 
       {/* Scroll indicator */}
       {!reducedMotion && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce-down z-10 pointer-events-none">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-10 pointer-events-none" style={{ animationDuration: "2s" }}>
           <ChevronDown className="w-8 h-8 text-gold opacity-80" />
         </div>
       )}

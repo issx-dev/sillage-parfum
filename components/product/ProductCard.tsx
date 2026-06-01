@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import type { Product, Variant } from "@/types";
 import { SizeSelector } from "./SizeSelector";
@@ -57,10 +58,17 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
   return (
     <div
       className={cn(
-        "group bg-white rounded-card overflow-hidden shadow-card transition-[transform,box-shadow,opacity] duration-300 hover:shadow-gold hover:scale-[1.03]",
+        "group bg-white rounded-card overflow-hidden shadow-card transition-[transform,box-shadow,opacity] duration-300 hover:shadow-gold hover:scale-[1.03] relative",
         isLarge ? "flex flex-col" : "flex flex-col"
       )}
     >
+      {/* Clickable card overlay — covers entire card except interactive elements */}
+      <Link
+        href={`/productos/${product.slug}`}
+        className="absolute inset-0 z-0"
+        aria-label={`Ver ${product.name}`}
+      />
+
       {/* Image container */}
       <div className="relative aspect-square bg-gradient-to-br from-[#F5F2EB] to-[#EAE5D9] overflow-hidden">
         {badgeLabel && (
@@ -68,8 +76,14 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
             {badgeLabel}
           </span>
         )}
-        <WishlistButton productId={product.id} />
-        <div className="absolute inset-0 p-8 flex items-center justify-center transition-transform duration-700 ease-out group-hover:scale-[1.05]">
+        {/* WishlistButton sits above the overlay link — stopPropagation prevents card navigation */}
+        <div className="relative z-20">
+          <WishlistButton
+            productId={product.id}
+            className="absolute top-3 right-3"
+          />
+        </div>
+        <div className="absolute inset-0 p-8 flex items-center justify-center transition-transform duration-700 ease-out group-hover:scale-[1.05] z-10">
           <Image
             src={product.images[0]}
             alt={product.name}
@@ -83,7 +97,7 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
       </div>
 
       {/* Content */}
-      <div className="p-4 flex flex-col flex-1">
+      <div className="p-4 flex flex-col flex-1 relative z-10">
         {/* Family pill */}
         <span className="text-xs px-2 py-1 bg-gray-light text-gray-mid rounded-full w-fit mb-2">
           {product.family}

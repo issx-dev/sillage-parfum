@@ -17,10 +17,11 @@ export function WishlistButton({ productId, className }: WishlistButtonProps) {
     <button
       onClick={(e) => {
         e.preventDefault();
+        e.stopPropagation();
         toggle(productId);
       }}
       className={cn(
-        "absolute top-3 right-3 p-2 min-w-[44px] min-h-[44px] rounded-full bg-cream/80 backdrop-blur-sm flex items-center justify-center transition-[transform,opacity] duration-200 hover:scale-110",
+        "p-2 min-w-[44px] min-h-[44px] rounded-full bg-cream/80 backdrop-blur-sm flex items-center justify-center transition-[transform,opacity] duration-200 hover:scale-110",
         className
       )}
       aria-label={isWishlisted ? "Quitar de favoritos" : "Añadir a favoritos"}

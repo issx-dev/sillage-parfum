@@ -150,33 +150,45 @@ export function Navbar() {
 
       {/* Mobile menu overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0 z-[70] md:hidden">
           <div
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-[#0B0A08]/60 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="absolute top-0 left-0 bottom-0 w-72 bg-cream shadow-lg p-6">
-            <div className="flex justify-between items-center mb-8">
-              <span className="font-serif text-xl text-gold">SILLAGE</span>
+          <div className="absolute top-0 right-0 bottom-0 w-[280px] bg-[#FAF7F2] shadow-2xl p-6 flex flex-col transform transition-transform duration-300 ease-out">
+            {/* Close button */}
+            <div className="flex justify-end mb-6">
               <button
                 onClick={() => setMobileOpen(false)}
                 aria-label="Cerrar menu"
-                className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#1A1A1A] hover:text-gold transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <div className="flex flex-col gap-4">
+
+            {/* Logo */}
+            <div className="mb-8">
+              <span className="font-serif text-2xl text-gold tracking-wider">SILLAGE</span>
+            </div>
+
+            {/* Nav links */}
+            <nav className="flex flex-col gap-1 flex-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="text-lg text-gray-mid hover:text-black transition-colors py-2"
+                  className="text-base font-sans text-[#1A1A1A]/80 hover:text-gold transition-colors py-3 px-4 border-b border-gray-light/50"
                 >
                   {link.label}
                 </Link>
               ))}
+            </nav>
+
+            {/* Footer */}
+            <div className="pt-6 border-t border-gray-light/50">
+              <p className="text-xs text-[#1A1A1A]/40 uppercase tracking-wider">Envío gratis desde 50€</p>
             </div>
           </div>
         </div>

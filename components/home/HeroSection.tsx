@@ -13,8 +13,8 @@ export function HeroSection() {
       {/* Background Media */}
       {reducedMotion ? (
         <div className="absolute inset-0 w-full h-full z-0">
-          <Image
-            src="/images/hero/hero-poster.jpg"
+<Image
+            src="/images/hero/hero-desktop.png"
             alt="Sillage Cinematic Campaign Background"
             fill
             priority
@@ -28,7 +28,7 @@ export function HeroSection() {
           loop
           muted
           playsInline
-          poster="/images/hero/hero-poster.jpg"
+          poster="/images/hero/hero-desktop.png"
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-50 select-none pointer-events-none"
           aria-hidden="true"
         >

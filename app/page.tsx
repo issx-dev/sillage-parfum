@@ -4,14 +4,18 @@ import { EditorialSplitSingle } from "@/components/home/EditorialSplitSingle";
 import { CategoriesGrid } from "@/components/home/CategoriesGrid";
 import { SecondaryProducts } from "@/components/home/SecondaryProducts";
 import { Newsletter } from "@/components/home/Newsletter";
-import { Footer } from "@/components/layout/Footer";
 import { getFeaturedProducts, getNewArrivals } from "@/lib/data";
 
 export default function HomePage() {
   const featured = getFeaturedProducts(6);
   const newArrivals = getNewArrivals();
-  // Combine featured and new arrivals for merged carousel
-  const allProducts = [...featured, ...newArrivals].slice(0, 8);
+  // Combine featured and new arrivals for merged carousel, removing duplicates
+  const seen = new Set<string>();
+  const allProducts = [...featured, ...newArrivals].filter(p => {
+    if (seen.has(p.slug)) return false;
+    seen.add(p.slug);
+    return true;
+  }).slice(0, 8);
 
   return (
     <>
@@ -44,11 +48,8 @@ export default function HomePage() {
       {/* 5. SecondaryProducts — dark background, second product carousel */}
       <SecondaryProducts products={featured.slice(0, 6)} />
 
-      {/* 6. Newsletter — cream/warm background, Member's Club framing */}
+{/* 6. Newsletter — cream/warm background, Member's Club framing */}
       <Newsletter />
-
-      {/* 7. Footer — dark background, 4-column pattern */}
-      <Footer />
     </>
   );
 }

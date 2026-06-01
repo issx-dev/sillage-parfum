@@ -33,6 +33,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+  },
   openGraph: {
     title: "SILLAGE — Perfumería de Lujo",
     description: "523 fragancias de las mejores casas del mundo. Envío en 24h.",

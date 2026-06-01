@@ -23,18 +23,14 @@ export function HeroSection() {
           />
         </div>
       ) : (
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster="/images/hero/hero-desktop.png"
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-50 select-none pointer-events-none"
-          aria-hidden="true"
-        >
-          <source src="/videos/hero-desktop.mp4" type="video/mp4" media="(min-width: 1024px)" />
-          <source src="/videos/hero-mobile.mp4" type="video/mp4" media="(max-width: 1023px)" />
-        </video>
+        <Image
+          src="/images/hero/hero-desktop.png"
+          alt="Sillage Cinematic Campaign Background"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-50 z-0"
+        />
       )}
 
       {/* Cinematic Vignette Overlay */}

@@ -106,7 +106,7 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
         <div className="mt-4">
           <SizeSelector
             variants={product.variants}
-            selectedId={selectedVariant.id}
+            selectedVariant={selectedVariant}
             onSelect={setSelectedVariant}
           />
         </div>

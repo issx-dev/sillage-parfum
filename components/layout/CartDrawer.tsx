@@ -31,13 +31,6 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-light">
           <h2 className="font-serif text-xl">Tu carrito</h2>
-          <button
-            onClick={() => onOpenChange(false)}
-            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
-            aria-label="Cerrar carrito"
-          >
-            <X className="w-5 h-5" />
-          </button>
         </div>
 
         {/* Items */}
@@ -77,6 +70,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                           src={item.image}
                           alt={item.name}
                           fill
+                          sizes="64px"
                           className="object-contain"
                         />
                       ) : (

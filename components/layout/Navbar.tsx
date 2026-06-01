@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Search, Heart, ShoppingBag, Menu, X } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
@@ -20,6 +21,9 @@ const navLinks = [
 ];
 
 export function Navbar() {
+  const pathname = usePathname();
+  const isHeroPage = pathname === "/";
+
   const scrollY = useScrollPosition();
   const reducedMotion = useReducedMotion();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -32,6 +36,7 @@ export function Navbar() {
   const wishlistHydrated = useWishlistStore((s) => s._hasHydrated);
 
   const scrolled = scrollY > 50;
+  const isSolid = scrolled || !isHeroPage;
 
   useEffect(() => {
     setMounted(true);
@@ -41,7 +46,7 @@ export function Navbar() {
     <nav
       className={cn(
         "fixed left-0 right-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300",
-        scrolled
+        isSolid
           ? "top-0 bg-[#FAF7F2]/95 backdrop-blur-md shadow-card border-b border-warm-200/20"
           : "top-[37px] bg-transparent"
       )}
@@ -52,7 +57,7 @@ export function Navbar() {
           <button
             className={cn(
               "md:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95 transition-transform duration-150",
-              scrolled ? "text-[#1A1A1A]" : "text-[#FAF7F2]"
+              isSolid ? "text-[#1A1A1A]" : "text-[#FAF7F2]"
             )}
             onClick={() => setMobileOpen(true)}
             aria-label="Abrir menu"
@@ -76,7 +81,7 @@ export function Navbar() {
                 href={link.href}
                 className={cn(
                   "text-sm font-sans tracking-wide transition-colors duration-300",
-                  scrolled
+                  isSolid
                     ? "text-[#1A1A1A]/80 hover:text-gold"
                     : "text-[#FAF7F2]/80 hover:text-gold"
                 )}
@@ -92,7 +97,7 @@ export function Navbar() {
               onClick={() => setSearchOpen(true)}
               className={cn(
                 "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95 transition-transform duration-150",
-                scrolled
+                isSolid
                   ? "text-[#1A1A1A]/80 hover:text-gold"
                   : "text-[#FAF7F2]/80 hover:text-gold"
               )}
@@ -105,7 +110,7 @@ export function Navbar() {
               type="button"
               className={cn(
                 "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300 active:scale-95",
-                scrolled
+                isSolid
                   ? "text-[#1A1A1A]/80 hover:text-gold"
                   : "text-[#FAF7F2]/80 hover:text-gold"
               )}
@@ -123,7 +128,7 @@ export function Navbar() {
               onClick={() => useCartStore.getState().openCart()}
               className={cn(
                 "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300",
-                scrolled
+                isSolid
                   ? "text-[#1A1A1A]/80 hover:text-gold"
                   : "text-[#FAF7F2]/80 hover:text-gold"
               )}
@@ -133,7 +138,7 @@ export function Navbar() {
               {mounted && cartHydrated && itemCount > 0 && (
                 <span className={cn(
                   "absolute -top-1 -right-1 text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium transition-colors duration-300",
-                  scrolled ? "bg-black text-cream" : "bg-gold text-black"
+                  isSolid ? "bg-black text-cream" : "bg-gold text-black"
                 )}>
                   {itemCount}
                 </span>

@@ -80,6 +80,7 @@ export default function CarritoPage() {
                           src={item.image}
                           alt={item.name}
                           fill
+                          sizes="96px"
                           className="object-contain"
                         />
                       ) : (

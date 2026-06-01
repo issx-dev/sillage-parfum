@@ -5,21 +5,21 @@ import { cn } from "@/lib/utils";
 
 interface SizeSelectorProps {
   variants: Variant[];
-  selectedId?: string;
-  onSelect: (variant: Variant) => void;
+  selectedVariant?: Variant;
+  onSelect?: (variant: Variant) => void;
 }
 
-export function SizeSelector({ variants, selectedId, onSelect }: SizeSelectorProps) {
+export function SizeSelector({ variants, selectedVariant, onSelect }: SizeSelectorProps) {
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap gap-2">
       {variants.map((v) => {
-        const isSelected = v.id === selectedId;
+        const isSelected = selectedVariant?.id === v.id;
         const isDisabled = v.stock === 0;
 
         return (
           <button
             key={v.id}
-            onClick={() => !isDisabled && onSelect(v)}
+            onClick={() => !isDisabled && onSelect?.(v)}
             disabled={isDisabled}
             className={cn(
               "px-3 py-1.5 text-sm border rounded transition-[background-color,color,border-color,transform] duration-200 min-w-[50px] min-h-[44px]",

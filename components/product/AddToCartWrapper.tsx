@@ -42,7 +42,7 @@ export function AddToCartWrapper({ product, firstVariant, hasDiscount }: Props) 
     <div className="space-y-4">
       <SizeSelector
         variants={product.variants}
-        selectedId={selectedVariant.id}
+        selectedVariant={selectedVariant}
         onSelect={setSelectedVariant}
       />
       <div className="flex gap-4">

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { getProductBySlug, getProducts } from "@/lib/data";
 import type { Metadata } from "next";
 import { formatPrice } from "@/lib/utils";
@@ -106,8 +107,15 @@ export default function ProductPage({ params }: ProductPageProps) {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
           {/* Image */}
-          <div className="aspect-square bg-gradient-to-br from-gray-light to-cream rounded-card flex items-center justify-center">
-            <div className="w-48 h-64 bg-gradient-to-br from-gray-mid/20 to-gold/20 rounded-lg" />
+          <div className="relative aspect-square bg-gradient-to-br from-gray-light to-cream rounded-card overflow-hidden">
+            <Image
+              src={product.images[0]}
+              alt={product.name}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-contain p-8"
+              priority
+            />
           </div>
 
           {/* Info */}
@@ -126,26 +134,44 @@ export default function ProductPage({ params }: ProductPageProps) {
               <h2 className="font-serif text-xl mb-4">Notas olfativas</h2>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <p className="text-xs text-gold uppercase tracking-wider mb-2">Salida</p>
+                  <p className="text-xs text-gold uppercase tracking-wider mb-2 flex items-center justify-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-gold" />
+                    Salida
+                  </p>
                   <ul className="text-sm space-y-1">
                     {product.notes.top.map((note) => (
-                      <li key={note}>{note}</li>
+                      <li key={note} className="flex items-center justify-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold/50" />
+                        {note}
+                      </li>
                     ))}
                   </ul>
                 </div>
                 <div className="text-center border-l border-r border-gray-light">
-                  <p className="text-xs text-gold uppercase tracking-wider mb-2">Corazón</p>
+                  <p className="text-xs text-gold uppercase tracking-wider mb-2 flex items-center justify-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-terracotta" />
+                    Corazón
+                  </p>
                   <ul className="text-sm space-y-1">
                     {product.notes.heart.map((note) => (
-                      <li key={note}>{note}</li>
+                      <li key={note} className="flex items-center justify-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-terracotta/50" />
+                        {note}
+                      </li>
                     ))}
                   </ul>
                 </div>
                 <div className="text-center">
-                  <p className="text-xs text-gold uppercase tracking-wider mb-2">Fondo</p>
+                  <p className="text-xs text-gold uppercase tracking-wider mb-2 flex items-center justify-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-gray-mid" />
+                    Fondo
+                  </p>
                   <ul className="text-sm space-y-1">
                     {product.notes.base.map((note) => (
-                      <li key={note}>{note}</li>
+                      <li key={note} className="flex items-center justify-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gray-mid/50" />
+                        {note}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -154,17 +180,7 @@ export default function ProductPage({ params }: ProductPageProps) {
 
             {/* Variant + Add to cart */}
             <div className="mt-8">
-              <div className="flex flex-wrap gap-2 mb-4">
-                {product.variants.map((v) => (
-                  <div
-                    key={v.id}
-                    className="px-3 py-1.5 text-sm border border-gray-light rounded text-gray-mid"
-                  >
-                    {v.size_ml}ml — {formatPrice(v.price)}
-                    {v.stock === 0 && " (Agotado)"}
-                  </div>
-                ))}
-              </div>
+              <SizeSelector variants={product.variants} selectedVariant={firstVariant} />
             </div>
 
             {/* Price display */}
@@ -195,4 +211,5 @@ export default function ProductPage({ params }: ProductPageProps) {
 }
 
 import { AddToCartWrapper } from "@/components/product/AddToCartWrapper";
+import { SizeSelector } from "@/components/product/SizeSelector";
 import type { Variant } from "@/types";

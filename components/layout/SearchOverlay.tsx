@@ -1,5 +1,7 @@
 "use client";
 
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { VisuallyHidden } from "@/components/ui/VisuallyHidden";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -270,17 +272,22 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const hasQuery = query.trim() !== "";
 
   return (
-    <div
-      className="fixed inset-0 z-[60] bg-[#0B0A08] animate-overlay-in overflow-hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Búsqueda de fragancias"
-    >
-      {/* Click-outside-to-close layer — sits behind the panel */}
-      <div className="absolute inset-0" onClick={onClose} />
+    <DialogPrimitive.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-[#0B0A08]/95 animate-overlay-in" />
+        <DialogPrimitive.Content className="fixed inset-0 z-[60] flex flex-col h-full max-w-[860px] mx-auto w-full px-6 md:px-12 py-8 md:py-12 overflow-hidden">
+          <DialogPrimitive.Title>
+            <VisuallyHidden>Búsqueda de fragancias</VisuallyHidden>
+          </DialogPrimitive.Title>
+          <DialogPrimitive.Description>
+            <VisuallyHidden>Busca fragancias por nombre, marca o familia olfativa</VisuallyHidden>
+          </DialogPrimitive.Description>
 
-      {/* Panel — relative so it sits above the click layer */}
-      <div className="relative z-10 flex flex-col h-full max-w-[860px] mx-auto w-full px-6 md:px-12 py-8 md:py-12">
+          {/* Click-outside-to-close layer */}
+          <div className="absolute inset-0 -z-10" onClick={onClose} />
+
+          {/* Panel — relative so it sits above the click layer */}
+          <div className="relative z-10 flex flex-col h-full max-w-[860px] mx-auto w-full px-6 md:px-12 py-8 md:py-12">
 
         {/* Header */}
         <header className="flex items-center justify-between mb-10 md:mb-14">
@@ -432,7 +439,9 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
             <ArrowUpRight className="w-3 h-3" />
           </Link>
         </footer>
-      </div>
-    </div>
+        </div>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   );
 }

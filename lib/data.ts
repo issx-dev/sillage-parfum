@@ -27,6 +27,18 @@ export function getNewArrivals(): Product[] {
   return products.filter((p) => p.badge === "nuevo");
 }
 
+/**
+ * Returns products that are NOT featured (top_ventas), so the "Descubre más"
+ * carousel always shows a distinct set from the Featured carousel.
+ */
+export function getDiscoverProducts(count = 8): Product[] {
+  const nonFeatured = products.filter((p) => p.badge !== "top_ventas");
+  if (nonFeatured.length >= count) return nonFeatured.slice(0, count);
+  // fallback: fill with remaining products if not enough non-featured
+  const featured = products.filter((p) => p.badge === "top_ventas");
+  return [...nonFeatured, ...featured].slice(0, count);
+}
+
 export function getBrands(): Brand[] {
   return brands;
 }

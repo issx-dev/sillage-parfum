@@ -7,7 +7,7 @@ import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { SearchOverlay } from "@/components/layout/SearchOverlay";
 import { SCROLL_THRESHOLD } from "@/lib/constants";
@@ -28,6 +28,7 @@ export function Navbar() {
   const scrollY = useScrollPosition();
   const reducedMotion = useReducedMotion();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileVisible, setMobileVisible] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -44,10 +45,29 @@ export function Navbar() {
     setMounted(true);
   }, []);
 
+  // Separate open/visible state so the exit animation can play before unmounting
+  const openMobileMenu = useCallback(() => {
+    setMobileOpen(true);
+    // Small rAF delay ensures the element is mounted before the CSS transition starts
+    requestAnimationFrame(() => setMobileVisible(true));
+  }, []);
+
+  const closeMobileMenu = useCallback(() => {
+    setMobileVisible(false);
+    // Wait for the transition to finish (300ms) before unmounting
+    const timer = setTimeout(() => setMobileOpen(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Close menu when route changes
+  useEffect(() => {
+    closeMobileMenu();
+  }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <nav
       className={cn(
-        "fixed left-0 right-0 z-50 transition-[background-color,box-shadow,backdrop-filter,top] duration-300",
+        "fixed left-0 right-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300",
         isSolid
           ? "top-0 bg-[#FAF7F2]/95 backdrop-blur-md shadow-card border-b border-warm-200/20"
           : "top-[37px] bg-transparent border-b border-transparent shadow-none"
@@ -58,11 +78,12 @@ export function Navbar() {
           {/* Mobile hamburger */}
           <button
             className={cn(
-              "md:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95 transition-transform duration-150",
+              "md:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95",
               isSolid ? "text-[#1A1A1A]" : "text-[#FAF7F2]"
             )}
-            onClick={() => setMobileOpen(true)}
+            onClick={openMobileMenu}
             aria-label="Abrir menu"
+            aria-expanded={mobileOpen}
           >
             <Menu className="w-6 h-6" />
           </button>
@@ -98,7 +119,7 @@ export function Navbar() {
             <button
               onClick={() => setSearchOpen(true)}
               className={cn(
-                "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95 transition-transform duration-150",
+                "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95",
                 isSolid
                   ? "text-[#1A1A1A]/80 hover:text-gold"
                   : "text-[#FAF7F2]/80 hover:text-gold"
@@ -108,10 +129,11 @@ export function Navbar() {
               <Search className="w-5 h-5" />
             </button>
 
+            {/* Wishlist — real link to /favoritos page */}
             <Link
               href="/favoritos"
               className={cn(
-                "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300",
+                "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300 active:scale-95",
                 isSolid
                   ? "text-[#1A1A1A]/80 hover:text-gold"
                   : "text-[#FAF7F2]/80 hover:text-gold"
@@ -129,7 +151,7 @@ export function Navbar() {
             <button
               onClick={openCart}
               className={cn(
-                "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300",
+                "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300 active:scale-95",
                 isSolid
                   ? "text-[#1A1A1A]/80 hover:text-gold"
                   : "text-[#FAF7F2]/80 hover:text-gold"
@@ -150,46 +172,73 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile menu — CSS-driven slide animation, no mount/unmount flicker */}
       {mobileOpen && (
         <div className="fixed inset-0 z-[70] md:hidden">
+          {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-[#0B0A08]/60 backdrop-blur-sm"
-            onClick={() => setMobileOpen(false)}
+            className={cn(
+              "absolute inset-0 bg-[#0B0A08]/60 backdrop-blur-sm transition-opacity duration-300",
+              mobileVisible ? "opacity-100" : "opacity-0"
+            )}
+            onClick={closeMobileMenu}
+            aria-hidden="true"
           />
-          <div className="absolute top-0 right-0 bottom-0 w-[280px] bg-[#FAF7F2] shadow-2xl p-6 flex flex-col transform transition-transform duration-300 ease-out">
-            {/* Close button */}
-            <div className="flex justify-end mb-6">
+          {/* Panel — slides in from right */}
+          <div
+            className={cn(
+              "absolute top-0 right-0 bottom-0 w-[280px] bg-[#FAF7F2] shadow-2xl flex flex-col",
+              "transition-transform duration-300 ease-out",
+              reducedMotion
+                ? "translate-x-0"
+                : mobileVisible
+                ? "translate-x-0"
+                : "translate-x-full"
+            )}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menú de navegación"
+          >
+            {/* Header */}
+            <div className="flex justify-between items-center px-6 pt-6 pb-4">
+              <span className="font-serif text-2xl text-gold tracking-wider">SILLAGE</span>
               <button
-                onClick={() => setMobileOpen(false)}
+                onClick={closeMobileMenu}
                 aria-label="Cerrar menu"
-                className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#1A1A1A] hover:text-gold transition-colors"
+                className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#1A1A1A] hover:text-gold transition-colors active:scale-95"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
 
-            {/* Logo */}
-            <div className="mb-8">
-              <span className="font-serif text-2xl text-gold tracking-wider">SILLAGE</span>
-            </div>
-
             {/* Nav links */}
-            <nav className="flex flex-col gap-1 flex-1">
+            <nav className="flex flex-col gap-1 flex-1 overflow-y-auto px-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="text-base font-sans text-[#1A1A1A]/80 hover:text-gold transition-colors py-3 px-4 border-b border-gray-light/50"
+                  onClick={closeMobileMenu}
+                  className="text-base font-sans text-[#1A1A1A]/80 hover:text-gold active:text-gold transition-colors py-3 px-4 border-b border-gray-light/50 active:bg-warm-100/50"
                 >
                   {link.label}
                 </Link>
               ))}
+              <Link
+                href="/favoritos"
+                onClick={closeMobileMenu}
+                className="text-base font-sans text-[#1A1A1A]/80 hover:text-gold active:text-gold transition-colors py-3 px-4 border-b border-gray-light/50 active:bg-warm-100/50"
+              >
+                Lista de deseos
+                {mounted && wishlistHydrated && wishlistCount > 0 && (
+                  <span className="ml-2 bg-gold-dark text-cream text-xs px-1.5 py-0.5 rounded-full font-medium">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
             </nav>
 
             {/* Footer */}
-            <div className="pt-6 border-t border-gray-light/50">
+            <div className="px-6 py-6 border-t border-gray-light/50">
               <p className="text-xs text-[#1A1A1A]/40 uppercase tracking-wider">Envío gratis desde 50€</p>
             </div>
           </div>

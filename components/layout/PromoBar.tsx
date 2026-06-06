@@ -28,7 +28,7 @@ const PROMOS: PromoMessage[] = [
   },
   {
     text: "obsequio exclusivo: 2 muestras selectas · código: SILLAGE2",
-    ctaText: "copiar código",
+    ctaText: "copiar",
     promoCode: "SILLAGE2",
     href: "/productos",
     icon: <Gift className="w-3.5 h-3.5 text-[#C9A96E]/80 shrink-0" />,
@@ -123,33 +123,33 @@ export function PromoBar() {
           >
             {currentPromo.icon}
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-center">
-              <span className="text-xs sm:text-sm font-sans font-light tracking-[0.2em] text-[#FAF7F2]/90 uppercase whitespace-nowrap overflow-hidden text-ellipsis max-w-[180px] sm:max-w-none">
+              <span className="text-[9px] xs:text-[10px] sm:text-xs font-sans font-light tracking-[0.12em] sm:tracking-[0.2em] text-[#FAF7F2]/90 uppercase whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100vw-110px)] sm:max-w-none">
                 {currentPromo.text}
               </span>
               {currentPromo.ctaText && (
                 <>
-                  <span className="text-[9px] text-[#C9A96E]/40 font-light hidden sm:inline">•</span>
+                  <span className="text-[9px] text-[#C9A96E]/40 font-light hidden xs:inline">•</span>
                   {currentPromo.promoCode ? (
                     <button
                       onClick={(e) => handleCopyCode(currentPromo.promoCode!, e)}
-                      className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-sans font-medium tracking-[0.25em] text-[#C9A96E] hover:text-[#FAF7F2] uppercase transition-colors duration-300 relative pb-0.5 border-b border-[#C9A96E]/30 hover:border-[#FAF7F2]/40 min-h-[32px] sm:min-h-[44px]"
+                      className="inline-flex items-center justify-center gap-1 min-w-[4.5rem] text-[9px] xs:text-[10px] sm:text-xs font-sans font-medium tracking-[0.15em] sm:tracking-[0.25em] text-[#C9A96E] hover:text-[#FAF7F2] uppercase transition-colors duration-300 relative pb-0.5 border-b border-[#C9A96E]/30 hover:border-[#FAF7F2]/40"
                     >
                       {copied ? (
                         <>
-                          <Check className="w-2.5 h-2.5 text-[#C9A96E]" />
+                          <Check className="w-2.5 h-2.5 shrink-0 text-[#C9A96E]" />
                           <span>copiado</span>
                         </>
                       ) : (
                         <>
-                          <Copy className="w-2.5 h-2.5" />
-                          <span>{currentPromo.ctaText}</span>
+                          <Copy className="w-2.5 h-2.5 shrink-0" />
+                          <span>copiar</span>
                         </>
                       )}
                     </button>
                   ) : (
                     <Link
                       href={currentPromo.href || "#"}
-                      className="text-[10px] sm:text-xs font-sans font-medium tracking-[0.25em] text-[#C9A96E] hover:text-[#FAF7F2] uppercase transition-colors duration-300 relative pb-0.5 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-right after:scale-x-0 after:bg-[#FAF7F2] after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100"
+                      className="text-[9px] xs:text-[10px] sm:text-xs font-sans font-medium tracking-[0.15em] sm:tracking-[0.25em] text-[#C9A96E] hover:text-[#FAF7F2] uppercase transition-colors duration-300 relative pb-0.5 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-right after:scale-x-0 after:bg-[#FAF7F2] after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100"
                     >
                       {currentPromo.ctaText}
                     </Link>

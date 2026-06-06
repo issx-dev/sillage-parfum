@@ -4,12 +4,13 @@ import { EditorialSplitSingle } from "@/components/home/EditorialSplitSingle";
 import { CategoriesGrid } from "@/components/home/CategoriesGrid";
 import { SecondaryProducts } from "@/components/home/SecondaryProducts";
 import { Newsletter } from "@/components/home/Newsletter";
-import { getFeaturedProducts, getNewArrivals } from "@/lib/data";
+import { getFeaturedProducts, getNewArrivals, getDiscoverProducts } from "@/lib/data";
 
 export default function HomePage() {
   const featured = getFeaturedProducts(6);
   const newArrivals = getNewArrivals();
-  // Combine featured and new arrivals for merged carousel, removing duplicates
+  const discover = getDiscoverProducts(8);
+  // Merge featured + new arrivals for main carousel, deduplicating by slug
   const seen = new Set<string>();
   const allProducts = [...featured, ...newArrivals].filter(p => {
     if (seen.has(p.slug)) return false;
@@ -45,8 +46,8 @@ export default function HomePage() {
       {/* 4. CategoriesGrid — cream/warm background, clean grid of fragrance families */}
       <CategoriesGrid />
 
-      {/* 5. SecondaryProducts — dark background, second product carousel */}
-      <SecondaryProducts products={featured.slice(0, 6)} />
+      {/* 5. SecondaryProducts — dark background, distinct products from featured */}
+      <SecondaryProducts products={discover} />
 
 {/* 6. Newsletter — cream/warm background, Member's Club framing */}
       <Newsletter />

@@ -15,23 +15,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const origin = request.headers.get("origin");
+    const baseUrl = origin || process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const cleanBaseUrl = baseUrl.replace(/\/$/, "");
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      line_items: items.map((item) => ({
-        price_data: {
-          currency: "eur",
-          product_data: {
-            name: `${item.name} - ${item.size_ml}ml`,
-            images: [item.image],
+      line_items: items.map((item) => {
+        // Stripe requires absolute URLs for product images
+        let imageUrl = item.image;
+        if (imageUrl && !imageUrl.startsWith("http")) {
+          imageUrl = `${cleanBaseUrl}${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
+        }
+
+        return {
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: `${item.name} - ${item.size_ml}ml`,
+              ...(imageUrl ? { images: [imageUrl] } : {}),
+            },
+            unit_amount: Math.round(item.price * 100),
           },
-          unit_amount: Math.round(item.price * 100),
-        },
-        quantity: item.quantity,
-      })),
-      success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/carrito`,
+          quantity: item.quantity,
+        };
+      }),
+      success_url: `${cleanBaseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${cleanBaseUrl}/carrito`,
       shipping_address_collection: {
         allowed_countries: ["ES"],
       },
@@ -49,3 +59,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+

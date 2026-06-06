@@ -45,9 +45,6 @@ export function EditorialSplitSingle({
           >
             {/* Image Column */}
             <div className="w-full lg:w-1/2 relative aspect-[4/5] sm:aspect-[3/2] lg:aspect-[4/3] xl:aspect-[1.15] overflow-hidden bg-warm-900/30">
-              {/* Subtle inner border for definition */}
-              <div className="absolute inset-0 border border-white/5 z-10 pointer-events-none" />
-
               {/* Gentle bottom vignette */}
               <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/50 to-transparent z-10 pointer-events-none" />
 

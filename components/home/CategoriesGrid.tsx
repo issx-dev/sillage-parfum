@@ -15,48 +15,48 @@ const categories: Category[] = [
   {
     name: "Masculino",
     href: "/productos?gender=masculino",
-    imageSrc: "/images/collections/masculine.png",
-    imageAlt: "Colección Masculina Premium Sillage",
+    imageSrc: "/images/products/sauvage-dior-front.png",
+    imageAlt: "Fragancias Masculinas Sillage",
   },
   {
     name: "Femenino",
     href: "/productos?gender=femenino",
-    imageSrc: "/images/collections/feminine.png",
-    imageAlt: "Colección Femenina de Lujo Sillage",
+    imageSrc: "/images/products/chanel-5-front.png",
+    imageAlt: "Fragancias Femeninas Sillage",
   },
   {
     name: "Unisex",
     href: "/productos?gender=unisex",
-    imageSrc: "/images/collections/unisex.png",
-    imageAlt: "Colección Unisex Sillage",
+    imageSrc: "/images/products/baccarat-rouge-front.png",
+    imageAlt: "Fragancias Unisex Sillage",
   },
   {
-    name: "Niche",
+    name: "Nicho",
     href: "/productos?collection=exclusive",
-    imageSrc: "/images/collections/exclusive.png",
-    imageAlt: "Colección Niche de Lujo Sillage",
+    imageSrc: "/images/products/aventus-creed-front.png",
+    imageAlt: "Alta Perfumería de Nicho Sillage",
   },
   {
     name: "Bestsellers",
     href: "/productos?badge=top_ventas",
-    imageSrc: "/images/collections/bestsellers.png",
-    imageAlt: "Bestsellers Sillage",
+    imageSrc: "/images/products/acqua-di-gio-front.png",
+    imageAlt: "Fragancias Bestsellers Sillage",
   },
   {
-    name: "Nuevos",
+    name: "Novedades",
     href: "/productos?badge=nuevo",
-    imageSrc: "/images/collections/new-arrival.png",
-    imageAlt: "Nuevos Lanzamientos Sillage",
+    imageSrc: "/images/products/black-orchid-front.png",
+    imageAlt: "Nuevas Fragancias Sillage",
   },
 ];
 
 export function CategoriesGrid() {
   return (
-    <section className="py-20 lg:py-28 bg-warm-50">
+    <section className="py-20 lg:py-28 bg-[#FAF7F2]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <div className="text-center mb-12 lg:mb-16">
-            <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-gold">
+            <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-[#C9A96E]">
               explora
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-warm-900 tracking-wide mt-2">
@@ -76,20 +76,23 @@ export function CategoriesGrid() {
                 href={category.href}
                 className="group block"
               >
-                <div className="relative aspect-square rounded-card overflow-hidden bg-warm-200">
-                  <Image
-                    src={category.imageSrc}
-                    alt={category.imageAlt}
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                    loading="lazy"
-                  />
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                  {/* Text */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <span className="font-serif text-lg sm:text-xl text-warm-50 group-hover:text-gold transition-colors duration-300">
+                <div className="relative aspect-square rounded-lg overflow-hidden bg-white border border-warm-200/40 shadow-sm transition-[box-shadow,border-color] duration-500 hover:shadow-md hover:border-[#C9A96E]/40 p-4">
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={category.imageSrc}
+                      alt={category.imageAlt}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                      className="object-contain p-2"
+                      loading="lazy"
+                    />
+                  </div>
+                  {/* Gradient overlay — strengthened for light-colored bottles */}
+                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0B0A08]/60 to-transparent" />
+                  
+                  {/* Label */}
+                  <div className="absolute bottom-0 left-0 right-0 p-3 text-center z-10">
+                    <span className="font-serif text-sm sm:text-base text-white font-medium tracking-wide block">
                       {category.name}
                     </span>
                   </div>

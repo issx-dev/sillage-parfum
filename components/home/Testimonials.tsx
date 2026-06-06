@@ -35,7 +35,7 @@ function StarRating({ rating }: { rating: number }) {
       {Array.from({ length: 5 }).map((_, i) => (
         <svg
           key={i}
-          className={`w-3.5 h-3.5 ${i < rating ? "text-[#C9A96E]" : "text-zinc-700"}`}
+          className={`w-3.5 h-3.5 ${i < rating ? "text-[#C9A96E]" : "text-[#5A5A5A]/40"}`}
           viewBox="0 0 24 24"
           fill="currentColor"
         >
@@ -92,7 +92,7 @@ export function Testimonials() {
                 <Monogram name={featured.name} />
                 <div>
                   <p className="text-sm font-medium text-[#FAF7F2]">{featured.name}</p>
-                  <p className="text-xs text-zinc-500 mt-0.5">{featured.city} · {featured.product}</p>
+                  <p className="text-xs text-[#5A5A5A]/70 mt-0.5">{featured.city} · {featured.product}</p>
                 </div>
               </div>
             </div>

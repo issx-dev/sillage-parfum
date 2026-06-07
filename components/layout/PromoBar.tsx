@@ -102,7 +102,7 @@ export function PromoBar() {
         {/* Left Arrow - subtle premium fade in */}
         <button
           onClick={handlePrev}
-          className="opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[32px] min-h-[32px] flex items-center justify-start focus:outline-none"
+          className="hidden sm:flex opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[32px] min-h-[32px] items-center justify-start focus:outline-none"
           aria-label="Anuncio anterior"
         >
           <ChevronLeft className="w-3.5 h-3.5 stroke-[1.5]" />
@@ -123,7 +123,7 @@ export function PromoBar() {
           >
             {currentPromo.icon}
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-center">
-              <span className="text-[11px] xs:text-[10px] sm:text-xs font-sans font-light tracking-[0.12em] sm:tracking-[0.2em] text-cream/90 uppercase whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100vw-110px)] sm:max-w-none">
+              <span className="text-[10px] sm:text-xs font-sans font-light tracking-[0.06em] xs:tracking-[0.12em] sm:tracking-[0.2em] text-cream/90 uppercase whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100vw-32px)] sm:max-w-none">
                 {currentPromo.text}
               </span>
               {currentPromo.ctaText && (
@@ -132,7 +132,7 @@ export function PromoBar() {
                   {currentPromo.promoCode ? (
                     <button
                       onClick={(e) => handleCopyCode(currentPromo.promoCode!, e)}
-                      className="inline-flex items-center justify-center gap-1 min-w-[4.5rem] text-[11px] xs:text-[10px] sm:text-xs font-sans font-medium tracking-[0.15em] sm:tracking-[0.25em] text-gold hover:text-cream uppercase transition-colors duration-300 relative pb-0.5 border-b border-gold/30 hover:border-cream/40"
+                      className="inline-flex items-center justify-center gap-1 min-w-[4.5rem] text-[10px] sm:text-xs font-sans font-medium tracking-[0.1em] sm:tracking-[0.25em] text-gold hover:text-cream uppercase transition-colors duration-300 relative pb-0.5 border-b border-gold/30 hover:border-cream/40"
                     >
                       {copied ? (
                         <>
@@ -149,7 +149,7 @@ export function PromoBar() {
                   ) : (
                     <Link
                       href={currentPromo.href || "#"}
-                      className="text-[11px] xs:text-[10px] sm:text-xs font-sans font-medium tracking-[0.15em] sm:tracking-[0.25em] text-gold hover:text-cream uppercase transition-colors duration-300 relative pb-0.5 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-right after:scale-x-0 after:bg-cream after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100"
+                      className="text-[10px] sm:text-xs font-sans font-medium tracking-[0.1em] sm:tracking-[0.25em] text-gold hover:text-cream uppercase transition-colors duration-300 relative pb-0.5 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-right after:scale-x-0 after:bg-cream after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100"
                     >
                       {currentPromo.ctaText}
                     </Link>
@@ -163,7 +163,7 @@ export function PromoBar() {
         {/* Right Arrow - subtle premium fade in */}
         <button
           onClick={handleNext}
-          className="opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[32px] min-h-[32px] flex items-center justify-end focus:outline-none"
+          className="hidden sm:flex opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[32px] min-h-[32px] items-center justify-end focus:outline-none"
           aria-label="Siguiente anuncio"
         >
           <ChevronRight className="w-3.5 h-3.5 stroke-[1.5]" />

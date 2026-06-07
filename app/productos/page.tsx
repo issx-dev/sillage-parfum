@@ -99,50 +99,61 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
           </p>
         </div>
 
-        {/* Family filter pills */}
+        {/* Panel de Filtros */}
         <ScrollReveal>
-          <div className="flex gap-3 overflow-x-auto pb-4 mb-6 snap-x snap-mandatory">
-            {familyFilters.map((filter) => {
-              const isActive =
-                filter.value === family ||
-                (filter.value === undefined && !family && !badge);
-              return (
-                <Link
-                  key={filter.label}
-                  href={buildHref({ family: filter.value })}
-                  className={`flex-shrink-0 snap-center px-4 py-2 rounded-full text-sm transition-[background-color,color,border-color] duration-200 min-h-[40px] flex items-center border ${
-                    isActive
-                      ? "bg-black text-cream border-black"
-                      : "border-gray-light hover:border-gold hover:bg-black hover:text-cream"
-                  }`}
-                >
-                  {filter.label}
-                </Link>
-              );
-            })}
-          </div>
-        </ScrollReveal>
+          <div className="bg-cream/40 backdrop-blur-sm border border-warm-200/60 rounded-xl p-4 sm:p-6 mb-10 shadow-sm space-y-6">
+            {/* Familia Olfativa */}
+            <div>
+              <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
+                Familia Olfativa
+              </span>
+              <div className="flex gap-2.5 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-thin">
+                {familyFilters.map((filter) => {
+                  const isActive =
+                    filter.value === family ||
+                    (filter.value === undefined && !family && !badge);
+                  return (
+                    <Link
+                      key={filter.label}
+                      href={buildHref({ family: filter.value })}
+                      className={`flex-shrink-0 snap-center px-4 py-1.5 rounded-full text-xs sm:text-sm font-sans transition-[background-color,color,border-color] duration-200 min-h-[36px] flex items-center border ${
+                        isActive
+                          ? "bg-black text-cream border-black font-medium"
+                          : "border-gray-light bg-white/50 text-charcoal/80 hover:border-gold hover:bg-black hover:text-cream"
+                      }`}
+                    >
+                      {filter.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
 
-        {/* Gender filter pills — independent row so a user can combine Masculino + Amaderado */}
-        <ScrollReveal>
-          <div className="flex gap-3 overflow-x-auto pb-4 mb-6 snap-x snap-mandatory">
-            {genderFilters.map((filter) => {
-              const isActive =
-                filter.value === gender || (filter.value === undefined && !gender);
-              return (
-                <Link
-                  key={filter.label}
-                  href={buildHref({ gender: filter.value })}
-                  className={`flex-shrink-0 snap-center px-4 py-2 rounded-full text-sm transition-[background-color,color,border-color] duration-200 min-h-[40px] flex items-center border ${
-                    isActive
-                      ? "bg-black text-cream border-black"
-                      : "border-gray-light hover:border-gold hover:bg-black hover:text-cream"
-                  }`}
-                >
-                  {filter.label}
-                </Link>
-              );
-            })}
+            {/* Género */}
+            <div>
+              <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
+                Género
+              </span>
+              <div className="flex gap-2.5 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-thin">
+                {genderFilters.map((filter) => {
+                  const isActive =
+                    filter.value === gender || (filter.value === undefined && !gender);
+                  return (
+                    <Link
+                      key={filter.label}
+                      href={buildHref({ gender: filter.value })}
+                      className={`flex-shrink-0 snap-center px-4 py-1.5 rounded-full text-xs sm:text-sm font-sans transition-[background-color,color,border-color] duration-200 min-h-[36px] flex items-center border ${
+                        isActive
+                          ? "bg-black text-cream border-black font-medium"
+                          : "border-gray-light bg-white/50 text-charcoal/80 hover:border-gold hover:bg-black hover:text-cream"
+                      }`}
+                    >
+                      {filter.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </ScrollReveal>
 

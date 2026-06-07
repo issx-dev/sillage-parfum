@@ -89,7 +89,7 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
   };
 
   return (
-    <div className="pt-20 pb-16">
+    <div className="pt-28 sm:pt-32 pb-16">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -101,7 +101,7 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
 
         {/* Family filter pills */}
         <ScrollReveal>
-          <div className="flex gap-3 overflow-x-auto pb-4 mb-3 snap-x snap-mandatory">
+          <div className="flex gap-3 overflow-x-auto pb-4 mb-6 snap-x snap-mandatory">
             {familyFilters.map((filter) => {
               const isActive =
                 filter.value === family ||
@@ -125,7 +125,7 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
 
         {/* Gender filter pills — independent row so a user can combine Masculino + Amaderado */}
         <ScrollReveal>
-          <div className="flex gap-3 overflow-x-auto pb-4 mb-8 snap-x snap-mandatory">
+          <div className="flex gap-3 overflow-x-auto pb-4 mb-6 snap-x snap-mandatory">
             {genderFilters.map((filter) => {
               const isActive =
                 filter.value === gender || (filter.value === undefined && !gender);

@@ -84,8 +84,10 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${playfair.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <body className="font-sans antialiased" suppressHydrationWarning>
-        <PromoBar />
-        <Navbar recommendedProducts={getRecommendedProducts()} />
+        <header className="fixed top-0 left-0 right-0 z-50">
+          <PromoBar />
+          <Navbar recommendedProducts={getRecommendedProducts()} />
+        </header>
         <CartDrawerWrapper />
         <main>{children}</main>
         <Footer />

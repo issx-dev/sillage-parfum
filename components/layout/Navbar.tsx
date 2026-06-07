@@ -77,114 +77,115 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
   useEffect(() => {
     closeMobileMenu();
   }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
-    <nav
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,border-color,backdrop-filter] duration-300",
-        isSolid
-          ? "bg-cream/95 backdrop-blur-md shadow-card border-b border-warm-200/20"
-          : "bg-transparent border-b border-transparent shadow-none"
-      )}
-    >
-      <Container>
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Mobile hamburger */}
-          <button
-            className={cn(
-              "md:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95",
-              isSolid ? "text-charcoal" : "text-cream"
-            )}
-            onClick={openMobileMenu}
-            aria-label="Abrir menu"
-            aria-expanded={mobileOpen}
-          >
-            <Menu className="w-6 h-6" />
-          </button>
+    <>
+      <nav
+        className={cn(
+          "relative transition-[background-color,box-shadow,border-color,backdrop-filter] duration-300",
+          isSolid
+            ? "bg-cream/95 backdrop-blur-md shadow-card border-b border-warm-200/20"
+            : "bg-transparent border-b border-transparent shadow-none"
+        )}
+      >
+        <Container>
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            {/* Mobile hamburger */}
+            <button
+              className={cn(
+                "md:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95",
+                isSolid ? "text-charcoal" : "text-cream"
+              )}
+              onClick={openMobileMenu}
+              aria-label="Abrir menu"
+              aria-expanded={mobileOpen}
+            >
+              <Menu className="w-6 h-6" />
+            </button>
 
-          {/* Logo */}
-          <Link
-            href="/"
-            className="font-serif text-xl sm:text-2xl text-gold tracking-wider py-2"
-          >
-            SILLAGE
-          </Link>
+            {/* Logo */}
+            <Link
+              href="/"
+              className="font-serif text-xl sm:text-2xl text-gold tracking-wider py-2"
+            >
+              SILLAGE
+            </Link>
 
-          {/* Desktop nav links */}
-          <div className="hidden md:flex items-center gap-6 lg:gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
+            {/* Desktop nav links */}
+            <div className="hidden md:flex items-center gap-6 lg:gap-8">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className={cn(
+                    "text-sm font-sans tracking-wide transition-colors duration-300",
+                    isSolid
+                      ? "text-charcoal/80 hover:text-gold"
+                      : "text-cream/80 hover:text-gold"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            {/* Right icons */}
+            <div className="flex items-center gap-2 sm:gap-4">
+              <button
+                onClick={() => setSearchOpen(true)}
                 className={cn(
-                  "text-sm font-sans tracking-wide transition-colors duration-300",
+                  "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95",
                   isSolid
                     ? "text-charcoal/80 hover:text-gold"
                     : "text-cream/80 hover:text-gold"
                 )}
+                aria-label="Buscar"
               >
-                {link.label}
+                <Search className="w-5 h-5" />
+              </button>
+
+              {/* Wishlist — real link to /favoritos page */}
+              <Link
+                href="/favoritos"
+                className={cn(
+                  "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300 active:scale-95",
+                  isSolid
+                    ? "text-charcoal/80 hover:text-gold"
+                    : "text-cream/80 hover:text-gold"
+                )}
+                aria-label="Lista de deseos"
+              >
+                <Heart className="w-5 h-5" />
+                {mounted && wishlistHydrated && wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-gold-dark text-cream text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
+                    {wishlistCount}
+                  </span>
+                )}
               </Link>
-            ))}
+
+              <button
+                onClick={openCart}
+                className={cn(
+                  "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300 active:scale-95",
+                  isSolid
+                    ? "text-charcoal/80 hover:text-gold"
+                    : "text-cream/80 hover:text-gold"
+                )}
+                aria-label="Carrito de compras"
+              >
+                <ShoppingBag className="w-5 h-5" />
+                {mounted && cartHydrated && itemCount > 0 && (
+                  <span className={cn(
+                    "absolute -top-1 -right-1 text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium transition-colors duration-300",
+                    isSolid ? "bg-black text-cream" : "bg-gold text-black"
+                  )}>
+                    {itemCount}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
-
-          {/* Right icons */}
-          <div className="flex items-center gap-2 sm:gap-4">
-            <button
-              onClick={() => setSearchOpen(true)}
-              className={cn(
-                "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95",
-                isSolid
-                  ? "text-charcoal/80 hover:text-gold"
-                  : "text-cream/80 hover:text-gold"
-              )}
-              aria-label="Buscar"
-            >
-              <Search className="w-5 h-5" />
-            </button>
-
-            {/* Wishlist — real link to /favoritos page */}
-            <Link
-              href="/favoritos"
-              className={cn(
-                "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300 active:scale-95",
-                isSolid
-                  ? "text-charcoal/80 hover:text-gold"
-                  : "text-cream/80 hover:text-gold"
-              )}
-              aria-label="Lista de deseos"
-            >
-              <Heart className="w-5 h-5" />
-              {mounted && wishlistHydrated && wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-gold-dark text-cream text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
-                  {wishlistCount}
-                </span>
-              )}
-            </Link>
-
-            <button
-              onClick={openCart}
-              className={cn(
-                "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300 active:scale-95",
-                isSolid
-                  ? "text-charcoal/80 hover:text-gold"
-                  : "text-cream/80 hover:text-gold"
-              )}
-              aria-label="Carrito de compras"
-            >
-              <ShoppingBag className="w-5 h-5" />
-              {mounted && cartHydrated && itemCount > 0 && (
-                <span className={cn(
-                  "absolute -top-1 -right-1 text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium transition-colors duration-300",
-                  isSolid ? "bg-black text-cream" : "bg-gold text-black"
-                )}>
-                  {itemCount}
-                </span>
-              )}
-            </button>
-          </div>
-        </div>
-      </Container>
+        </Container>
+      </nav>
 
       {/* Mobile menu — CSS-driven slide animation, no mount/unmount flicker */}
       {mobileOpen && (
@@ -201,7 +202,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
           {/* Panel — slides in from right; full-width on small screens, fixed 320px ≥ sm */}
           <div
             className={cn(
-              "absolute top-0 right-0 bottom-0 w-full sm:w-[320px] max-w-sm bg-cream shadow-2xl flex flex-col",
+              "absolute top-0 right-0 bottom-0 w-full sm:max-w-sm bg-cream shadow-2xl flex flex-col",
               "transition-transform duration-300 ease-out",
               reducedMotion
                 ? "translate-x-0"
@@ -265,6 +266,6 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
         onClose={() => setSearchOpen(false)}
         recommended={recommendedProducts}
       />
-    </nav>
+    </>
   );
 }

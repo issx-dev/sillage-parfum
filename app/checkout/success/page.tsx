@@ -105,7 +105,7 @@ function SuccessContent() {
 
 export default function CheckoutSuccessPage() {
   return (
-    <div className="pt-20 pb-16 min-h-screen">
+    <div className="pt-28 sm:pt-32 pb-16 min-h-screen">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <Suspense fallback={<div className="flex justify-center items-center h-64"><div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" /></div>}>
           <SuccessContent />

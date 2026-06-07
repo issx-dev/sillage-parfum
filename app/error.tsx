@@ -12,7 +12,7 @@ export default function Error({
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <div className="pt-20 pb-16 min-h-screen flex items-center justify-center">
+    <div className="pt-28 sm:pt-32 pb-16 min-h-screen flex items-center justify-center">
       <div className="text-center max-w-md px-4">
         <h1 className="font-serif text-3xl mb-4">Algo salió mal</h1>
         <p className="text-gray-mid mb-8">

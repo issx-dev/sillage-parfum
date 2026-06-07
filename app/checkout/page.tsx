@@ -16,7 +16,7 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="pt-20 pb-16 min-h-screen">
+      <div className="pt-28 sm:pt-32 pb-16 min-h-screen">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center py-16">
             <ShoppingBag className="w-16 h-16 text-gray-mid mx-auto mb-4" />
@@ -55,7 +55,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="pt-20 pb-16 min-h-screen">
+    <div className="pt-28 sm:pt-32 pb-16 min-h-screen">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="font-serif text-3xl mb-8">Checkout</h1>
 

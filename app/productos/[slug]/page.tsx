@@ -99,7 +99,7 @@ export default function ProductPage({ params }: ProductPageProps) {
   };
 
   return (
-    <div className="pt-20 pb-16">
+    <div className="pt-28 sm:pt-32 pb-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -2,7 +2,7 @@ import { getProducts } from "@/lib/data";
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://sillage.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sillage.com";
   const products = getProducts();
 
   const staticRoutes: MetadataRoute.Sitemap = [

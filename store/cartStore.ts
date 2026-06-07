@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import type { CartItem } from "@/types";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 
-interface CartStore {
+export interface CartStore {
   items: CartItem[];
   _hasHydrated: boolean;
   isCartOpen: boolean;

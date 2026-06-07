@@ -52,6 +52,7 @@ const fixtureProduct: Product = {
   family: "Floral",
   shortDescription: "A test eau de parfum",
   badge: null,
+  gender: "masculino",
   images: ["/images/products/test.jpg"],
   variants: [
     { id: "test-050", size_ml: 50, price: 50, stock: 10, sku: "TST-050" },
@@ -64,7 +65,7 @@ const fixtureProduct: Product = {
 function resetStores() {
   localStorage.clear();
   useCartStore.setState({ items: [], _hasHydrated: false, isCartOpen: false });
-  useWishlistStore.setState({ ids: [], _hasHydrated: false });
+  useWishlistStore.setState({ productIds: [], _hasHydrated: false });
 }
 
 describe("ProductCard size selector", () => {

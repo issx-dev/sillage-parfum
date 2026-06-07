@@ -9,7 +9,7 @@ import { useWishlistStore } from "@/store/wishlistStore";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useState, useEffect, useCallback } from "react";
-import type { Product } from "@/types/client";
+import type { Product } from "@/types";
 import { cn } from "@/lib/utils";
 import { SCROLL_THRESHOLD } from "@/lib/constants";
 import { Container } from "@/components/layout/Container";

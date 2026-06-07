@@ -14,7 +14,7 @@ const config: Config = {
         charcoal: "rgb(var(--color-charcoal-rgb) / <alpha-value>)",
         gold: "rgb(var(--color-gold-rgb) / <alpha-value>)",
         "gold-dark": "rgb(var(--color-gold-dark-rgb) / <alpha-value>)",
-        terracotta: "var(--color-terracotta)",
+        terracotta: "rgb(var(--color-terracotta-rgb) / <alpha-value>)",
         "gray-mid": "var(--color-gray-mid)",
         "gray-light": "var(--color-gray-light)",
         warm: {

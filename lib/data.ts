@@ -55,22 +55,6 @@ export function getBrands(): Brand[] {
   return brands;
 }
 
-export function getFamilies(): string[] {
-  let families = Array.from(new Set(products.map((p) => p.family)));
-  // Normalize families
-  families = families.map((f) => {
-    if (f.includes("Amaderado")) return "Amaderados";
-    if (f.includes("Oriental")) return "Orientales";
-    if (f.includes("Floral")) return "Florales";
-    if (f.includes("Fresco")) return "Frescos";
-    if (f.includes("Gourmand")) return "Gourmands";
-    if (f.includes("Acuático") || f.includes("Acuatico")) return "Frescos";
-    if (f.includes("Chipre")) return "Chipre";
-    return f;
-  });
-  return Array.from(new Set(families));
-}
-
 /**
  * Normalize a string for accent-insensitive search.
  * - Lowercase

@@ -1,5 +1,3 @@
-import "server-only";
-
 // Types
 export type BadgeType = "nuevo" | "oferta" | "top_ventas" | null;
 

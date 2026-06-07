@@ -7,6 +7,7 @@ import { Sparkles, Truck, Gift, ChevronLeft, ChevronRight, Copy, Check } from "l
 
 interface PromoMessage {
   text: string;
+  mobileText?: string;
   ctaText?: string;
   href?: string;
   promoCode?: string;
@@ -16,18 +17,21 @@ interface PromoMessage {
 const PROMOS: PromoMessage[] = [
   {
     text: "nueva colección sillage · descubra la alta perfumería de autor",
+    mobileText: "nueva colección sillage · autor",
     ctaText: "descubrir",
     href: "/productos?badge=nuevo",
     icon: <Sparkles className="w-3.5 h-3.5 text-gold/80 shrink-0" />,
   },
   {
     text: "envío exprés de cortesía en compras superiores a 45€",
+    mobileText: "envío exprés de cortesía desde 45€",
     ctaText: "comprar",
     href: "/productos",
     icon: <Truck className="w-3.5 h-3.5 text-gold/80 shrink-0" />,
   },
   {
     text: "obsequio exclusivo: 2 muestras selectas · código: SILLAGE2",
+    mobileText: "obsequio: 2 muestras · cód: SILLAGE2",
     ctaText: "copiar",
     promoCode: "SILLAGE2",
     href: "/productos",
@@ -41,8 +45,18 @@ export function PromoBar() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const rotationTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const triggerTransition = (nextIndex: number, nextDir: "up" | "down") => {
     if (isTransitioning) return;
@@ -109,9 +123,9 @@ export function PromoBar() {
         </button>
 
         {/* Dynamic sliding promotion container */}
-        <div className="flex-1 flex justify-center items-center overflow-hidden py-0.5">
+        <div className="flex-1 flex justify-center items-center overflow-hidden py-0.5 w-full">
           <div
-            className={`flex items-center justify-center gap-2 transition-[opacity,transform] duration-300 ease-out ${
+            className={`flex items-center justify-center gap-1.5 sm:gap-2 transition-[opacity,transform] duration-300 ease-out max-w-full ${
               prefersReducedMotion
                 ? "opacity-100"
                 : isTransitioning
@@ -122,9 +136,9 @@ export function PromoBar() {
             }`}
           >
             {currentPromo.icon}
-            <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-center">
-              <span className="text-[10px] sm:text-xs font-sans font-light tracking-[0.06em] xs:tracking-[0.12em] sm:tracking-[0.2em] text-cream/90 uppercase whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100vw-32px)] sm:max-w-none">
-                {currentPromo.text}
+            <div className="flex items-center justify-center gap-1 sm:gap-1.5 text-center max-w-[calc(100vw-60px)] sm:max-w-none overflow-hidden">
+              <span className="text-[10px] sm:text-xs font-sans font-light tracking-[0.06em] xs:tracking-[0.12em] sm:tracking-[0.2em] text-cream/90 uppercase whitespace-nowrap overflow-hidden text-ellipsis max-w-full block">
+                {isMobile && currentPromo.mobileText ? currentPromo.mobileText : currentPromo.text}
               </span>
               {currentPromo.ctaText && (
                 <>

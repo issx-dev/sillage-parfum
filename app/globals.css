@@ -236,9 +236,27 @@ body {
   animation: draw-check 0.4s ease-out forwards;
 }
 
+@keyframes fade-in-slide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-slide {
+  animation: fade-in-slide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-scroll {
     animation: none;
     overflow-x: auto;
+  }
+  .animate-fade-in-slide {
+    animation: none;
   }
 }

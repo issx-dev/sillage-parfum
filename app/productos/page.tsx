@@ -79,8 +79,12 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
   // Passing `undefined` for a key clears that dimension; omitting it preserves the current value.
   const buildHref = (overrides: { family?: string; gender?: string }) => {
     const params = new URLSearchParams();
-    const familyVal = "family" in overrides ? overrides.family : family;
+    
+    // Clear family filter if gender filter is cleared (Todos) to avoid orphan filters.
+    const isClearingGender = "gender" in overrides && overrides.gender === undefined;
+    const familyVal = isClearingGender ? undefined : ("family" in overrides ? overrides.family : family);
     const genderVal = "gender" in overrides ? overrides.gender : gender;
+
     if (familyVal) params.set("family", familyVal);
     if (badge) params.set("badge", badge);
     if (genderVal) params.set("gender", genderVal);
@@ -101,34 +105,7 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
 
         {/* Panel de Filtros */}
         <ScrollReveal>
-          <div className="bg-cream/40 backdrop-blur-sm border border-warm-200/60 rounded-xl p-4 sm:p-6 mb-10 shadow-sm space-y-6">
-            {/* Familia Olfativa */}
-            <div>
-              <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
-                Familia Olfativa
-              </span>
-              <div className="flex gap-2.5 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-thin">
-                {familyFilters.map((filter) => {
-                  const isActive =
-                    filter.value === family ||
-                    (filter.value === undefined && !family && !badge);
-                  return (
-                    <Link
-                      key={filter.label}
-                      href={buildHref({ family: filter.value })}
-                      className={`flex-shrink-0 snap-center px-4 py-1.5 rounded-full text-xs sm:text-sm font-sans transition-[background-color,color,border-color] duration-200 min-h-[36px] flex items-center border ${
-                        isActive
-                          ? "bg-black text-cream border-black font-medium"
-                          : "border-gray-light bg-white/50 text-charcoal/80 hover:border-gold hover:bg-black hover:text-cream"
-                      }`}
-                    >
-                      {filter.label}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-
+          <div className="bg-cream/40 backdrop-blur-sm border border-warm-200/60 rounded-xl p-4 sm:p-6 mb-10 shadow-sm space-y-5">
             {/* Género */}
             <div>
               <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
@@ -154,6 +131,35 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
                 })}
               </div>
             </div>
+
+            {/* Familia Olfativa — Solo visible cuando se ha seleccionado un género */}
+            {gender && (
+              <div className="pt-5 border-t border-warm-200/30 animate-fade-in-slide">
+                <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
+                  Familia Olfativa
+                </span>
+                <div className="flex gap-2.5 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-thin">
+                  {familyFilters.map((filter) => {
+                    const isActive =
+                      filter.value === family ||
+                      (filter.value === undefined && !family && !badge);
+                    return (
+                      <Link
+                        key={filter.label}
+                        href={buildHref({ family: filter.value })}
+                        className={`flex-shrink-0 snap-center px-4 py-1.5 rounded-full text-xs sm:text-sm font-sans transition-[background-color,color,border-color] duration-200 min-h-[36px] flex items-center border ${
+                          isActive
+                            ? "bg-black text-cream border-black font-medium"
+                            : "border-gray-light bg-white/50 text-charcoal/80 hover:border-gold hover:bg-black hover:text-cream"
+                        }`}
+                      >
+                        {filter.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </ScrollReveal>
 

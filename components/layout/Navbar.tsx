@@ -22,9 +22,9 @@ const SearchOverlay = dynamic(
 );
 
 const navLinks = [
-  { href: "/productos?family=Floral", label: "Mujer" },
-  { href: "/productos?family=Amaderado", label: "Hombre" },
-  { href: "/productos", label: "Unisex" },
+  { href: "/productos?gender=femenino", label: "Mujer" },
+  { href: "/productos?gender=masculino", label: "Hombre" },
+  { href: "/productos?gender=unisex", label: "Unisex" },
   { href: "/productos?badge=nuevo", label: "Novedades" },
   { href: "/productos", label: "Marcas" },
   { href: "/productos?badge=oferta", label: "Ofertas" },

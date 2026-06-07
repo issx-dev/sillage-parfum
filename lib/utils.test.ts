@@ -32,38 +32,43 @@ describe("cn (className merger)", () => {
 });
 
 describe("formatPrice", () => {
-  // NOTE on string matchers:
-  //  - es-ES uses a NON-BREAKING SPACE (U+00A0) between the number and "€".
-  //    We use a regex with \s to match either regular space or NBSP.
-  //  - The runtime's Intl uses small-ICU data, so thousand separators may be
-  //    omitted on systems without full ICU. We assert the parts we can
-  //    guarantee: currency symbol, decimal comma, and sign.
+  // The formatter is manual (not Intl-based) to guarantee byte-identical
+  // output on Node (small-icu) and the browser (full-icu), so the value
+  // can be safely used in JSX without hydration mismatches.
+  // Expected shape: "<sign?><intWithDots>,<2dec> €" (single regular space).
 
-  it("formats a positive integer as EUR with es-ES locale (comma decimals, trailing €)", () => {
-    // 65 -> "65,00 €" (NBSP before €)
-    expect(formatPrice(65)).toMatch(/^65,00\s€$/);
+  it("formats a positive integer with two-decimal padding", () => {
+    expect(formatPrice(65)).toBe("65,00 €");
   });
 
-  it("formats decimals correctly", () => {
-    expect(formatPrice(65.5)).toMatch(/^65,50\s€$/);
-    expect(formatPrice(79.99)).toMatch(/^79,99\s€$/);
+  it("formats decimals correctly with a comma separator", () => {
+    expect(formatPrice(65.5)).toBe("65,50 €");
+    expect(formatPrice(79.99)).toBe("79,99 €");
   });
 
-  it("formats zero", () => {
-    expect(formatPrice(0)).toMatch(/^0,00\s€$/);
+  it("formats zero as '0,00 €'", () => {
+    expect(formatPrice(0)).toBe("0,00 €");
   });
 
-  it("formats negative numbers with a minus sign", () => {
-    expect(formatPrice(-10)).toMatch(/^-10,00\s€$/);
+  it("formats negative numbers with a leading minus sign", () => {
+    expect(formatPrice(-10)).toBe("-10,00 €");
   });
 
-  it("includes the EUR currency symbol and locale-specific decimal separator", () => {
-    const out = formatPrice(1234.5);
-    expect(out).toContain("€");
-    // Decimal part must always be a comma (es-ES), never a period.
-    expect(out).toMatch(/,50/);
-    // Total amount begins with the integer (sign-aware).
-    expect(out).toMatch(/^-?1234/);
+  it("inserts a thousands dot separator for four-digit integers", () => {
+    expect(formatPrice(1234.5)).toBe("1.234,50 €");
+  });
+
+  it("inserts a thousands dot separator for five- and six-digit numbers", () => {
+    expect(formatPrice(12345)).toBe("12.345,00 €");
+    expect(formatPrice(123456)).toBe("123.456,00 €");
+  });
+
+  it("keeps the sign before the thousands separator for negatives", () => {
+    expect(formatPrice(-1234.5)).toBe("-1.234,50 €");
+  });
+
+  it("uses a regular space before €, never a non-breaking space", () => {
+    expect(formatPrice(65)).not.toMatch(/\u00a0/);
   });
 });
 

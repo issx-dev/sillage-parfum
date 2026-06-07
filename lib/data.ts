@@ -70,3 +70,41 @@ export function getFamilies(): string[] {
   });
   return Array.from(new Set(families));
 }
+
+/**
+ * Normalize a string for accent-insensitive search.
+ * - Lowercase
+ * - Strip diacritics (NFD decomposition + remove combining marks)
+ */
+function normalize(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+/**
+ * Search products by name, brand, family, description, or any note (top/heart/base).
+ * Accent-insensitive: "Jazmín", "jasmin", "JASMÍN" all match.
+ */
+export function searchProducts(query: string, limit = 12): Product[] {
+  const q = normalize(query.trim());
+  if (q.length < 2) return [];
+
+  return products
+    .filter((p) => {
+      const haystack = [
+        p.name,
+        p.brand,
+        p.family,
+        p.shortDescription,
+        ...p.notes.top,
+        ...p.notes.heart,
+        ...p.notes.base,
+      ]
+        .map(normalize)
+        .join(" | ");
+      return haystack.includes(q);
+    })
+    .slice(0, limit);
+}

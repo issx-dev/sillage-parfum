@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { Search, Heart, ShoppingBag, Menu, X } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
@@ -8,9 +9,16 @@ import { useWishlistStore } from "@/store/wishlistStore";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useState, useEffect, useCallback } from "react";
+import type { Product } from "@/types/client";
 import { cn } from "@/lib/utils";
-import { SearchOverlay } from "@/components/layout/SearchOverlay";
 import { SCROLL_THRESHOLD } from "@/lib/constants";
+
+// Lazy-load the search overlay — it pulls in Radix Dialog + icons, only needed
+// on user interaction. Drops ~30KB from the initial Navbar bundle.
+const SearchOverlay = dynamic(
+  () => import("@/components/layout/SearchOverlay").then((m) => m.SearchOverlay),
+  { ssr: false }
+);
 
 const navLinks = [
   { href: "/productos?family=Floral", label: "Mujer" },
@@ -21,7 +29,12 @@ const navLinks = [
   { href: "/productos?badge=oferta", label: "Ofertas" },
 ];
 
-export function Navbar() {
+export interface NavbarProps {
+  /** Pre-fetched recommended products from the server, fed into SearchOverlay on first open. */
+  recommendedProducts?: Product[];
+}
+
+export function Navbar({ recommendedProducts = [] }: NavbarProps) {
   const pathname = usePathname();
   const isHeroPage = pathname === "/";
 
@@ -184,10 +197,10 @@ export function Navbar() {
             onClick={closeMobileMenu}
             aria-hidden="true"
           />
-          {/* Panel — slides in from right */}
+          {/* Panel — slides in from right; full-width on small screens, fixed 320px ≥ sm */}
           <div
             className={cn(
-              "absolute top-0 right-0 bottom-0 w-[280px] bg-[#FAF7F2] shadow-2xl flex flex-col",
+              "absolute top-0 right-0 bottom-0 w-full sm:w-[320px] max-w-sm bg-[#FAF7F2] shadow-2xl flex flex-col",
               "transition-transform duration-300 ease-out",
               reducedMotion
                 ? "translate-x-0"
@@ -245,8 +258,12 @@ export function Navbar() {
         </div>
       )}
 
-      {/* Luxury Search Overlay */}
-      <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      {/* Luxury Search Overlay — lazy-loaded, server-recommended products pre-fetched */}
+      <SearchOverlay
+        isOpen={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        recommended={recommendedProducts}
+      />
     </nav>
   );
 }

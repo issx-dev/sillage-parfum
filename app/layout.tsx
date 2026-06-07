@@ -6,6 +6,21 @@ import { Navbar } from "@/components/layout/Navbar";
 import { CartDrawerWrapper } from "@/components/layout/CartDrawerWrapper";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "sonner";
+import { getProductBySlug } from "@/lib/data";
+import type { Product } from "@/types";
+
+const RECOMMENDED_SLUGS = [
+  "sauvage-dior-edt",
+  "chanel-5-edp",
+  "bleu-de-chanel-edp",
+  "black-orchid-edp",
+];
+
+function getRecommendedProducts(): Product[] {
+  return RECOMMENDED_SLUGS.map((s) => getProductBySlug(s)).filter(
+    (p): p is Product => Boolean(p)
+  );
+}
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sillage.com";
 
@@ -70,7 +85,7 @@ export default function RootLayout({
     <html lang="es" className={`${playfair.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <PromoBar />
-        <Navbar />
+        <Navbar recommendedProducts={getRecommendedProducts()} />
         <CartDrawerWrapper />
         <main>{children}</main>
         <Footer />

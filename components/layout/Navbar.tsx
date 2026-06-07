@@ -73,6 +73,17 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
     return () => clearTimeout(timer);
   }, []);
 
+  // Lock body scroll while the mobile menu is open. Mirrors SearchOverlay.tsx:272-283.
+  useEffect(() => {
+    if (mobileOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [mobileOpen]);
+
   // Close menu when route changes
   useEffect(() => {
     closeMobileMenu();

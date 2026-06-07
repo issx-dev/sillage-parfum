@@ -71,7 +71,7 @@ export function Newsletter() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="tu@email.com"
-                    className="flex-1 px-4 py-3.5 bg-transparent text-warm-900 placeholder:text-warm-400 text-sm focus:outline-none min-h-[48px]"
+                    className="flex-1 px-4 py-3.5 bg-transparent text-warm-900 placeholder:text-warm-400 text-base focus:outline-none min-h-[48px]"
                     aria-label="Tu email"
                   />
                   <button

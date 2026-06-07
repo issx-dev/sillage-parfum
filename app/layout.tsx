@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { PromoBar } from "@/components/layout/PromoBar";
@@ -23,6 +23,12 @@ function getRecommendedProducts(): Product[] {
 }
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sillage.com";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 const playfair = Playfair_Display({
   subsets: ["latin"],

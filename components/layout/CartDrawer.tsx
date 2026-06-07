@@ -127,7 +127,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               <div className="mb-4">
                 <div className="flex justify-between text-xs text-gray-mid mb-1">
                   <span>Te faltan {formatPrice(freeShippingRemaining)} para envío gratis</span>
-                  <span>{formatPrice(FREE_SHIPPING_THRESHOLD - total)} / {formatPrice(FREE_SHIPPING_THRESHOLD)}</span>
+                  <span>{formatPrice(total)} / {formatPrice(FREE_SHIPPING_THRESHOLD)}</span>
                 </div>
                 <div className="h-1 bg-gray-light rounded-full overflow-hidden">
                   <div

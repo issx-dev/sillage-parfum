@@ -17,6 +17,18 @@ export function getProductBySlug(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
 
+export function getProductById(id: string): Product | undefined {
+  return products.find((p) => p.id === id);
+}
+
+export function getVariant(productId: string, variantId: string) {
+  const product = getProductById(productId);
+  if (!product) return null;
+  const variant = product.variants.find((v) => v.id === variantId);
+  if (!variant) return null;
+  return { product, variant };
+}
+
 export function getFeaturedProducts(count = 8): Product[] {
   const featured = products.filter((p) => p.badge === "top_ventas");
   if (featured.length >= count) return featured.slice(0, count);

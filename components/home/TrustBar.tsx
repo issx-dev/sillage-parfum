@@ -15,11 +15,11 @@ export function TrustBar() {
     <section className="bg-black text-cream py-6">
       <ScrollReveal>
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex overflow-x-auto scroll-snap-x scroll-snap-mandatory gap-6 sm:gap-8 lg:gap-12 justify-start sm:justify-center">
+          <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 sm:gap-8 lg:gap-12 justify-start sm:justify-center">
             {trustItems.map((item) => (
               <div
                 key={item.text}
-                className="flex items-center gap-3 flex-shrink-0 scroll-snap-center"
+                className="flex items-center gap-3 flex-shrink-0 snap-center"
               >
                 <item.icon className="w-5 h-5 text-gold flex-shrink-0" />
                 <span className="text-sm whitespace-nowrap">{item.text}</span>

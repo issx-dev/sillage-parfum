@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Heart } from "lucide-react";
@@ -25,10 +25,17 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
   const [selectedVariant, setSelectedVariant] = useState<Variant>(
     product.variants.find((v) => v.stock > 0) || product.variants[0]
   );
+  const [mounted, setMounted] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
   const isWishlisted = useWishlistStore((s) => s.isWishlisted(product.id));
   const toggleWishlist = useWishlistStore((s) => s.toggle);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const activeWishlist = mounted && isWishlisted;
 
   const isLarge = variant === "large";
   const hasDiscount = product.discount_percent > 0;
@@ -66,12 +73,12 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
               toggleWishlist(product.id);
             }}
             className="p-2 min-w-[44px] min-h-[44px] rounded-full bg-cream/80 backdrop-blur-sm flex items-center justify-center transition-[transform,opacity] duration-200 hover:scale-110"
-            aria-label={isWishlisted ? "Quitar de favoritos" : "Añadir a favoritos"}
+            aria-label={activeWishlist ? "Quitar de favoritos" : "Añadir a favoritos"}
           >
             <Heart
               className={cn(
                 "w-5 h-5 transition-[color,transform] duration-200",
-                isWishlisted ? "fill-gold-dark text-gold-dark" : "text-gray-mid"
+                activeWishlist ? "fill-gold-dark text-gold-dark" : "text-gray-mid"
               )}
             />
           </button>

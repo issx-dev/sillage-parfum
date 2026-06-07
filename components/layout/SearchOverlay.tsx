@@ -275,7 +275,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
     <DialogPrimitive.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-[#0B0A08]/95 animate-overlay-in" />
-        <DialogPrimitive.Content className="fixed inset-0 z-[60] flex flex-col h-full max-w-[860px] mx-auto w-full px-6 md:px-12 py-8 md:py-12 overflow-hidden">
+        <DialogPrimitive.Content className="fixed inset-0 z-[60] flex flex-col h-full max-w-[860px] mx-auto w-full px-4 sm:px-6 md:px-12 py-6 md:py-12 overflow-hidden">
           <DialogPrimitive.Title>
             <VisuallyHidden>Búsqueda de fragancias</VisuallyHidden>
           </DialogPrimitive.Title>
@@ -287,7 +287,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           <div className="absolute inset-0 -z-10" onClick={onClose} />
 
           {/* Panel — relative so it sits above the click layer */}
-          <div className="relative z-10 flex flex-col h-full max-w-[860px] mx-auto w-full px-6 md:px-12 py-8 md:py-12">
+          <div className="relative z-10 flex flex-col h-full max-w-[860px] mx-auto w-full px-4 sm:px-6 md:px-12 py-6 md:py-12">
 
         {/* Header */}
         <header className="flex items-center justify-between mb-10 md:mb-14">
@@ -316,7 +316,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder={`Buscar ${placeholder}...`}
             className={cn(
-              "w-full bg-transparent py-4 pr-10 text-2xl sm:text-3xl md:text-4xl",
+              "w-full bg-transparent py-3 pr-10 text-xl sm:text-2xl md:text-4xl",
               "text-[#FAF7F2] placeholder-warm-500 font-serif font-light",
               "border-b border-warm-700 focus:border-[#C9A96E]",
               "focus:outline-none transition-colors duration-500",

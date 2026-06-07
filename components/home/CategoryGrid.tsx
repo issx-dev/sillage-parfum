@@ -86,12 +86,12 @@ export function CategoryGrid() {
         </ScrollReveal>
 
         <ScrollReveal stagger={100}>
-          <div className="flex gap-4 overflow-x-auto pb-4 sm:grid sm:grid-cols-5 lg:grid-cols-5 lg:overflow-visible scroll-snap-x scroll-snap-mandatory sm:scroll-snap-none">
+          <div className="flex gap-4 overflow-x-auto pb-4 sm:grid sm:grid-cols-5 lg:grid-cols-5 lg:overflow-visible snap-x snap-mandatory sm:snap-none">
             {categories.map((cat) => (
               <Link
                 key={cat.name}
                 href={cat.href}
-                className="flex-shrink-0 scroll-snap-center sm:flex-shrink-none group"
+                className="flex-shrink-0 snap-center sm:flex-shrink-none group"
               >
                 <div
                   className="rounded-card p-6 sm:p-8 flex flex-col items-center text-center transition-[transform,box-shadow,opacity] duration-300 group-hover:scale-[1.03] group-hover:shadow-gold active:scale-95 transition-transform duration-150 min-w-[160px] sm:min-w-0"

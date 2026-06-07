@@ -36,7 +36,7 @@ const SheetContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed z-50 gap-4 bg-cream shadow-lg transition-[transform,opacity] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]: Duration-300 data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",
+        "fixed z-50 gap-4 bg-cream shadow-lg transition-[transform,opacity] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",
         side === "right" && "inset-y-0 right-0 h-full w-72 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
         side === "bottom" && "inset-x-0 bottom-0 w-full rounded-t-2xl data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
         className

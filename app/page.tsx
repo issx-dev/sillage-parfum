@@ -37,7 +37,7 @@ export default function HomePage() {
         description="Aromas que redefinen la elegancia contemporánea. Un tributo a la frescura magnética y al carácter atemporal del hombre moderno."
         ctaText="Descubrir fragancias masculinas"
         href="/productos?gender=masculino"
-        imageSrc="/images/collections/masculine.png"
+        imageSrc="/images/collections/masculine.jpg"
         imageAlt="Colección Masculina Premium Sillage"
         reverse={false}
         imagePosition="right"

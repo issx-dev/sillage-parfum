@@ -15,37 +15,37 @@ const categories: Category[] = [
   {
     name: "Masculino",
     href: "/productos?gender=masculino",
-    imageSrc: "/images/products/sauvage-dior-front.png",
+    imageSrc: "/images/products/sauvage-dior-front.jpg",
     imageAlt: "Fragancias Masculinas Sillage",
   },
   {
     name: "Femenino",
     href: "/productos?gender=femenino",
-    imageSrc: "/images/products/chanel-5-front.png",
+    imageSrc: "/images/products/chanel-5-front.jpg",
     imageAlt: "Fragancias Femeninas Sillage",
   },
   {
     name: "Unisex",
     href: "/productos?gender=unisex",
-    imageSrc: "/images/products/baccarat-rouge-front.png",
+    imageSrc: "/images/products/baccarat-rouge-front.jpg",
     imageAlt: "Fragancias Unisex Sillage",
   },
   {
     name: "Nicho",
     href: "/productos?collection=exclusive",
-    imageSrc: "/images/products/aventus-creed-front.png",
+    imageSrc: "/images/products/aventus-creed-front.jpg",
     imageAlt: "Alta Perfumería de Nicho Sillage",
   },
   {
     name: "Bestsellers",
     href: "/productos?badge=top_ventas",
-    imageSrc: "/images/products/acqua-di-gio-front.png",
+    imageSrc: "/images/products/acqua-di-gio-front.jpg",
     imageAlt: "Fragancias Bestsellers Sillage",
   },
   {
     name: "Novedades",
     href: "/productos?badge=nuevo",
-    imageSrc: "/images/products/black-orchid-front.png",
+    imageSrc: "/images/products/black-orchid-front.jpg",
     imageAlt: "Nuevas Fragancias Sillage",
   },
 ];

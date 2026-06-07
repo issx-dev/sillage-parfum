@@ -14,7 +14,7 @@ export function HeroSection() {
       {reducedMotion ? (
         <div className="absolute inset-0 w-full h-full z-0">
           <Image
-            src="/images/hero/hero-desktop.png"
+            src="/images/hero/hero-desktop.jpg"
             alt="Sillage Cinematic Campaign Background"
             fill
             priority
@@ -24,7 +24,7 @@ export function HeroSection() {
         </div>
       ) : (
         <Image
-          src="/images/hero/hero-desktop.png"
+          src="/images/hero/hero-desktop.jpg"
           alt="Sillage Cinematic Campaign Background"
           fill
           priority

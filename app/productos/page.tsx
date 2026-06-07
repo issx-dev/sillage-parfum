@@ -71,7 +71,7 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
 
         {/* Filter pills */}
         <ScrollReveal>
-          <div className="flex gap-3 overflow-x-auto pb-4 mb-8 scroll-snap-x scroll-snap-mandatory">
+          <div className="flex gap-3 overflow-x-auto pb-4 mb-8 snap-x snap-mandatory">
             {familyFilters.map((filter) => {
               const isActive = filter.value === family || (filter.value === undefined && !family && !badge);
               return (
@@ -82,7 +82,7 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
                       ? `/productos?family=${filter.value}`
                       : "/productos"
                   }
-                  className={`flex-shrink-0 scroll-snap-center px-4 py-2 rounded-full text-sm transition-[background-color,color,border-color] duration-200 min-h-[40px] flex items-center border ${
+                  className={`flex-shrink-0 snap-center px-4 py-2 rounded-full text-sm transition-[background-color,color,border-color] duration-200 min-h-[40px] flex items-center border ${
                     isActive
                       ? "bg-black text-cream border-black"
                       : "border-gray-light hover:border-gold hover:bg-black hover:text-cream"

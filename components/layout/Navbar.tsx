@@ -38,7 +38,7 @@ export function Navbar() {
   const cartHydrated = useCartStore((s) => s._hasHydrated);
   const wishlistHydrated = useWishlistStore((s) => s._hasHydrated);
 
-  const scrolled = scrollY > SCROLL_THRESHOLD;
+  const scrolled = scrollY > 10;
   const isSolid = scrolled || !isHeroPage;
 
   useEffect(() => {
@@ -67,10 +67,10 @@ export function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed left-0 right-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300",
+        "fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,border-color,backdrop-filter] duration-300",
         isSolid
-          ? "top-0 bg-[#FAF7F2]/95 backdrop-blur-md shadow-card border-b border-warm-200/20"
-          : "top-[37px] bg-transparent border-b border-transparent shadow-none"
+          ? "bg-[#FAF7F2]/95 backdrop-blur-md shadow-card border-b border-warm-200/20"
+          : "bg-transparent border-b border-transparent shadow-none"
       )}
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -178,7 +178,7 @@ export function Navbar() {
           {/* Backdrop */}
           <div
             className={cn(
-              "absolute inset-0 bg-[#0B0A08]/60 backdrop-blur-sm transition-opacity duration-300",
+              "absolute inset-0 bg-[#0B0A08]/80 backdrop-blur-sm transition-opacity duration-300",
               mobileVisible ? "opacity-100" : "opacity-0"
             )}
             onClick={closeMobileMenu}

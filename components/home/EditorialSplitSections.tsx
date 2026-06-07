@@ -28,7 +28,7 @@ const sections: EditorialSection[] = [
       "aromas que redefinen la elegancia contemporánea. un tributo a la frescura magnética y al carácter atemporal del hombre moderno.",
     ctaText: "descubrir fragancias masculinas",
     href: "/productos?gender=masculino",
-    imageSrc: "/images/collections/masculine.png",
+    imageSrc: "/images/collections/masculine.jpg",
     imageAlt: "Colección Masculina Premium Sillage",
     // Image: bottle on right half, dark space on left. reverse:false → image is right col → show right side
     reverse: false,
@@ -42,7 +42,7 @@ const sections: EditorialSection[] = [
       "esencias que narran historias de sofisticación y misterio profundo. la máxima expresión de la feminidad refinada en cada gota.",
     ctaText: "descubrir fragancias femeninas",
     href: "/productos?gender=femenino",
-    imageSrc: "/images/collections/feminine.png",
+    imageSrc: "/images/collections/feminine.jpg",
     imageAlt: "Colección Femenina de Lujo Sillage",
     // Image: bottle on left half, warm space on right. reverse:true → image is left col → show left side
     reverse: true,
@@ -56,7 +56,7 @@ const sections: EditorialSection[] = [
       "creaciones únicas destinadas a quienes buscan una impronta inolvidable. extractos excepcionales elaborados con las materias primas más exclusivas del mundo.",
     ctaText: "descubrir colección exclusiva",
     href: "/productos?collection=exclusive",
-    imageSrc: "/images/collections/exclusive.png",
+    imageSrc: "/images/collections/exclusive.jpg",
     imageAlt: "Colección Exclusiva de Lujo Sillage",
     // Image: bottle on right half. reverse:false → image is right col
     reverse: false,
@@ -70,7 +70,7 @@ const sections: EditorialSection[] = [
       "explora nuestras últimas creaciones. acordes innovadores que desafían las convenciones y trazan el futuro del diseño de fragancias.",
     ctaText: "descubrir nuevos lanzamientos",
     href: "/productos?new=true",
-    imageSrc: "/images/collections/new-arrival.png",
+    imageSrc: "/images/collections/new-arrival.jpg",
     imageAlt: "Nuevos Lanzamientos Premium Sillage",
     // Image: bottle on left half. reverse:true → image is left col
     reverse: true,

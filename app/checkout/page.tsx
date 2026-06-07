@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useCartStore } from "@/store/cartStore";
-import { useRouter } from "next/navigation";
 import { formatPrice } from "@/lib/utils";
+
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { ShoppingBag, CreditCard } from "lucide-react";
@@ -13,7 +13,6 @@ export default function CheckoutPage() {
   const total = useCartStore((s) => s.getTotal());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
 
   if (items.length === 0) {
     return (
@@ -48,7 +47,7 @@ export default function CheckoutPage() {
         throw new Error(data.error || "Error al conectar con Stripe");
       }
 
-      router.push(data.url);
+      window.location.href = data.url;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
       setLoading(false);

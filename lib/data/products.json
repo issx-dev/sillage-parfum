@@ -7,14 +7,50 @@
     "family": "Floral Aldehido",
     "shortDescription": "La leyenda atemporal de Chanel. Un bouquet floral aldehidico.",
     "badge": "top_ventas",
-    "images": ["/images/products/chanel-5-front.png"],
+    "images": [
+      "/images/products/chanel-5-front.jpg"
+    ],
     "variants": [
-      { "id": "chn5-030", "size_ml": 30, "price": 65, "stock": 10, "sku": "CHN5-030" },
-      { "id": "chn5-050", "size_ml": 50, "price": 95, "stock": 8, "sku": "CHN5-050" },
-      { "id": "chn5-100", "size_ml": 100, "price": 135, "stock": 5, "sku": "CHN5-100" }
+      {
+        "id": "chn5-030",
+        "size_ml": 30,
+        "price": 65,
+        "stock": 10,
+        "sku": "CHN5-030"
+      },
+      {
+        "id": "chn5-050",
+        "size_ml": 50,
+        "price": 95,
+        "stock": 8,
+        "sku": "CHN5-050"
+      },
+      {
+        "id": "chn5-100",
+        "size_ml": 100,
+        "price": 135,
+        "stock": 5,
+        "sku": "CHN5-100"
+      }
     ],
     "discount_percent": 0,
-    "notes": { "top": ["Aldehidos", "Neroli", "Ylang-Ylang"], "heart": ["Rosa de May", "Jasmin de Grasse", "Iris"], "base": ["Sandalo", "Vainilla", "Almizcle"] }
+    "notes": {
+      "top": [
+        "Aldehidos",
+        "Neroli",
+        "Ylang-Ylang"
+      ],
+      "heart": [
+        "Rosa de May",
+        "Jasmin de Grasse",
+        "Iris"
+      ],
+      "base": [
+        "Sandalo",
+        "Vainilla",
+        "Almizcle"
+      ]
+    }
   },
   {
     "id": "sauvage-dior",
@@ -24,14 +60,49 @@
     "family": "Amaderado",
     "shortDescription": "Una fresca sensacion de libertad. Ambrox y bergamota de Calabria.",
     "badge": "oferta",
-    "images": ["/images/products/sauvage-dior-front.png"],
+    "images": [
+      "/images/products/sauvage-dior-front.jpg"
+    ],
     "variants": [
-      { "id": "sauvage-030", "size_ml": 30, "price": 55, "stock": 12, "sku": "SAUVAGE-030" },
-      { "id": "sauvage-050", "size_ml": 50, "price": 79, "stock": 10, "sku": "SAUVAGE-050" },
-      { "id": "sauvage-100", "size_ml": 100, "price": 119, "stock": 6, "sku": "SAUVAGE-100" }
+      {
+        "id": "sauvage-030",
+        "size_ml": 30,
+        "price": 55,
+        "stock": 12,
+        "sku": "SAUVAGE-030"
+      },
+      {
+        "id": "sauvage-050",
+        "size_ml": 50,
+        "price": 79,
+        "stock": 10,
+        "sku": "SAUVAGE-050"
+      },
+      {
+        "id": "sauvage-100",
+        "size_ml": 100,
+        "price": 119,
+        "stock": 6,
+        "sku": "SAUVAGE-100"
+      }
     ],
     "discount_percent": 20,
-    "notes": { "top": ["Bergamota de Calabria", "Elemi"], "heart": ["Lavanda de Provenza", "Pimiento de Sichuan", "Vetiver"], "base": ["Patchouli", "Cedro", "Ambrox"] }
+    "notes": {
+      "top": [
+        "Bergamota de Calabria",
+        "Elemi"
+      ],
+      "heart": [
+        "Lavanda de Provenza",
+        "Pimiento de Sichuan",
+        "Vetiver"
+      ],
+      "base": [
+        "Patchouli",
+        "Cedro",
+        "Ambrox"
+      ]
+    }
   },
   {
     "id": "black-orchid",
@@ -41,14 +112,50 @@
     "family": "Oriental",
     "shortDescription": "La orquidea negra mas oscura y sensual. Un oriental intenso.",
     "badge": null,
-    "images": ["/images/products/black-orchid-front.png"],
+    "images": [
+      "/images/products/black-orchid-front.jpg"
+    ],
     "variants": [
-      { "id": "orchid-030", "size_ml": 30, "price": 85, "stock": 8, "sku": "BKORCHID-030" },
-      { "id": "orchid-050", "size_ml": 50, "price": 145, "stock": 5, "sku": "BKORCHID-050" },
-      { "id": "orchid-100", "size_ml": 100, "price": 215, "stock": 3, "sku": "BKORCHID-100" }
+      {
+        "id": "orchid-030",
+        "size_ml": 30,
+        "price": 85,
+        "stock": 8,
+        "sku": "BKORCHID-030"
+      },
+      {
+        "id": "orchid-050",
+        "size_ml": 50,
+        "price": 145,
+        "stock": 5,
+        "sku": "BKORCHID-050"
+      },
+      {
+        "id": "orchid-100",
+        "size_ml": 100,
+        "price": 215,
+        "stock": 3,
+        "sku": "BKORCHID-100"
+      }
     ],
     "discount_percent": 0,
-    "notes": { "top": ["Bergamota Negra", "Grosella Negra", "Yam"], "heart": ["Orquidea Negra", "Lotus", "Chocolate Obsidian"], "base": ["Patchouli de Malasia", "Incienso", "Sandalo"] }
+    "notes": {
+      "top": [
+        "Bergamota Negra",
+        "Grosella Negra",
+        "Yam"
+      ],
+      "heart": [
+        "Orquidea Negra",
+        "Lotus",
+        "Chocolate Obsidian"
+      ],
+      "base": [
+        "Patchouli de Malasia",
+        "Incienso",
+        "Sandalo"
+      ]
+    }
   },
   {
     "id": "acqua-di-gio",
@@ -58,14 +165,50 @@
     "family": "Acuatico",
     "shortDescription": "La expresion acuatica mas sofisticada. El marisco y la bergamota.",
     "badge": null,
-    "images": ["/images/products/acqua-di-gio-front.png"],
+    "images": [
+      "/images/products/acqua-di-gio-front.jpg"
+    ],
     "variants": [
-      { "id": "adgj-030", "size_ml": 30, "price": 48, "stock": 15, "sku": "ADGJ-030" },
-      { "id": "adgj-050", "size_ml": 50, "price": 68, "stock": 12, "sku": "ADGJ-050" },
-      { "id": "adgj-100", "size_ml": 100, "price": 89, "stock": 8, "sku": "ADGJ-100" }
+      {
+        "id": "adgj-030",
+        "size_ml": 30,
+        "price": 48,
+        "stock": 15,
+        "sku": "ADGJ-030"
+      },
+      {
+        "id": "adgj-050",
+        "size_ml": 50,
+        "price": 68,
+        "stock": 12,
+        "sku": "ADGJ-050"
+      },
+      {
+        "id": "adgj-100",
+        "size_ml": 100,
+        "price": 89,
+        "stock": 8,
+        "sku": "ADGJ-100"
+      }
     ],
     "discount_percent": 0,
-    "notes": { "top": ["Bergamota de Sicilia", "Lima", "Neroli"], "heart": ["Jasmin Sambac", "Rojo Picante", "Nectarine"], "base": ["Musgo de roble", "Madera de Gaiac", "Almizcle"] }
+    "notes": {
+      "top": [
+        "Bergamota de Sicilia",
+        "Lima",
+        "Neroli"
+      ],
+      "heart": [
+        "Jasmin Sambac",
+        "Rojo Picante",
+        "Nectarine"
+      ],
+      "base": [
+        "Musgo de roble",
+        "Madera de Gaiac",
+        "Almizcle"
+      ]
+    }
   },
   {
     "id": "libre-ysl",
@@ -75,14 +218,50 @@
     "family": "Floral",
     "shortDescription": "La libertad encapsulada en un frasco. Neroli de Morocco.",
     "badge": "nuevo",
-    "images": ["/images/products/libre-ysl-front.png"],
+    "images": [
+      "/images/products/libre-ysl-front.jpg"
+    ],
     "variants": [
-      { "id": "libre-030", "size_ml": 30, "price": 58, "stock": 10, "sku": "LIBRE-030" },
-      { "id": "libre-050", "size_ml": 50, "price": 82, "stock": 7, "sku": "LIBRE-050" },
-      { "id": "libre-090", "size_ml": 90, "price": 109, "stock": 4, "sku": "LIBRE-090" }
+      {
+        "id": "libre-030",
+        "size_ml": 30,
+        "price": 58,
+        "stock": 10,
+        "sku": "LIBRE-030"
+      },
+      {
+        "id": "libre-050",
+        "size_ml": 50,
+        "price": 82,
+        "stock": 7,
+        "sku": "LIBRE-050"
+      },
+      {
+        "id": "libre-090",
+        "size_ml": 90,
+        "price": 109,
+        "stock": 4,
+        "sku": "LIBRE-090"
+      }
     ],
     "discount_percent": 0,
-    "notes": { "top": ["Neroli de Morocco", "Bergamota", "Mint"], "heart": ["Lavanda de Castilla", "Jasmin de India", "Naranja"], "base": ["Musk de Cashmere", "Madera de Cedro", "Ambar"] }
+    "notes": {
+      "top": [
+        "Neroli de Morocco",
+        "Bergamota",
+        "Mint"
+      ],
+      "heart": [
+        "Lavanda de Castilla",
+        "Jasmin de India",
+        "Naranja"
+      ],
+      "base": [
+        "Musk de Cashmere",
+        "Madera de Cedro",
+        "Ambar"
+      ]
+    }
   },
   {
     "id": "flowerbomb",
@@ -92,14 +271,49 @@
     "family": "Floral Gourmand",
     "shortDescription": "Una explosion floral envolvente. El jasmin indio se mezcla con notas de patchouli.",
     "badge": null,
-    "images": ["/images/products/flowerbomb-front.png"],
+    "images": [
+      "/images/products/flowerbomb-front.jpg"
+    ],
     "variants": [
-      { "id": "flower-030", "size_ml": 30, "price": 55, "stock": 10, "sku": "FLOWERBOMB-030" },
-      { "id": "flower-050", "size_ml": 50, "price": 99, "stock": 8, "sku": "FLOWERBOMB-050" },
-      { "id": "flower-100", "size_ml": 100, "price": 145, "stock": 4, "sku": "FLOWERBOMB-100" }
+      {
+        "id": "flower-030",
+        "size_ml": 30,
+        "price": 55,
+        "stock": 10,
+        "sku": "FLOWERBOMB-030"
+      },
+      {
+        "id": "flower-050",
+        "size_ml": 50,
+        "price": 99,
+        "stock": 8,
+        "sku": "FLOWERBOMB-050"
+      },
+      {
+        "id": "flower-100",
+        "size_ml": 100,
+        "price": 145,
+        "stock": 4,
+        "sku": "FLOWERBOMB-100"
+      }
     ],
     "discount_percent": 0,
-    "notes": { "top": ["Bergamota", "Green Tea"], "heart": ["Jasmin Sambac", "Rosa de May", "Peonia"], "base": ["Patchouli", "Musk", "Cocoa"] }
+    "notes": {
+      "top": [
+        "Bergamota",
+        "Green Tea"
+      ],
+      "heart": [
+        "Jasmin Sambac",
+        "Rosa de May",
+        "Peonia"
+      ],
+      "base": [
+        "Patchouli",
+        "Musk",
+        "Cocoa"
+      ]
+    }
   },
   {
     "id": "bleu-de-chanel",
@@ -109,14 +323,50 @@
     "family": "Amaderado",
     "shortDescription": "El espiritu libre de un hombre. Una madera aromatica intensa.",
     "badge": "top_ventas",
-    "images": ["/images/products/bleu-de-chanel-front.png"],
+    "images": [
+      "/images/products/bleu-de-chanel-front.jpg"
+    ],
     "variants": [
-      { "id": "bleu-030", "size_ml": 30, "price": 62, "stock": 10, "sku": "BLEU-030" },
-      { "id": "bleu-050", "size_ml": 50, "price": 92, "stock": 7, "sku": "BLEU-050" },
-      { "id": "bleu-100", "size_ml": 100, "price": 125, "stock": 5, "sku": "BLEU-100" }
+      {
+        "id": "bleu-030",
+        "size_ml": 30,
+        "price": 62,
+        "stock": 10,
+        "sku": "BLEU-030"
+      },
+      {
+        "id": "bleu-050",
+        "size_ml": 50,
+        "price": 92,
+        "stock": 7,
+        "sku": "BLEU-050"
+      },
+      {
+        "id": "bleu-100",
+        "size_ml": 100,
+        "price": 125,
+        "stock": 5,
+        "sku": "BLEU-100"
+      }
     ],
     "discount_percent": 0,
-    "notes": { "top": ["Lima de Citrica", "Toronja", "Menta"], "heart": ["Bayas de Enebro", "Rosa de Sichuan", "Vetiver"], "base": ["Cedro de Alaska", "Sandalwood", "Labdanum"] }
+    "notes": {
+      "top": [
+        "Lima de Citrica",
+        "Toronja",
+        "Menta"
+      ],
+      "heart": [
+        "Bayas de Enebro",
+        "Rosa de Sichuan",
+        "Vetiver"
+      ],
+      "base": [
+        "Cedro de Alaska",
+        "Sandalwood",
+        "Labdanum"
+      ]
+    }
   },
   {
     "id": "alien",
@@ -126,14 +376,48 @@
     "family": "Oriental",
     "shortDescription": "El perfume que redefine lo imposible. Una asociacion perfecta.",
     "badge": "oferta",
-    "images": ["/images/products/alien-front.png"],
+    "images": [
+      "/images/products/alien-front.jpg"
+    ],
     "variants": [
-      { "id": "alien-030", "size_ml": 30, "price": 48, "stock": 12, "sku": "ALIEN-030" },
-      { "id": "alien-060", "size_ml": 60, "price": 79, "stock": 8, "sku": "ALIEN-060" },
-      { "id": "alien-100", "size_ml": 100, "price": 112, "stock": 3, "sku": "ALIEN-100" }
+      {
+        "id": "alien-030",
+        "size_ml": 30,
+        "price": 48,
+        "stock": 12,
+        "sku": "ALIEN-030"
+      },
+      {
+        "id": "alien-060",
+        "size_ml": 60,
+        "price": 79,
+        "stock": 8,
+        "sku": "ALIEN-060"
+      },
+      {
+        "id": "alien-100",
+        "size_ml": 100,
+        "price": 112,
+        "stock": 3,
+        "sku": "ALIEN-100"
+      }
     ],
     "discount_percent": 15,
-    "notes": { "top": ["Bergamota", "Aldehidos"], "heart": ["Jasmin Ting", "Cashmere Wood"], "base": ["Amberwood", "Sandalo", "Vainilla Blanca"] }
+    "notes": {
+      "top": [
+        "Bergamota",
+        "Aldehidos"
+      ],
+      "heart": [
+        "Jasmin Ting",
+        "Cashmere Wood"
+      ],
+      "base": [
+        "Amberwood",
+        "Sandalo",
+        "Vainilla Blanca"
+      ]
+    }
   },
   {
     "id": "la-vie-est-belle",
@@ -143,14 +427,50 @@
     "family": "Gourmand",
     "shortDescription": "La vida es bella, aqui y ahora. Un iris gourmand envuelto en praline.",
     "badge": null,
-    "images": ["/images/products/la-vie-est-belle-front.png"],
+    "images": [
+      "/images/products/la-vie-est-belle-front.jpg"
+    ],
     "variants": [
-      { "id": "lveb-030", "size_ml": 30, "price": 52, "stock": 10, "sku": "LVEB-030" },
-      { "id": "lveb-050", "size_ml": 50, "price": 78, "stock": 8, "sku": "LVEB-050" },
-      { "id": "lveb-100", "size_ml": 100, "price": 105, "stock": 5, "sku": "LVEB-100" }
+      {
+        "id": "lveb-030",
+        "size_ml": 30,
+        "price": 52,
+        "stock": 10,
+        "sku": "LVEB-030"
+      },
+      {
+        "id": "lveb-050",
+        "size_ml": 50,
+        "price": 78,
+        "stock": 8,
+        "sku": "LVEB-050"
+      },
+      {
+        "id": "lveb-100",
+        "size_ml": 100,
+        "price": 105,
+        "stock": 5,
+        "sku": "LVEB-100"
+      }
     ],
     "discount_percent": 0,
-    "notes": { "top": ["Bergamota", "Pera", "Rojo"], "heart": ["Iris", "Nardo", "Jasmin"], "base": ["Praline", "Patchouli", "Musk"] }
+    "notes": {
+      "top": [
+        "Bergamota",
+        "Pera",
+        "Rojo"
+      ],
+      "heart": [
+        "Iris",
+        "Nardo",
+        "Jasmin"
+      ],
+      "base": [
+        "Praline",
+        "Patchouli",
+        "Musk"
+      ]
+    }
   },
   {
     "id": "baccarat-rouge",
@@ -160,14 +480,48 @@
     "family": "Amaderado",
     "shortDescription": "La molecula de lujo. Un ambar luminoso con jasmin y cedro.",
     "badge": "nuevo",
-    "images": ["/images/products/baccarat-rouge-front.png"],
+    "images": [
+      "/images/products/baccarat-rouge-front.jpg"
+    ],
     "variants": [
-      { "id": "br540-030", "size_ml": 30, "price": 118, "stock": 6, "sku": "BR540-030" },
-      { "id": "br540-070", "size_ml": 70, "price": 185, "stock": 4, "sku": "BR540-070" },
-      { "id": "br540-100", "size_ml": 100, "price": 245, "stock": 2, "sku": "BR540-100" }
+      {
+        "id": "br540-030",
+        "size_ml": 30,
+        "price": 118,
+        "stock": 6,
+        "sku": "BR540-030"
+      },
+      {
+        "id": "br540-070",
+        "size_ml": 70,
+        "price": 185,
+        "stock": 4,
+        "sku": "BR540-070"
+      },
+      {
+        "id": "br540-100",
+        "size_ml": 100,
+        "price": 245,
+        "stock": 2,
+        "sku": "BR540-100"
+      }
     ],
     "discount_percent": 0,
-    "notes": { "top": ["Azafran", "Bergamota"], "heart": ["Jasmin de Egipto", "Madera de Cedro"], "base": ["Ambar", "Sandalwood", "Musk"] }
+    "notes": {
+      "top": [
+        "Azafran",
+        "Bergamota"
+      ],
+      "heart": [
+        "Jasmin de Egipto",
+        "Madera de Cedro"
+      ],
+      "base": [
+        "Ambar",
+        "Sandalwood",
+        "Musk"
+      ]
+    }
   },
   {
     "id": "aventus-creed",
@@ -177,14 +531,53 @@
     "family": "Chipre",
     "shortDescription": "La fragancia del conquistador. Pina corsa, abedul y almizcle.",
     "badge": null,
-    "images": ["/images/products/aventus-creed-front.png"],
+    "images": [
+      "/images/products/aventus-creed-front.jpg"
+    ],
     "variants": [
-      { "id": "aventus-030", "size_ml": 30, "price": 125, "stock": 5, "sku": "AVENTUS-030" },
-      { "id": "aventus-050", "size_ml": 50, "price": 178, "stock": 4, "sku": "AVENTUS-050" },
-      { "id": "aventus-100", "size_ml": 100, "price": 249, "stock": 2, "sku": "AVENTUS-100" }
+      {
+        "id": "aventus-030",
+        "size_ml": 30,
+        "price": 125,
+        "stock": 5,
+        "sku": "AVENTUS-030"
+      },
+      {
+        "id": "aventus-050",
+        "size_ml": 50,
+        "price": 178,
+        "stock": 4,
+        "sku": "AVENTUS-050"
+      },
+      {
+        "id": "aventus-100",
+        "size_ml": 100,
+        "price": 249,
+        "stock": 2,
+        "sku": "AVENTUS-100"
+      }
     ],
     "discount_percent": 0,
-    "notes": { "top": ["Pina corsa", "Bergamota de Sicilia", "Manzana", "Lavanda"], "heart": ["Petit Grain", "Te Matcha", "Rosa de Bulgaria", "Abedul"], "base": ["Musk de Cashmere", "Cedro de Atlas", "Ambrox", "Benzoe"] }
+    "notes": {
+      "top": [
+        "Pina corsa",
+        "Bergamota de Sicilia",
+        "Manzana",
+        "Lavanda"
+      ],
+      "heart": [
+        "Petit Grain",
+        "Te Matcha",
+        "Rosa de Bulgaria",
+        "Abedul"
+      ],
+      "base": [
+        "Musk de Cashmere",
+        "Cedro de Atlas",
+        "Ambrox",
+        "Benzoe"
+      ]
+    }
   },
   {
     "id": "light-blue-dg",
@@ -194,13 +587,47 @@
     "family": "Fresco",
     "shortDescription": "La Mediterranee en un frasco. Bergamota siciliana y flor de cedro.",
     "badge": null,
-    "images": ["/images/products/light-blue-dg-front.png"],
+    "images": [
+      "/images/products/light-blue-dg-front.jpg"
+    ],
     "variants": [
-      { "id": "lb-030", "size_ml": 30, "price": 42, "stock": 15, "sku": "LB-030" },
-      { "id": "lb-050", "size_ml": 50, "price": 62, "stock": 12, "sku": "LB-050" },
-      { "id": "lb-100", "size_ml": 100, "price": 82, "stock": 8, "sku": "LB-100" }
+      {
+        "id": "lb-030",
+        "size_ml": 30,
+        "price": 42,
+        "stock": 15,
+        "sku": "LB-030"
+      },
+      {
+        "id": "lb-050",
+        "size_ml": 50,
+        "price": 62,
+        "stock": 12,
+        "sku": "LB-050"
+      },
+      {
+        "id": "lb-100",
+        "size_ml": 100,
+        "price": 82,
+        "stock": 8,
+        "sku": "LB-100"
+      }
     ],
     "discount_percent": 0,
-    "notes": { "top": ["Bergamota de Sicilia", "Cedar Flower"], "heart": ["Jasmin de Grasse", "Te Matcha"], "base": ["Musk de Texas", "Cedro de Virginia", "Oak Moss"] }
+    "notes": {
+      "top": [
+        "Bergamota de Sicilia",
+        "Cedar Flower"
+      ],
+      "heart": [
+        "Jasmin de Grasse",
+        "Te Matcha"
+      ],
+      "base": [
+        "Musk de Texas",
+        "Cedro de Virginia",
+        "Oak Moss"
+      ]
+    }
   }
 ]

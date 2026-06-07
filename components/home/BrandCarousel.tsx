@@ -51,7 +51,7 @@ export function BrandCarousel({ brands }: BrandCarouselProps) {
             {[...brands, ...brands].map((brand, idx) => (
               <div
                 key={`${brand.id}-${idx}`}
-                className="flex-shrink-0 scroll-snap-center"
+                className="flex-shrink-0 snap-center"
                 style={reducedMotion ? { scrollSnapAlign: "center" } : undefined}
               >
                 <div className="w-24 h-12 flex items-center justify-center grayscale hover:grayscale-0 hover:text-gold transition-[filter,color,opacity] duration-300 cursor-pointer">

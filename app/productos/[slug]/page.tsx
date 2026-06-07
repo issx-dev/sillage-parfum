@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getProductBySlug, getProducts } from "@/lib/data";
 import type { Metadata } from "next";
 import { formatPrice } from "@/lib/utils";
+import { Wind, Heart, Layers } from "lucide-react";
 
 interface ProductPageProps {
   params: { slug: string };
@@ -139,8 +140,8 @@ export default function ProductPage({ params }: ProductPageProps) {
               <h2 className="font-serif text-xl mb-4">Notas olfativas</h2>
               <div className="grid grid-cols-3 gap-1 xs:gap-2">
                 <div className="text-center px-1 xs:px-2">
-                  <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1 font-medium">
-                    <span className="w-2 h-2 rounded-full bg-gold" />
+                  <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1.5 font-medium">
+                    <Wind className="w-3.5 h-3.5 text-gold shrink-0" />
                     Salida
                   </p>
                   <ul className="text-xs xs:text-sm space-y-1.5 w-fit mx-auto text-left">
@@ -154,8 +155,8 @@ export default function ProductPage({ params }: ProductPageProps) {
                 </div>
                 
                 <div className="text-center border-l border-r border-gray-light/60 px-1.5 xs:px-3 sm:px-4">
-                  <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1 font-medium">
-                    <span className="w-2 h-2 rounded-full bg-terracotta" />
+                  <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1.5 font-medium">
+                    <Heart className="w-3.5 h-3.5 text-terracotta shrink-0" />
                     Corazón
                   </p>
                   <ul className="text-xs xs:text-sm space-y-1.5 w-fit mx-auto text-left">
@@ -169,8 +170,8 @@ export default function ProductPage({ params }: ProductPageProps) {
                 </div>
 
                 <div className="text-center px-1 xs:px-2">
-                  <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1 font-medium">
-                    <span className="w-2 h-2 rounded-full bg-gray-mid" />
+                  <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1.5 font-medium">
+                    <Layers className="w-3.5 h-3.5 text-gray-mid shrink-0" />
                     Fondo
                   </p>
                   <ul className="text-xs xs:text-sm space-y-1.5 w-fit mx-auto text-left">

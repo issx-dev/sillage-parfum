@@ -37,3 +37,6 @@ debug/
 # Audit artifacts (dev-only, not source)
 .audit/
 .playwright-cli/
+
+# Runtime data (orders JSON written by webhook handler — not source)
+/data/

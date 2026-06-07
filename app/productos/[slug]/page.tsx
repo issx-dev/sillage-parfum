@@ -99,12 +99,12 @@ export default function ProductPage({ params }: ProductPageProps) {
   };
 
   return (
-    <div className="pt-28 sm:pt-32 pb-16">
+    <div className="pt-36 lg:pt-44 pb-24 lg:pb-32 min-h-[85vh] flex items-center">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
           {/* Image */}
           <div className="relative aspect-square bg-gradient-to-br from-gray-light to-cream rounded-card overflow-hidden">
@@ -137,43 +137,45 @@ export default function ProductPage({ params }: ProductPageProps) {
             {/* Notes pyramid — below AddToCart */}
             <div className="mt-10">
               <h2 className="font-serif text-xl mb-4">Notas olfativas</h2>
-              <div className="grid grid-cols-3 gap-2">
-                <div className="text-center">
+              <div className="grid grid-cols-3 gap-1 xs:gap-2">
+                <div className="text-center px-1 xs:px-2">
                   <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1 font-medium">
                     <span className="w-2 h-2 rounded-full bg-gold" />
                     Salida
                   </p>
-                  <ul className="text-sm space-y-1.5 w-fit mx-auto text-left">
+                  <ul className="text-xs xs:text-sm space-y-1.5 w-fit mx-auto text-left">
                     {product.notes.top.map((note) => (
-                      <li key={note} className="flex items-center gap-2">
+                      <li key={note} className="flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-gold opacity-50 shrink-0" />
                         <span>{note}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-                <div className="text-center border-l border-r border-gray-light">
+                
+                <div className="text-center border-l border-r border-gray-light/60 px-1.5 xs:px-3 sm:px-4">
                   <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1 font-medium">
                     <span className="w-2 h-2 rounded-full bg-terracotta" />
                     Corazón
                   </p>
-                  <ul className="text-sm space-y-1.5 w-fit mx-auto text-left">
+                  <ul className="text-xs xs:text-sm space-y-1.5 w-fit mx-auto text-left">
                     {product.notes.heart.map((note) => (
-                      <li key={note} className="flex items-center gap-2">
+                      <li key={note} className="flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-terracotta opacity-50 shrink-0" />
                         <span>{note}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-                <div className="text-center">
+
+                <div className="text-center px-1 xs:px-2">
                   <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1 font-medium">
                     <span className="w-2 h-2 rounded-full bg-gray-mid" />
                     Fondo
                   </p>
-                  <ul className="text-sm space-y-1.5 w-fit mx-auto text-left">
+                  <ul className="text-xs xs:text-sm space-y-1.5 w-fit mx-auto text-left">
                     {product.notes.base.map((note) => (
-                      <li key={note} className="flex items-center gap-2">
+                      <li key={note} className="flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-gray-mid opacity-50 shrink-0" />
                         <span>{note}</span>
                       </li>

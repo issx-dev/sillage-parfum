@@ -2,6 +2,12 @@ import "server-only";
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 
+// This route reads request.nextUrl.searchParams, which would otherwise
+// trigger a DYNAMIC_SERVER_USAGE bailout that the try-catch below would
+// swallow and mislog as a Stripe error during `next build`. Declaring
+// force-dynamic tells Next.js to skip the static check entirely.
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;

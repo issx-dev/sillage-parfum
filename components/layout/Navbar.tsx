@@ -12,6 +12,7 @@ import { useState, useEffect, useCallback } from "react";
 import type { Product } from "@/types/client";
 import { cn } from "@/lib/utils";
 import { SCROLL_THRESHOLD } from "@/lib/constants";
+import { Container } from "@/components/layout/Container";
 
 // Lazy-load the search overlay — it pulls in Radix Dialog + icons, only needed
 // on user interaction. Drops ~30KB from the initial Navbar bundle.
@@ -86,7 +87,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
           : "bg-transparent border-b border-transparent shadow-none"
       )}
     >
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+      <Container>
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Mobile hamburger */}
           <button
@@ -183,7 +184,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
             </button>
           </div>
         </div>
-      </div>
+      </Container>
 
       {/* Mobile menu — CSS-driven slide animation, no mount/unmount flicker */}
       {mobileOpen && (

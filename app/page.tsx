@@ -1,8 +1,7 @@
 import { HeroSection } from "@/components/home/HeroSection";
-import { FeaturedProducts } from "@/components/home/FeaturedProducts";
+import { ProductCarousel } from "@/components/home/ProductCarousel";
 import { EditorialSplitSingle } from "@/components/home/EditorialSplitSingle";
 import { CategoriesGrid } from "@/components/home/CategoriesGrid";
-import { SecondaryProducts } from "@/components/home/SecondaryProducts";
 import { Newsletter } from "@/components/home/Newsletter";
 import { getFeaturedProducts, getNewArrivals, getDiscoverProducts } from "@/lib/data";
 
@@ -12,7 +11,7 @@ export default function HomePage() {
   const discover = getDiscoverProducts(8);
   // Merge featured + new arrivals for main carousel, deduplicating by slug
   const seen = new Set<string>();
-  const allProducts = [...featured, ...newArrivals].filter(p => {
+  const allProducts = [...featured, ...newArrivals].filter((p) => {
     if (seen.has(p.slug)) return false;
     seen.add(p.slug);
     return true;
@@ -23,11 +22,13 @@ export default function HomePage() {
       {/* 1. HeroSection — dark background, VIDEO hero */}
       <HeroSection />
 
-      {/* 2. FeaturedProducts — cream/warm background, merged Bestsellers & Novedades carousel */}
-      <FeaturedProducts
+      {/* 2. ProductCarousel (light) — Bestsellers & Novedades */}
+      <ProductCarousel
+        variant="light"
         products={allProducts}
-        title="Bestsellers & Novedades"
-        subtitle="Los esenciales y las últimas creaciones, elegidos por su carácter excepcional."
+        eyebrow="selección sillage"
+        title="Lo más elegido"
+        subtitle="Bestsellers y novedades selecionados por su carácter excepcional."
       />
 
       {/* 3. EditorialSplitSingle — dark background, ONE powerful brand story */}
@@ -41,15 +42,23 @@ export default function HomePage() {
         imageAlt="Colección Masculina Premium Sillage"
         reverse={false}
         imagePosition="right"
+        variant="dark"
       />
 
       {/* 4. CategoriesGrid — cream/warm background, clean grid of fragrance families */}
       <CategoriesGrid />
 
-      {/* 5. SecondaryProducts — dark background, distinct products from featured */}
-      <SecondaryProducts products={discover} />
+      {/* 5. ProductCarousel (dark) — distinct products from featured */}
+      <ProductCarousel
+        variant="dark"
+        products={discover}
+        eyebrow="continuación"
+        title="Descubre más"
+        subtitle="Explora nuestra selección de fragancias que definen tendencias."
+        showStatusBadges={false}
+      />
 
-{/* 6. Newsletter — cream/warm background, Member's Club framing */}
+      {/* 6. Newsletter — cream/warm background, Member's Club framing */}
       <Newsletter />
     </>
   );

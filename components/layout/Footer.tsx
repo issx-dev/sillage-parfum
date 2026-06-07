@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Instagram, Facebook } from "lucide-react";
+import { Container } from "@/components/layout/Container";
 
 const footerLinks = {
   Categorías: [
@@ -25,7 +26,7 @@ const footerLinks = {
 export function Footer() {
   return (
     <footer className="bg-black text-cream">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <Container className="py-12 lg:py-16">
         {/* Logo + tagline */}
         <div className="text-center mb-12">
           <Link href="/" className="font-serif text-3xl text-gold tracking-wider">
@@ -85,7 +86,7 @@ export function Footer() {
             <Link href="/legal/cookies" className="text-xs text-gray-mid hover:text-cream transition-colors duration-200">Cookies</Link>
           </div>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }

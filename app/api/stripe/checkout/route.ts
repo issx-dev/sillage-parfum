@@ -11,11 +11,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { items } = body as { items: CartItem[] };
 
-    if (!items || items.length === 0) {
-      return NextResponse.json(
-        { error: "No items in cart" },
-        { status: 400 }
-      );
+    if (!Array.isArray(items)) {
+      return NextResponse.json({ error: "Invalid items" }, { status: 400 });
+    }
+    if (items.length === 0) {
+      return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
+    }
+    if (items.length > 100) {
+      return NextResponse.json({ error: "Too many items" }, { status: 413 });
     }
 
     // Server-side price resolution: never trust client-supplied prices.
@@ -27,7 +30,7 @@ export async function POST(request: NextRequest) {
       size_ml: number;
       price: number;
       sku: string;
-      image: string;
+      image?: string;
       quantity: number;
     }> = [];
     for (const item of items) {
@@ -47,7 +50,7 @@ export async function POST(request: NextRequest) {
         size_ml: variant.size_ml,
         price: variant.price,
         sku: variant.sku,
-        image: product.images?.[0] ?? item.image,
+        ...(product.images?.[0] ? { image: product.images[0] } : {}),
         quantity: Math.min(
           Math.max(1, Math.floor(Number(item.quantity) || 1)),
           MAX_QUANTITY_PER_ITEM
@@ -55,8 +58,18 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    const ALLOWED_ORIGINS = new Set<string>([
+      process.env.NEXT_PUBLIC_BASE_URL,
+      "https://sillage.com",
+      "https://www.sillage.com",
+    ].filter(Boolean) as string[]);
+    if (process.env.NODE_ENV !== "production") {
+      ALLOWED_ORIGINS.add("http://localhost:3000");
+    }
     const origin = request.headers.get("origin");
-    const baseUrl = origin || process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = (origin && ALLOWED_ORIGINS.has(origin))
+      ? origin
+      : (process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000");
     const cleanBaseUrl = baseUrl.replace(/\/$/, "");
 
     const session = await stripe.checkout.sessions.create({

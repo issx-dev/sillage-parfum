@@ -56,6 +56,7 @@ export interface Order {
   status: "created" | "paid" | "failed";
   customerEmail?: string;
   createdAt: string;
+  stripe_event_id: string;
 }
 
 // Type guard

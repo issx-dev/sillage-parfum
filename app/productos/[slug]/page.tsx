@@ -139,43 +139,43 @@ export default function ProductPage({ params }: ProductPageProps) {
               <h2 className="font-serif text-xl mb-4">Notas olfativas</h2>
               <div className="grid grid-cols-3 gap-2">
                 <div className="text-center">
-                  <p className="text-xs text-gold uppercase tracking-wider mb-2 flex items-center justify-center gap-1">
+                  <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1 font-medium">
                     <span className="w-2 h-2 rounded-full bg-gold" />
                     Salida
                   </p>
-                  <ul className="text-sm space-y-1">
+                  <ul className="text-sm space-y-1.5 w-fit mx-auto text-left">
                     {product.notes.top.map((note) => (
-                      <li key={note} className="flex items-center justify-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-gold/50" />
-                        {note}
+                      <li key={note} className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gold opacity-50 shrink-0" />
+                        <span>{note}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div className="text-center border-l border-r border-gray-light">
-                  <p className="text-xs text-gold uppercase tracking-wider mb-2 flex items-center justify-center gap-1">
+                  <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1 font-medium">
                     <span className="w-2 h-2 rounded-full bg-terracotta" />
                     Corazón
                   </p>
-                  <ul className="text-sm space-y-1">
+                  <ul className="text-sm space-y-1.5 w-fit mx-auto text-left">
                     {product.notes.heart.map((note) => (
-                      <li key={note} className="flex items-center justify-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-terracotta/50" />
-                        {note}
+                      <li key={note} className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-terracotta opacity-50 shrink-0" />
+                        <span>{note}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div className="text-center">
-                  <p className="text-xs text-gold uppercase tracking-wider mb-2 flex items-center justify-center gap-1">
+                  <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1 font-medium">
                     <span className="w-2 h-2 rounded-full bg-gray-mid" />
                     Fondo
                   </p>
-                  <ul className="text-sm space-y-1">
+                  <ul className="text-sm space-y-1.5 w-fit mx-auto text-left">
                     {product.notes.base.map((note) => (
-                      <li key={note} className="flex items-center justify-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-mid/50" />
-                        {note}
+                      <li key={note} className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-gray-mid opacity-50 shrink-0" />
+                        <span>{note}</span>
                       </li>
                     ))}
                   </ul>

@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 
 const VisuallyHidden: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({

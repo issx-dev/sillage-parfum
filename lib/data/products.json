@@ -4,8 +4,8 @@
     "slug": "chanel-5-edp",
     "name": "Chanel No5 EDP",
     "brand": "Chanel",
-    "family": "Floral Aldehido",
-    "shortDescription": "La leyenda atemporal de Chanel. Un bouquet floral aldehidico.",
+    "family": "Floral Aldehído",
+    "shortDescription": "La leyenda atemporal de Chanel. Un bouquet floral aldehídico.",
     "badge": "top_ventas",
     "images": [
       "/images/products/chanel-5-front.jpg"
@@ -36,17 +36,17 @@
     "discount_percent": 0,
     "notes": {
       "top": [
-        "Aldehidos",
+        "Aldehídos",
         "Neroli",
         "Ylang-Ylang"
       ],
       "heart": [
         "Rosa de May",
-        "Jasmin de Grasse",
+        "Jazmín de Grasse",
         "Iris"
       ],
       "base": [
-        "Sandalo",
+        "Sándalo",
         "Vainilla",
         "Almizcle"
       ]
@@ -58,7 +58,7 @@
     "name": "Sauvage Dior EDT",
     "brand": "Dior",
     "family": "Amaderado",
-    "shortDescription": "Una fresca sensacion de libertad. Ambrox y bergamota de Calabria.",
+    "shortDescription": "Una fresca sensación de libertad mediterránea. Bergamota de Calabria y pimiento de Sichuan.",
     "badge": "oferta",
     "images": [
       "/images/products/sauvage-dior-front.jpg"
@@ -110,7 +110,7 @@
     "name": "Black Orchid EDP",
     "brand": "Tom Ford",
     "family": "Oriental",
-    "shortDescription": "La orquidea negra mas oscura y sensual. Un oriental intenso.",
+    "shortDescription": "La orquídea negra mas oscura y sensual. Un oriental intenso.",
     "badge": null,
     "images": [
       "/images/products/black-orchid-front.jpg"
@@ -146,14 +146,14 @@
         "Yam"
       ],
       "heart": [
-        "Orquidea Negra",
+        "Orquídea Negra",
         "Lotus",
         "Chocolate Obsidian"
       ],
       "base": [
         "Patchouli de Malasia",
         "Incienso",
-        "Sandalo"
+        "Sándalo"
       ]
     }
   },
@@ -162,8 +162,8 @@
     "slug": "acqua-di-gio-edt",
     "name": "Acqua di Gio EDT",
     "brand": "Armani",
-    "family": "Acuatico",
-    "shortDescription": "La expresion acuatica mas sofisticada. El marisco y la bergamota.",
+    "family": "Acuático",
+    "shortDescription": "Notas salinas del Mediterráneo, vetiver y un acorde mineral que evoca la brisa marina.",
     "badge": null,
     "images": [
       "/images/products/acqua-di-gio-front.jpg"
@@ -199,7 +199,7 @@
         "Neroli"
       ],
       "heart": [
-        "Jasmin Sambac",
+        "Jazmín Sambac",
         "Rojo Picante",
         "Nectarine"
       ],
@@ -216,7 +216,7 @@
     "name": "Libre YSL EDP",
     "brand": "YSL",
     "family": "Floral",
-    "shortDescription": "La libertad encapsulada en un frasco. Neroli de Morocco.",
+    "shortDescription": "La libertad encapsulada en un frasco. Nerolí de Marruecos.",
     "badge": "nuevo",
     "images": [
       "/images/products/libre-ysl-front.jpg"
@@ -247,7 +247,7 @@
     "discount_percent": 0,
     "notes": {
       "top": [
-        "Neroli de Morocco",
+        "Nerolí de Marruecos",
         "Bergamota",
         "Mint"
       ],
@@ -269,7 +269,7 @@
     "name": "Flowerbomb Viktor&Rolf EDP",
     "brand": "Viktor&Rolf",
     "family": "Floral Gourmand",
-    "shortDescription": "Una explosion floral envolvente. El jasmin indio se mezcla con notas de patchouli.",
+    "shortDescription": "Una explosion floral envolvente. El Jazmín indio se mezcla con notas de patchouli.",
     "badge": null,
     "images": [
       "/images/products/flowerbomb-front.jpg"
@@ -304,7 +304,7 @@
         "Green Tea"
       ],
       "heart": [
-        "Jasmin Sambac",
+        "Jazmín Sambac",
         "Rosa de May",
         "Peonia"
       ],
@@ -406,15 +406,15 @@
     "notes": {
       "top": [
         "Bergamota",
-        "Aldehidos"
+        "Aldehídos"
       ],
       "heart": [
-        "Jasmin Ting",
+        "Jazmín Ting",
         "Cashmere Wood"
       ],
       "base": [
         "Amberwood",
-        "Sandalo",
+        "Sándalo",
         "Vainilla Blanca"
       ]
     }
@@ -463,7 +463,7 @@
       "heart": [
         "Iris",
         "Nardo",
-        "Jasmin"
+        "Jazmín"
       ],
       "base": [
         "Praline",
@@ -478,7 +478,7 @@
     "name": "Baccarat Rouge 540 EDP",
     "brand": "M.arial K.",
     "family": "Amaderado",
-    "shortDescription": "La molecula de lujo. Un ambar luminoso con jasmin y cedro.",
+    "shortDescription": "La molécula de lujo. Un Ámbar luminoso con Jazmín y cedro.",
     "badge": "nuevo",
     "images": [
       "/images/products/baccarat-rouge-front.jpg"
@@ -513,11 +513,11 @@
         "Bergamota"
       ],
       "heart": [
-        "Jasmin de Egipto",
+        "Jazmín de Egipto",
         "Madera de Cedro"
       ],
       "base": [
-        "Ambar",
+        "Ámbar",
         "Sandalwood",
         "Musk"
       ]
@@ -529,7 +529,7 @@
     "name": "Aventus Creed EDT",
     "brand": "Creed",
     "family": "Chipre",
-    "shortDescription": "La fragancia del conquistador. Pina corsa, abedul y almizcle.",
+    "shortDescription": "La fragancia del conquistador. Piña corsa, abedul y almizcle.",
     "badge": null,
     "images": [
       "/images/products/aventus-creed-front.jpg"
@@ -560,7 +560,7 @@
     "discount_percent": 0,
     "notes": {
       "top": [
-        "Pina corsa",
+        "Piña corsa",
         "Bergamota de Sicilia",
         "Manzana",
         "Lavanda"
@@ -585,7 +585,7 @@
     "name": "Light Blue EDT",
     "brand": "Dolce&Gabbana",
     "family": "Fresco",
-    "shortDescription": "La Mediterranee en un frasco. Bergamota siciliana y flor de cedro.",
+    "shortDescription": "La Mediterráneo en un frasco. Bergamota siciliana y flor de cedro.",
     "badge": null,
     "images": [
       "/images/products/light-blue-dg-front.jpg"
@@ -620,7 +620,7 @@
         "Cedar Flower"
       ],
       "heart": [
-        "Jasmin de Grasse",
+        "Jazmín de Grasse",
         "Te Matcha"
       ],
       "base": [

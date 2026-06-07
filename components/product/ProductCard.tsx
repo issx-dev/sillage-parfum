@@ -127,6 +127,7 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
                   key={v.id}
                   onClick={(e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     if (!isDisabled) setSelectedVariant(v);
                   }}
                   disabled={isDisabled}

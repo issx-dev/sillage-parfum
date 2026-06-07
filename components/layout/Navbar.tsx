@@ -8,7 +8,7 @@ import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import type { Product } from "@/types";
 import { cn } from "@/lib/utils";
 import { SCROLL_THRESHOLD } from "@/lib/constants";
@@ -45,6 +45,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
   const [mobileVisible, setMobileVisible] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const openCart = useCartStore((s) => s.openCart);
   const itemCount = useCartStore((s) => s.items.reduce((sum, item) => sum + item.quantity, 0));
@@ -68,9 +69,12 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
 
   const closeMobileMenu = useCallback(() => {
     setMobileVisible(false);
+    // Prevent timer race on rapid nav clicks
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
     // Wait for the transition to finish (300ms) before unmounting
-    const timer = setTimeout(() => setMobileOpen(false), 300);
-    return () => clearTimeout(timer);
+    timerRef.current = setTimeout(() => setMobileOpen(false), 300);
   }, []);
 
   // Lock body scroll while the mobile menu is open. Mirrors SearchOverlay.tsx:272-283.
@@ -80,6 +84,9 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
       document.body.style.overflow = "hidden";
       return () => {
         document.body.style.overflow = prev;
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+        }
       };
     }
   }, [mobileOpen]);

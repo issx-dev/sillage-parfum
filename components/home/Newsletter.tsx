@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 
 export function Newsletter() {
   const [email, setEmail] = useState("");
@@ -88,9 +89,7 @@ export function Newsletter() {
                       <div className="w-4 h-4 border border-warm-400 border-t-gold rounded-full animate-spin" />
                     ) : status === "success" ? (
                       <>
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                          <path d="M5 13l4 4L19 7" />
-                        </svg>
+                        <Check className="w-4 h-4 text-green-500" />
                         <span>Listo</span>
                       </>
                     ) : (

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { cn } from "@/lib/utils";
 
 interface Category {
   name: string;
@@ -69,14 +70,20 @@ export function CategoriesGrid() {
         </ScrollReveal>
 
         <ScrollReveal stagger={75}>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6">
-            {categories.map((category) => (
+          {/* Large gender cards — editorial bento row */}
+          <div className="grid grid-cols-2 md:grid-cols-8 gap-3 md:gap-4">
+            {categories.slice(0, 3).map((category, i) => (
               <Link
                 key={category.name}
                 href={category.href}
-                className="group block"
+                className={cn(
+                  "group block",
+                  i === 0 && "md:col-span-3",
+                  i === 1 && "md:col-span-3",
+                  i === 2 && "md:col-span-2",
+                )}
               >
-                <div className="relative aspect-square rounded-lg overflow-hidden bg-white border border-warm-200/40 shadow-sm transition-[box-shadow,border-color] duration-500 hover:shadow-md hover:border-gold/40 p-4">
+                <div className="relative aspect-[4/3] rounded-card overflow-hidden bg-gradient-to-br from-warm-100 to-warm-200 border border-warm-200/40 shadow-sm hover-safe:scale-[1.02] hover-safe:shadow-lg transition-transform duration-500 p-4">
                   <div className="relative w-full h-full">
                     <Image
                       src={category.imageSrc}
@@ -87,10 +94,36 @@ export function CategoriesGrid() {
                       loading="lazy"
                     />
                   </div>
-                  {/* Gradient overlay — strengthened for light-colored bottles */}
                   <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
-                  
-                  {/* Label */}
+                  <div className="absolute bottom-0 left-0 right-0 p-3 text-center z-10">
+                    <span className="font-serif text-sm sm:text-base text-white font-medium tracking-wide block">
+                      {category.name}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+          {/* Smaller inline row — Nicho, Bestsellers, Novedades */}
+          <div className="grid grid-cols-3 gap-3 md:gap-4 mt-3 md:mt-4">
+            {categories.slice(3).map((category) => (
+              <Link
+                key={category.name}
+                href={category.href}
+                className="group block"
+              >
+                <div className="relative aspect-square rounded-card overflow-hidden bg-gradient-to-br from-warm-100 to-warm-200 border border-warm-200/40 shadow-sm hover-safe:scale-[1.02] hover-safe:shadow-lg transition-transform duration-500 p-4">
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={category.imageSrc}
+                      alt={category.imageAlt}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                      className="object-contain p-2"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-3 text-center z-10">
                     <span className="font-serif text-sm sm:text-base text-white font-medium tracking-wide block">
                       {category.name}

@@ -4,9 +4,9 @@ import { Container } from "@/components/layout/Container";
 
 const footerLinks = {
   Categorías: [
-    { href: "/productos?family=Floral", label: "Mujer" },
-    { href: "/productos?family=Amaderado", label: "Hombre" },
-    { href: "/productos?family=Oriental", label: "Unisex" },
+    { href: "/productos?gender=femenino", label: "Mujer" },
+    { href: "/productos?gender=masculino", label: "Hombre" },
+    { href: "/productos?gender=unisex", label: "Unisex" },
     { href: "/productos?badge=nuevo", label: "Novedades" },
     { href: "/productos", label: "Todas" },
   ],
@@ -61,16 +61,16 @@ export function Footer() {
 
         {/* Payment icons */}
         <div className="flex justify-center gap-4 mb-12 flex-wrap">
-          <div className="w-12 h-8 bg-cream/10 rounded flex items-center justify-center">
+          <div className="w-12 h-8 bg-cream/10 rounded-sm flex items-center justify-center">
             <span className="text-xs font-bold">VISA</span>
           </div>
-          <div className="w-12 h-8 bg-cream/10 rounded flex items-center justify-center">
+          <div className="w-12 h-8 bg-cream/10 rounded-sm flex items-center justify-center">
             <span className="text-xs font-bold">MC</span>
           </div>
-          <div className="w-12 h-8 bg-cream/10 rounded flex items-center justify-center">
+          <div className="w-12 h-8 bg-cream/10 rounded-sm flex items-center justify-center">
             <span className="text-xs font-bold">PayPal</span>
           </div>
-          <div className="w-12 h-8 bg-cream/10 rounded flex items-center justify-center">
+          <div className="w-12 h-8 bg-cream/10 rounded-sm flex items-center justify-center">
             <span className="text-xs font-bold">Bizum</span>
           </div>
         </div>

@@ -27,7 +27,11 @@ export function WishlistView({ allProducts }: WishlistViewProps) {
   if (!mounted || !hasHydrated) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="skeleton h-[400px] rounded-card" />
+          ))}
+        </div>
       </div>
     );
   }
@@ -86,7 +90,7 @@ export function WishlistView({ allProducts }: WishlistViewProps) {
                 </button>
 
                 <Link href={`/productos/${product.slug}`} className="block">
-                  <div className="bg-white border border-warm-200/60 rounded-lg overflow-hidden transition-[transform,box-shadow] duration-300 group-hover:shadow-md group-hover:scale-[1.01]">
+                  <div className="bg-white border border-warm-200/60 rounded-card overflow-hidden transition-[transform,box-shadow] duration-300 group-hover:shadow-md group-hover:scale-[1.01]">
                     {/* Image */}
                     <div className="relative aspect-square bg-cream p-4">
                       <Image

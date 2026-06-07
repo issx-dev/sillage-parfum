@@ -53,12 +53,12 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
     <Link
       href={`/productos/${product.slug}`}
       className={cn(
-        "group bg-white rounded-card overflow-hidden shadow-card transition-[transform,box-shadow] duration-300 hover:shadow-gold hover:scale-[1.03] flex flex-col no-underline",
+        "group bg-white rounded-card overflow-hidden shadow-card transition-[transform,box-shadow] duration-300 hover-safe:shadow-gold hover-safe:scale-[1.03] flex flex-col no-underline",
         isLarge ? "flex flex-col" : "flex flex-col"
       )}
     >
       {/* Image container */}
-      <div className="relative aspect-square bg-gradient-to-br from-[#F5F2EB] to-[#EAE5D9] overflow-hidden">
+      <div className="relative aspect-square bg-gradient-to-br from-warm-100 to-warm-200 overflow-hidden">
         {badgeLabel && (
           <span className="absolute top-3 left-3 px-2 py-1 bg-gold text-[10px] font-semibold text-black z-10 tracking-[0.1em] uppercase rounded-sm shadow-sm">
             {badgeLabel}
@@ -132,7 +132,7 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
                   }}
                   disabled={isDisabled}
                   className={cn(
-                    "px-3 py-1.5 text-sm border rounded transition-[background-color,color,border-color,transform] duration-200 min-w-[50px] min-h-[44px]",
+                    "px-3 py-1.5 text-sm border rounded-sm transition-[background-color,color,border-color,transform] duration-200 min-w-[50px] min-h-[44px]",
                     isSelected
                       ? "border-gold bg-black text-cream"
                       : "border-gray-light text-gray-mid hover:border-gold",
@@ -179,7 +179,7 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
               toast.success(`${product.name} añadido a tu carrito`);
             }}
             disabled={selectedVariant.stock === 0}
-            className="w-full bg-black text-cream hover:bg-gray-mid font-medium py-3 px-6 rounded transition-colors min-h-[44px] active:scale-[0.97]"
+            className="w-full bg-black text-cream hover:bg-gray-mid font-medium py-3 px-6 rounded-card transition-colors min-h-[44px] active:scale-[0.97]"
           >
             {selectedVariant.stock === 0 ? "Agotado" : "Añadir al carrito"}
           </button>

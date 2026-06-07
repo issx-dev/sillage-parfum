@@ -18,6 +18,9 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const product = getProductBySlug(params.slug);
   if (!product) return { title: "Producto no encontrado" };
 
+  if (!product.variants || product.variants.length === 0) {
+    notFound();
+  }
   const lowestPrice = Math.min(...product.variants.map((v) => v.price));
   const hasDiscount = product.discount_percent > 0;
   const finalPrice = hasDiscount

@@ -5,6 +5,7 @@
     "name": "Chanel No5 EDP",
     "brand": "Chanel",
     "family": "Floral Aldehído",
+    "gender": "femenino",
     "shortDescription": "La leyenda atemporal de Chanel. Un bouquet floral aldehídico.",
     "badge": "top_ventas",
     "images": [
@@ -58,6 +59,7 @@
     "name": "Sauvage Dior EDT",
     "brand": "Dior",
     "family": "Amaderado",
+    "gender": "masculino",
     "shortDescription": "Una fresca sensación de libertad mediterránea. Bergamota de Calabria y pimiento de Sichuan.",
     "badge": "oferta",
     "images": [
@@ -110,6 +112,7 @@
     "name": "Black Orchid EDP",
     "brand": "Tom Ford",
     "family": "Oriental",
+    "gender": "unisex",
     "shortDescription": "La orquídea negra mas oscura y sensual. Un oriental intenso.",
     "badge": null,
     "images": [
@@ -163,6 +166,7 @@
     "name": "Acqua di Gio EDT",
     "brand": "Armani",
     "family": "Acuático",
+    "gender": "masculino",
     "shortDescription": "Notas salinas del Mediterráneo, vetiver y un acorde mineral que evoca la brisa marina.",
     "badge": null,
     "images": [
@@ -216,6 +220,7 @@
     "name": "Libre YSL EDP",
     "brand": "YSL",
     "family": "Floral",
+    "gender": "femenino",
     "shortDescription": "La libertad encapsulada en un frasco. Nerolí de Marruecos.",
     "badge": "nuevo",
     "images": [
@@ -269,6 +274,7 @@
     "name": "Flowerbomb Viktor&Rolf EDP",
     "brand": "Viktor&Rolf",
     "family": "Floral Gourmand",
+    "gender": "femenino",
     "shortDescription": "Una explosion floral envolvente. El Jazmín indio se mezcla con notas de patchouli.",
     "badge": null,
     "images": [
@@ -321,6 +327,7 @@
     "name": "Bleu de Chanel EDP",
     "brand": "Chanel",
     "family": "Amaderado",
+    "gender": "masculino",
     "shortDescription": "El espiritu libre de un hombre. Una madera aromatica intensa.",
     "badge": "top_ventas",
     "images": [
@@ -374,6 +381,7 @@
     "name": "Alien Thierry Mugler EDP",
     "brand": "Thierry Mugler",
     "family": "Oriental",
+    "gender": "femenino",
     "shortDescription": "El perfume que redefine lo imposible. Una asociacion perfecta.",
     "badge": "oferta",
     "images": [
@@ -425,6 +433,7 @@
     "name": "La Vie Est Belle Lancome EDP",
     "brand": "Lancome",
     "family": "Gourmand",
+    "gender": "femenino",
     "shortDescription": "La vida es bella, aqui y ahora. Un iris gourmand envuelto en praline.",
     "badge": null,
     "images": [
@@ -478,6 +487,7 @@
     "name": "Baccarat Rouge 540 EDP",
     "brand": "M.arial K.",
     "family": "Amaderado",
+    "gender": "unisex",
     "shortDescription": "La molécula de lujo. Un Ámbar luminoso con Jazmín y cedro.",
     "badge": "nuevo",
     "images": [
@@ -529,6 +539,7 @@
     "name": "Aventus Creed EDT",
     "brand": "Creed",
     "family": "Chipre",
+    "gender": "masculino",
     "shortDescription": "La fragancia del conquistador. Piña corsa, abedul y almizcle.",
     "badge": null,
     "images": [
@@ -585,6 +596,7 @@
     "name": "Light Blue EDT",
     "brand": "Dolce&Gabbana",
     "family": "Fresco",
+    "gender": "femenino",
     "shortDescription": "La Mediterráneo en un frasco. Bergamota siciliana y flor de cedro.",
     "badge": null,
     "images": [

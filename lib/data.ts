@@ -1,7 +1,7 @@
 import "server-only";
 import productsData from "./data/products.json";
 import brandsData from "./data/brands.json";
-import type { Product, Brand } from "@/types";
+import type { Product, Brand, Gender } from "@/types";
 
 const products = productsData as Product[];
 const brands = brandsData as Brand[];
@@ -11,6 +11,11 @@ export function getProducts(family?: string): Product[] {
     return products.filter((p) => p.family.toLowerCase().includes(family.toLowerCase()));
   }
   return products;
+}
+
+export function getProductsByGender(gender?: Gender): Product[] {
+  if (!gender) return products;
+  return products.filter((p) => p.gender === gender);
 }
 
 export function getProductBySlug(slug: string): Product | undefined {

@@ -1,5 +1,6 @@
 // Types
 export type BadgeType = "nuevo" | "oferta" | "top_ventas" | null;
+export type Gender = "masculino" | "femenino" | "unisex";
 
 export interface Variant {
   id: string;
@@ -21,6 +22,7 @@ export interface Product {
   name: string;
   brand: string;
   family: string;
+  gender: Gender;
   shortDescription: string;
   badge: BadgeType;
   images: string[];

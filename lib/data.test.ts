@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { searchProducts, getVariant } from "./data";
+import {
+  searchProducts,
+  getVariant,
+  getProductsByGender,
+} from "./data";
 
 describe("searchProducts", () => {
   it("returns [] when query is shorter than 2 characters", () => {
@@ -83,6 +87,34 @@ describe("searchProducts", () => {
     a.push({} as never);
     const b = searchProducts("Dior");
     expect(b.length).toBe(a.length - 1);
+  });
+});
+
+describe("getProductsByGender", () => {
+  it("returns only masculine products when gender is 'masculino'", () => {
+    const results = getProductsByGender("masculino");
+    expect(results.length).toBeGreaterThan(0);
+    results.forEach((p) => expect(p.gender).toBe("masculino"));
+  });
+
+  it("returns only feminine products when gender is 'femenino'", () => {
+    const results = getProductsByGender("femenino");
+    expect(results.length).toBeGreaterThan(0);
+    results.forEach((p) => expect(p.gender).toBe("femenino"));
+  });
+
+  it("returns only unisex products when gender is 'unisex'", () => {
+    const results = getProductsByGender("unisex");
+    expect(results.length).toBeGreaterThan(0);
+    results.forEach((p) => expect(p.gender).toBe("unisex"));
+  });
+
+  it("returns ALL products when gender is undefined (or omitted)", () => {
+    const a = getProductsByGender();
+    const b = getProductsByGender(undefined);
+    // Catalog is 12 products as of commit 94890bf.
+    expect(a.length).toBe(12);
+    expect(b.length).toBe(12);
   });
 });
 

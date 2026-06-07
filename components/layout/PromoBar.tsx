@@ -18,20 +18,20 @@ const PROMOS: PromoMessage[] = [
     text: "nueva colección sillage · descubra la alta perfumería de autor",
     ctaText: "descubrir",
     href: "/productos?badge=nuevo",
-    icon: <Sparkles className="w-3.5 h-3.5 text-[#C9A96E]/80 shrink-0" />,
+    icon: <Sparkles className="w-3.5 h-3.5 text-gold/80 shrink-0" />,
   },
   {
     text: "envío exprés de cortesía en compras superiores a 45€",
     ctaText: "comprar",
     href: "/productos",
-    icon: <Truck className="w-3.5 h-3.5 text-[#C9A96E]/80 shrink-0" />,
+    icon: <Truck className="w-3.5 h-3.5 text-gold/80 shrink-0" />,
   },
   {
     text: "obsequio exclusivo: 2 muestras selectas · código: SILLAGE2",
     ctaText: "copiar",
     promoCode: "SILLAGE2",
     href: "/productos",
-    icon: <Gift className="w-3.5 h-3.5 text-[#C9A96E]/80 shrink-0" />,
+    icon: <Gift className="w-3.5 h-3.5 text-gold/80 shrink-0" />,
   },
 ];
 
@@ -91,18 +91,18 @@ export function PromoBar() {
 
   return (
     <div
-      className="w-full bg-[#0B0A08] border-b border-warm-900/60 py-1 px-4 overflow-hidden relative z-40 select-none group/bar"
+      className="w-full bg-black border-b border-warm-900/60 py-1 px-4 overflow-hidden relative z-40 select-none group/bar"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* Visual top border styling for ultra-premium refraction */}
-      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A96E]/20 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
 
       <div className="max-w-[1440px] mx-auto flex justify-between items-center relative min-h-[16px]">
         {/* Left Arrow - subtle premium fade in */}
         <button
           onClick={handlePrev}
-          className="opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-[#FAF7F2]/80 hover:text-gold min-w-[32px] min-h-[32px] flex items-center justify-start focus:outline-none"
+          className="opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[32px] min-h-[32px] flex items-center justify-start focus:outline-none"
           aria-label="Anuncio anterior"
         >
           <ChevronLeft className="w-3.5 h-3.5 stroke-[1.5]" />
@@ -123,20 +123,20 @@ export function PromoBar() {
           >
             {currentPromo.icon}
             <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-center">
-              <span className="text-[11px] xs:text-[10px] sm:text-xs font-sans font-light tracking-[0.12em] sm:tracking-[0.2em] text-[#FAF7F2]/90 uppercase whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100vw-110px)] sm:max-w-none">
+              <span className="text-[11px] xs:text-[10px] sm:text-xs font-sans font-light tracking-[0.12em] sm:tracking-[0.2em] text-cream/90 uppercase whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100vw-110px)] sm:max-w-none">
                 {currentPromo.text}
               </span>
               {currentPromo.ctaText && (
                 <>
-                  <span className="text-[11px] text-[#C9A96E]/40 font-light hidden xs:inline">•</span>
+                  <span className="text-[11px] text-gold/40 font-light hidden xs:inline">•</span>
                   {currentPromo.promoCode ? (
                     <button
                       onClick={(e) => handleCopyCode(currentPromo.promoCode!, e)}
-                      className="inline-flex items-center justify-center gap-1 min-w-[4.5rem] text-[11px] xs:text-[10px] sm:text-xs font-sans font-medium tracking-[0.15em] sm:tracking-[0.25em] text-[#C9A96E] hover:text-[#FAF7F2] uppercase transition-colors duration-300 relative pb-0.5 border-b border-[#C9A96E]/30 hover:border-[#FAF7F2]/40"
+                      className="inline-flex items-center justify-center gap-1 min-w-[4.5rem] text-[11px] xs:text-[10px] sm:text-xs font-sans font-medium tracking-[0.15em] sm:tracking-[0.25em] text-gold hover:text-cream uppercase transition-colors duration-300 relative pb-0.5 border-b border-gold/30 hover:border-cream/40"
                     >
                       {copied ? (
                         <>
-                          <Check className="w-2.5 h-2.5 shrink-0 text-[#C9A96E]" />
+                          <Check className="w-2.5 h-2.5 shrink-0 text-gold" />
                           <span>copiado</span>
                         </>
                       ) : (
@@ -149,7 +149,7 @@ export function PromoBar() {
                   ) : (
                     <Link
                       href={currentPromo.href || "#"}
-                      className="text-[11px] xs:text-[10px] sm:text-xs font-sans font-medium tracking-[0.15em] sm:tracking-[0.25em] text-[#C9A96E] hover:text-[#FAF7F2] uppercase transition-colors duration-300 relative pb-0.5 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-right after:scale-x-0 after:bg-[#FAF7F2] after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100"
+                      className="text-[11px] xs:text-[10px] sm:text-xs font-sans font-medium tracking-[0.15em] sm:tracking-[0.25em] text-gold hover:text-cream uppercase transition-colors duration-300 relative pb-0.5 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-right after:scale-x-0 after:bg-cream after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100"
                     >
                       {currentPromo.ctaText}
                     </Link>
@@ -163,7 +163,7 @@ export function PromoBar() {
         {/* Right Arrow - subtle premium fade in */}
         <button
           onClick={handleNext}
-          className="opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-[#FAF7F2]/80 hover:text-gold min-w-[32px] min-h-[32px] flex items-center justify-end focus:outline-none"
+          className="opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[32px] min-h-[32px] flex items-center justify-end focus:outline-none"
           aria-label="Siguiente anuncio"
         >
           <ChevronRight className="w-3.5 h-3.5 stroke-[1.5]" />

@@ -4,12 +4,20 @@
 
 :root {
   --color-cream: #FAF7F2;
-  --color-black: #1A1A1A;
+  /* `black` is the deepest, near-pure black used for dark sections and overlays. */
+  --color-black: #0B0A08;
+  --color-black-rgb: 11 10 8;
+  /* `charcoal` is the slightly lighter neutral for body text, inputs, and the Navbar. */
+  --color-charcoal: #1A1A1A;
+  --color-charcoal-rgb: 26 26 26;
   --color-gold: #C9A96E;
+  --color-gold-rgb: 201 169 110;
   --color-gold-dark: #A8834A;
+  --color-gold-dark-rgb: 168 131 74;
   --color-terracotta: #A8834A;
   --color-gray-mid: #5A5A5A;
   --color-gray-light: #E8E4DE;
+  --color-cream-rgb: 250 247 242;
   --shadow-card: 0 4px 20px rgba(0,0,0,0.08);
   --shadow-gold: 0 4px 20px rgba(201,169,110,0.25);
   --radius-card: 12px;

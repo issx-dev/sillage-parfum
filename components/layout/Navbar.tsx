@@ -83,7 +83,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,border-color,backdrop-filter] duration-300",
         isSolid
-          ? "bg-[#FAF7F2]/95 backdrop-blur-md shadow-card border-b border-warm-200/20"
+          ? "bg-cream/95 backdrop-blur-md shadow-card border-b border-warm-200/20"
           : "bg-transparent border-b border-transparent shadow-none"
       )}
     >
@@ -93,7 +93,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
           <button
             className={cn(
               "md:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95",
-              isSolid ? "text-[#1A1A1A]" : "text-[#FAF7F2]"
+              isSolid ? "text-charcoal" : "text-cream"
             )}
             onClick={openMobileMenu}
             aria-label="Abrir menu"
@@ -119,8 +119,8 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
                 className={cn(
                   "text-sm font-sans tracking-wide transition-colors duration-300",
                   isSolid
-                    ? "text-[#1A1A1A]/80 hover:text-gold"
-                    : "text-[#FAF7F2]/80 hover:text-gold"
+                    ? "text-charcoal/80 hover:text-gold"
+                    : "text-cream/80 hover:text-gold"
                 )}
               >
                 {link.label}
@@ -135,8 +135,8 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
               className={cn(
                 "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95",
                 isSolid
-                  ? "text-[#1A1A1A]/80 hover:text-gold"
-                  : "text-[#FAF7F2]/80 hover:text-gold"
+                  ? "text-charcoal/80 hover:text-gold"
+                  : "text-cream/80 hover:text-gold"
               )}
               aria-label="Buscar"
             >
@@ -149,8 +149,8 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
               className={cn(
                 "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300 active:scale-95",
                 isSolid
-                  ? "text-[#1A1A1A]/80 hover:text-gold"
-                  : "text-[#FAF7F2]/80 hover:text-gold"
+                  ? "text-charcoal/80 hover:text-gold"
+                  : "text-cream/80 hover:text-gold"
               )}
               aria-label="Lista de deseos"
             >
@@ -167,8 +167,8 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
               className={cn(
                 "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300 active:scale-95",
                 isSolid
-                  ? "text-[#1A1A1A]/80 hover:text-gold"
-                  : "text-[#FAF7F2]/80 hover:text-gold"
+                  ? "text-charcoal/80 hover:text-gold"
+                  : "text-cream/80 hover:text-gold"
               )}
               aria-label="Carrito de compras"
             >
@@ -192,7 +192,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
           {/* Backdrop */}
           <div
             className={cn(
-              "absolute inset-0 bg-[#0B0A08]/80 backdrop-blur-sm transition-opacity duration-300",
+              "absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300",
               mobileVisible ? "opacity-100" : "opacity-0"
             )}
             onClick={closeMobileMenu}
@@ -201,7 +201,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
           {/* Panel — slides in from right; full-width on small screens, fixed 320px ≥ sm */}
           <div
             className={cn(
-              "absolute top-0 right-0 bottom-0 w-full sm:w-[320px] max-w-sm bg-[#FAF7F2] shadow-2xl flex flex-col",
+              "absolute top-0 right-0 bottom-0 w-full sm:w-[320px] max-w-sm bg-cream shadow-2xl flex flex-col",
               "transition-transform duration-300 ease-out",
               reducedMotion
                 ? "translate-x-0"
@@ -219,7 +219,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
               <button
                 onClick={closeMobileMenu}
                 aria-label="Cerrar menu"
-                className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#1A1A1A] hover:text-gold transition-colors active:scale-95"
+                className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-charcoal hover:text-gold transition-colors active:scale-95"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -232,7 +232,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
                   key={link.label}
                   href={link.href}
                   onClick={closeMobileMenu}
-                  className="text-base font-sans text-[#1A1A1A]/80 hover:text-gold active:text-gold transition-colors py-3 px-4 border-b border-gray-light/50 active:bg-warm-100/50"
+                  className="text-base font-sans text-charcoal/80 hover:text-gold active:text-gold transition-colors py-3 px-4 border-b border-gray-light/50 active:bg-warm-100/50"
                 >
                   {link.label}
                 </Link>
@@ -240,7 +240,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
               <Link
                 href="/favoritos"
                 onClick={closeMobileMenu}
-                className="text-base font-sans text-[#1A1A1A]/80 hover:text-gold active:text-gold transition-colors py-3 px-4 border-b border-gray-light/50 active:bg-warm-100/50"
+                className="text-base font-sans text-charcoal/80 hover:text-gold active:text-gold transition-colors py-3 px-4 border-b border-gray-light/50 active:bg-warm-100/50"
               >
                 Lista de deseos
                 {mounted && wishlistHydrated && wishlistCount > 0 && (
@@ -253,7 +253,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
 
             {/* Footer */}
             <div className="px-6 py-6 border-t border-gray-light/50">
-              <p className="text-xs text-[#1A1A1A]/40 uppercase tracking-wider">Envío gratis desde 50€</p>
+              <p className="text-xs text-charcoal/40 uppercase tracking-wider">Envío gratis desde 50€</p>
             </div>
           </div>
         </div>

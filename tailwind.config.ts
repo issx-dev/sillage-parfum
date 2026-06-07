@@ -9,10 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        cream: "var(--color-cream)",
-        black: "var(--color-black)",
-        gold: "var(--color-gold)",
-        "gold-dark": "var(--color-gold-dark)",
+        cream: "rgb(var(--color-cream-rgb) / <alpha-value>)",
+        black: "rgb(var(--color-black-rgb) / <alpha-value>)",
+        charcoal: "rgb(var(--color-charcoal-rgb) / <alpha-value>)",
+        gold: "rgb(var(--color-gold-rgb) / <alpha-value>)",
+        "gold-dark": "rgb(var(--color-gold-dark-rgb) / <alpha-value>)",
         terracotta: "var(--color-terracotta)",
         "gray-mid": "var(--color-gray-mid)",
         "gray-light": "var(--color-gray-light)",

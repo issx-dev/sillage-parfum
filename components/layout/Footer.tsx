@@ -41,7 +41,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12 mb-12">
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title}>
-              <h3 className="text-xs uppercase tracking-[0.2em] font-semibold mb-4 text-[#C9A96E]/70">{title}</h3>
+              <h3 className="text-xs uppercase tracking-[0.2em] font-semibold mb-4 text-gold/70">{title}</h3>
               <ul className="space-y-2">
                 {links.map((link) => (
                   <li key={link.label}>

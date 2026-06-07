@@ -52,11 +52,11 @@ const categories: Category[] = [
 
 export function CategoriesGrid() {
   return (
-    <section className="py-20 lg:py-28 bg-[#FAF7F2]">
+    <section className="py-20 lg:py-28 bg-cream">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <div className="text-center mb-12 lg:mb-16">
-            <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-[#C9A96E]">
+              <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-gold">
               explora
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-warm-900 tracking-wide mt-2">
@@ -76,7 +76,7 @@ export function CategoriesGrid() {
                 href={category.href}
                 className="group block"
               >
-                <div className="relative aspect-square rounded-lg overflow-hidden bg-white border border-warm-200/40 shadow-sm transition-[box-shadow,border-color] duration-500 hover:shadow-md hover:border-[#C9A96E]/40 p-4">
+                <div className="relative aspect-square rounded-lg overflow-hidden bg-white border border-warm-200/40 shadow-sm transition-[box-shadow,border-color] duration-500 hover:shadow-md hover:border-gold/40 p-4">
                   <div className="relative w-full h-full">
                     <Image
                       src={category.imageSrc}
@@ -88,7 +88,7 @@ export function CategoriesGrid() {
                     />
                   </div>
                   {/* Gradient overlay — strengthened for light-colored bottles */}
-                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0B0A08]/60 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
                   
                   {/* Label */}
                   <div className="absolute bottom-0 left-0 right-0 p-3 text-center z-10">

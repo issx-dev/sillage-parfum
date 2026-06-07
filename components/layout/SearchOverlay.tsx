@@ -112,7 +112,7 @@ function SuggestedChip({
   return (
     <button
       onClick={() => onClick(term)}
-      className="px-3.5 py-1.5 text-[10px] tracking-[0.2em] uppercase font-light text-warm-300 border border-warm-700 hover:border-[#C9A96E]/60 hover:text-[#FAF7F2] hover:bg-[#C9A96E]/8 transition-[color,border-color,background-color] duration-300 rounded-none"
+      className="px-3.5 py-1.5 text-[10px] tracking-[0.2em] uppercase font-light text-warm-300 border border-warm-700 hover:border-gold/60 hover:text-cream hover:bg-gold/8 transition-[color,border-color,background-color] duration-300 rounded-none"
     >
       {term}
     </button>
@@ -135,7 +135,7 @@ function RecommendedCard({
       <Link
         href={`/productos/${product.slug}`}
         onClick={onClose}
-        className="group relative flex flex-col bg-warm-900/50 border border-warm-700/50 hover:border-[#C9A96E]/40 transition-[border-color] duration-500 overflow-hidden"
+        className="group relative flex flex-col bg-warm-900/50 border border-warm-700/50 hover:border-gold/40 transition-[border-color] duration-500 overflow-hidden"
       >
         <div className="relative aspect-[4/5] bg-white/8 flex items-center justify-center overflow-hidden">
           <Image
@@ -146,14 +146,14 @@ function RecommendedCard({
             className="object-contain p-6 group-hover:scale-[1.04] transition-transform duration-700 ease-out"
           />
           <span className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <ArrowUpRight className="w-4 h-4 text-[#C9A96E]" />
+            <ArrowUpRight className="w-4 h-4 text-gold" />
           </span>
         </div>
         <div className="px-4 py-4 border-t border-warm-700/40">
           <span className="block text-[9px] uppercase tracking-[0.3em] text-warm-400 mb-1">
             {product.brand}
           </span>
-          <span className="block text-sm font-serif text-[#FAF7F2] group-hover:text-[#C9A96E] transition-colors duration-300 truncate leading-snug">
+          <span className="block text-sm font-serif text-cream group-hover:text-gold transition-colors duration-300 truncate leading-snug">
             {product.name}
           </span>
           <span className="block text-[10px] text-warm-400 mt-1.5">
@@ -183,7 +183,7 @@ function RecommendedCard({
         <span className="block text-[9px] uppercase tracking-[0.2em] text-warm-400">
           {product.brand}
         </span>
-        <span className="block text-xs text-[#FAF7F2] truncate group-hover:text-[#C9A96E] transition-colors duration-300 mt-0.5 font-serif">
+        <span className="block text-xs text-cream truncate group-hover:text-gold transition-colors duration-300 mt-0.5 font-serif">
           {product.name}
         </span>
       </div>
@@ -226,7 +226,7 @@ function ResultRow({
         <span className="block text-[9px] uppercase tracking-[0.25em] text-warm-400 mb-0.5">
           {product.brand}
         </span>
-        <span className="block text-sm font-serif text-[#FAF7F2] truncate group-hover:text-[#C9A96E] transition-colors duration-300">
+        <span className="block text-sm font-serif text-cream truncate group-hover:text-gold transition-colors duration-300">
           {product.name}
         </span>
         <span className="block text-[10px] text-warm-400 mt-0.5 italic">
@@ -234,7 +234,7 @@ function ResultRow({
         </span>
       </div>
       <div className="text-right flex-shrink-0">
-        <span className="block text-sm text-[#FAF7F2] font-light">
+        <span className="block text-sm text-cream font-light">
           {formatPrice(currentPrice)}
         </span>
         {hasDiscount && (
@@ -302,7 +302,7 @@ export function SearchOverlay({
   return (
     <DialogPrimitive.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-[#0B0A08]/95 animate-overlay-in" />
+        <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-black/95 animate-overlay-in" />
         <DialogPrimitive.Content className="fixed inset-0 z-[60] flex flex-col h-full max-w-[860px] mx-auto w-full px-4 sm:px-6 md:px-12 py-6 md:py-12 overflow-hidden">
           <DialogPrimitive.Title>
             <VisuallyHidden>Búsqueda de fragancias</VisuallyHidden>
@@ -316,14 +316,14 @@ export function SearchOverlay({
           <div className="relative z-10 flex flex-col h-full max-w-[860px] mx-auto w-full px-4 sm:px-6 md:px-12 py-6 md:py-12">
             <header className="flex items-center justify-between mb-10 md:mb-14">
               <div className="flex items-center gap-3">
-                <div className="h-[1px] w-8 bg-[#C9A96E]/50" />
-                <span className="text-[9px] uppercase tracking-[0.35em] text-[#C9A96E]/80 font-light">
+                <div className="h-[1px] w-8 bg-gold/50" />
+                <span className="text-[9px] uppercase tracking-[0.35em] text-gold/80 font-light">
                   Sillage · Búsqueda
                 </span>
               </div>
               <button
                 onClick={onClose}
-                className="group flex items-center gap-1.5 text-[9px] uppercase tracking-[0.2em] text-warm-300 hover:text-[#FAF7F2] transition-colors duration-300"
+                className="group flex items-center gap-1.5 text-[9px] uppercase tracking-[0.2em] text-warm-300 hover:text-cream transition-colors duration-300"
                 aria-label="Cerrar búsqueda"
               >
                 <span className="hidden sm:inline">Cerrar</span>
@@ -340,13 +340,13 @@ export function SearchOverlay({
                 placeholder={`Buscar ${placeholder}...`}
                 className={cn(
                   "w-full bg-transparent py-3 pr-10 text-xl sm:text-2xl md:text-4xl",
-                  "text-[#FAF7F2] placeholder-warm-500 font-serif font-light",
-                  "border-b border-warm-700 focus:border-[#C9A96E]",
+                  "text-cream placeholder-warm-500 font-serif font-light",
+                  "border-b border-warm-700 focus:border-gold",
                   "focus:outline-none transition-colors duration-500",
                   "tracking-wide leading-tight"
                 )}
               />
-              <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-warm-500 group-focus-within/input:text-[#C9A96E] transition-colors duration-300" />
+              <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-warm-500 group-focus-within/input:text-gold transition-colors duration-300" />
 
               {query && (
                 <button
@@ -358,7 +358,7 @@ export function SearchOverlay({
                 </button>
               )}
 
-              <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-[#C9A96E] group-focus-within/input:w-full transition-[width] duration-700 ease-out" />
+              <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-gold group-focus-within/input:w-full transition-[width] duration-700 ease-out" />
             </div>
 
             <div className="flex-1 overflow-y-auto scrollbar-dark -mx-1 px-1">
@@ -418,7 +418,7 @@ export function SearchOverlay({
                       <p className="text-[9px] uppercase tracking-[0.3em] text-warm-400 mb-4">
                         Error de búsqueda
                       </p>
-                      <h3 className="font-serif text-2xl md:text-3xl text-[#FAF7F2]/80 font-light leading-snug max-w-[28ch] mb-6">
+                      <h3 className="font-serif text-2xl md:text-3xl text-cream/80 font-light leading-snug max-w-[28ch] mb-6">
                         No se pudo completar la búsqueda.
                       </h3>
                       <p className="text-xs text-warm-400 max-w-[44ch] leading-relaxed">
@@ -437,7 +437,7 @@ export function SearchOverlay({
                       <p className="text-[9px] uppercase tracking-[0.3em] text-warm-400 mb-4">
                         Sin coincidencias
                       </p>
-                      <h3 className="font-serif text-2xl md:text-3xl text-[#FAF7F2]/80 font-light leading-snug max-w-[28ch] mb-6">
+                      <h3 className="font-serif text-2xl md:text-3xl text-cream/80 font-light leading-snug max-w-[28ch] mb-6">
                         &ldquo;{query}&rdquo; no pertenece a nuestra colección.
                       </h3>
                       <p className="text-xs text-warm-400 max-w-[44ch] leading-relaxed mb-8">
@@ -445,7 +445,7 @@ export function SearchOverlay({
                       </p>
                       <button
                         onClick={() => setQuery("")}
-                        className="text-[10px] uppercase tracking-[0.2em] text-[#C9A96E] hover:text-[#FAF7F2] transition-colors duration-300 pb-0.5 border-b border-[#C9A96E]/40 hover:border-[#FAF7F2]/40"
+                        className="text-[10px] uppercase tracking-[0.2em] text-gold hover:text-cream transition-colors duration-300 pb-0.5 border-b border-gold/40 hover:border-cream/40"
                       >
                         Restablecer
                       </button>
@@ -462,7 +462,7 @@ export function SearchOverlay({
               <Link
                 href="/productos"
                 onClick={onClose}
-                className="text-[9px] uppercase tracking-[0.2em] text-warm-400 hover:text-[#C9A96E] transition-colors duration-300 flex items-center gap-1.5"
+                className="text-[9px] uppercase tracking-[0.2em] text-warm-400 hover:text-gold transition-colors duration-300 flex items-center gap-1.5"
               >
                 Ver catálogo completo
                 <ArrowUpRight className="w-3 h-3" />

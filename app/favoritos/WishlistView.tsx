@@ -47,7 +47,7 @@ export function WishlistView({ allProducts }: WishlistViewProps) {
         </p>
         <Link
           href="/productos"
-          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] font-medium text-[#1A1A1A] hover:text-gold transition-colors duration-300 pb-1.5 border-b border-[#1A1A1A]/30 hover:border-gold"
+          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] font-medium text-charcoal hover:text-gold transition-colors duration-300 pb-1.5 border-b border-charcoal/30 hover:border-gold"
         >
           Explorar fragancias
           <ArrowRight className="w-3.5 h-3.5" />
@@ -79,7 +79,7 @@ export function WishlistView({ allProducts }: WishlistViewProps) {
                 {/* Remove from wishlist */}
                 <button
                   onClick={() => toggle(product.id)}
-                  className="absolute top-3 right-3 z-10 p-2 bg-[#FAF7F2]/90 rounded-full text-gold hover:text-[#1A1A1A] transition-colors duration-200 active:scale-95 shadow-sm"
+                  className="absolute top-3 right-3 z-10 p-2 bg-cream/90 rounded-full text-gold hover:text-charcoal transition-colors duration-200 active:scale-95 shadow-sm"
                   aria-label={`Eliminar ${product.name} de favoritos`}
                 >
                   <Heart className="w-4 h-4 fill-current" />
@@ -88,7 +88,7 @@ export function WishlistView({ allProducts }: WishlistViewProps) {
                 <Link href={`/productos/${product.slug}`} className="block">
                   <div className="bg-white border border-warm-200/60 rounded-lg overflow-hidden transition-[transform,box-shadow] duration-300 group-hover:shadow-md group-hover:scale-[1.01]">
                     {/* Image */}
-                    <div className="relative aspect-square bg-[#FAF7F2] p-4">
+                    <div className="relative aspect-square bg-cream p-4">
                       <Image
                         src={product.images[0]}
                         alt={product.name}

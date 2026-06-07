@@ -17,7 +17,7 @@ export default function FavoritosPage() {
   const allProducts = getProducts();
 
   return (
-    <section className="bg-[#FAF7F2] pt-28 sm:pt-32 min-h-screen">
+    <section className="bg-cream pt-28 sm:pt-32 min-h-screen">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-warm-900 tracking-wide">
           Lista de deseos

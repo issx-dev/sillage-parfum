@@ -11,27 +11,18 @@ export function HeroSection() {
   return (
     <section className="relative min-h-[100dvh] flex items-center overflow-hidden bg-black text-cream">
       {/* Background Media */}
-      {reducedMotion ? (
-        <div className="absolute inset-0 w-full h-full z-0">
-          <Image
-            src="/images/hero/hero-desktop.jpg"
-            alt="Sillage Cinematic Campaign Background"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover opacity-60"
-          />
-        </div>
-      ) : (
-        <Image
+      <picture className="absolute inset-0 w-full h-full z-0 select-none pointer-events-none">
+        <source media="(max-width: 639px)" srcSet="/images/hero/hero-mobile.jpg" />
+        <source media="(min-width: 640px)" srcSet="/images/hero/hero-desktop.jpg" />
+        <img
           src="/images/hero/hero-desktop.jpg"
           alt="Sillage Cinematic Campaign Background"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover opacity-50 z-0"
+          className={`w-full h-full object-cover ${reducedMotion ? "opacity-60" : "opacity-50"}`}
+          // @ts-ignore
+          fetchPriority="high"
+          loading="eager"
         />
-      )}
+      </picture>
 
       {/* Cinematic Vignette Overlay */}
       <div

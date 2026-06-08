@@ -15,21 +15,7 @@ export function ProductGallery({ images, name }: ProductGalleryProps) {
   const [activeView, setActiveView] = useState<number>(0); // 0: General, 1: Tapón, 2: Base
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   
-  // Loupe (magnifier glass) states
-  const [showLoupe, setShowLoupe] = useState(false);
-  const [loupePos, setLoupePos] = useState({ x: 50, y: 50 });
-
   const mainImage = images[0];
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Only enable interactive magnifier on the standard full view
-    if (activeView !== 0) return;
-
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - left) / width) * 100;
-    const y = ((e.clientY - top) / height) * 100;
-    setLoupePos({ x, y });
-  };
 
   // Virtual view thumbnails setup
   const virtualViews = [
@@ -85,12 +71,7 @@ export function ProductGallery({ images, name }: ProductGalleryProps) {
 
       {/* 2. Imagen Principal Activa */}
       <div className="relative flex-1 aspect-square bg-gradient-to-br from-warm-100 to-warm-200 rounded-card overflow-hidden border border-warm-200/40 order-1 lg:order-2">
-        <div
-          className="relative w-full h-full cursor-zoom-in"
-          onMouseEnter={() => activeView === 0 && setShowLoupe(true)}
-          onMouseLeave={() => setShowLoupe(false)}
-          onMouseMove={handleMouseMove}
-        >
+        <div className="relative w-full h-full cursor-zoom-in">
           {/* Main Visualized Image */}
           <div className="absolute inset-0 w-full h-full p-8 flex items-center justify-center overflow-hidden">
             <Image
@@ -102,21 +83,6 @@ export function ProductGallery({ images, name }: ProductGalleryProps) {
               priority
             />
           </div>
-
-          {/* Loupe Lens (Interactive Magnifier) - only active on full view */}
-          {showLoupe && activeView === 0 && (
-            <div
-              className="absolute w-40 h-40 rounded-full border border-warm-200/60 shadow-2xl pointer-events-none bg-cream z-20 overflow-hidden"
-              style={{
-                left: `calc(${loupePos.x}% - 80px)`,
-                top: `calc(${loupePos.y}% - 80px)`,
-                backgroundImage: `url(${mainImage})`,
-                backgroundPosition: `${loupePos.x}% ${loupePos.y}%`,
-                backgroundSize: "280% 280%",
-                backgroundRepeat: "no-repeat",
-              }}
-            />
-          )}
         </div>
 
         {/* Lightbox / Fullscreen Dialog Trigger */}

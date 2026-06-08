@@ -68,31 +68,33 @@ function resetStores() {
   useWishlistStore.setState({ productIds: [], _hasHydrated: false });
 }
 
-describe("ProductCard size selector", () => {
+describe("ProductCard interactive elements", () => {
   beforeEach(() => {
     resetStores();
     linkNavigateSpy.mockClear();
   });
 
-  it("selects a size when its button is clicked", async () => {
+  it("triggers wishlist toggle when favorite button is clicked and does NOT navigate", async () => {
     const user = userEvent.setup();
     render(<ProductCard product={fixtureProduct} />);
 
-    const button100 = screen.getByRole("button", { name: /^100ml$/i });
-    expect(button100).not.toHaveClass("bg-black");
+    const favButton = screen.getByRole("button", { name: /favoritos/i });
+    await user.click(favButton);
 
-    await user.click(button100);
-
-    expect(button100).toHaveClass("bg-black");
+    expect(useWishlistStore.getState().productIds).toContain(fixtureProduct.id);
+    expect(linkNavigateSpy).not.toHaveBeenCalled();
   });
 
-  it("does NOT trigger parent Link navigation when a size button is clicked", async () => {
+  it("adds default variant to cart when floating shopping bag is clicked and does NOT navigate", async () => {
     const user = userEvent.setup();
     render(<ProductCard product={fixtureProduct} />);
 
-    const button100 = screen.getByRole("button", { name: /^100ml$/i });
-    await user.click(button100);
+    const cartButton = screen.getByRole("button", { name: /añadir al carrito/i });
+    await user.click(cartButton);
 
+    const cartItems = useCartStore.getState().items;
+    expect(cartItems).toHaveLength(1);
+    expect(cartItems[0].variantId).toBe("test-050"); // first variant with stock
     expect(linkNavigateSpy).not.toHaveBeenCalled();
   });
 });

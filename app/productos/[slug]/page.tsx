@@ -109,76 +109,80 @@ export default function ProductPage({ params }: ProductPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+        {/* Upper section: Gallery + Purchase */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
           {/* Image Gallery */}
-          <div className="w-full">
+          <div className="lg:col-span-7 w-full">
             <ProductGallery images={product.images} name={product.name} />
           </div>
 
-          {/* Info */}
-          <div className="flex flex-col">
-            <span className="text-xs px-2 py-1 bg-gray-light text-charcoal rounded-full w-fit mb-2">
+          {/* Quick Purchase Info */}
+          <div className="lg:col-span-5 flex flex-col pt-2 lg:pt-6">
+            <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-2">
               {product.family}
             </span>
-            <h1 className="font-serif text-3xl sm:text-4xl">{product.name}</h1>
-            <p className="text-sm uppercase tracking-wider text-gray-mid mt-1">
+            <h1 className="font-serif text-3xl sm:text-4xl text-charcoal">{product.name}</h1>
+            <p className="text-xs uppercase tracking-wider text-gray-mid mt-1">
               {product.brand}
             </p>
-            <p className="mt-4 text-gray-mid">{product.shortDescription}</p>
 
             {/* Add to cart (client component) */}
             <div className="mt-8">
               <AddToCartWrapper product={product} firstVariant={firstVariant} hasDiscount={hasDiscount} />
             </div>
+          </div>
+        </div>
 
-            {/* Notes pyramid — below AddToCart */}
-            <div className="mt-10">
-              <h2 className="font-serif text-xl mb-4">Notas olfativas</h2>
-              <div className="grid grid-cols-3 gap-1 xs:gap-2">
-                <div className="text-center px-1 xs:px-2">
-                  <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1.5 font-medium">
-                    <Wind className="w-3.5 h-3.5 text-gold shrink-0" />
-                    Salida
-                  </p>
-                  <ul className="text-xs xs:text-sm space-y-1.5 w-fit mx-auto text-left">
-                    {product.notes.top.map((note) => (
-                      <li key={note} className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-gold opacity-50 shrink-0" />
-                        <span>{note}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div className="text-center border-l border-r border-gray-light/60 px-1.5 xs:px-3 sm:px-4">
-                  <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1.5 font-medium">
-                    <Heart className="w-3.5 h-3.5 text-terracotta shrink-0" />
-                    Corazón
-                  </p>
-                  <ul className="text-xs xs:text-sm space-y-1.5 w-fit mx-auto text-left">
-                    {product.notes.heart.map((note) => (
-                      <li key={note} className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-terracotta opacity-50 shrink-0" />
-                        <span>{note}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+        {/* Lower section: Editorial details (Dior inspired) */}
+        <div className="mt-20 lg:mt-32 pt-16 border-t border-warm-200/40 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+          {/* Left Column: Big Editorial Description */}
+          <div className="lg:col-span-7 space-y-6">
+            <p className="font-serif text-xl sm:text-2xl text-charcoal/90 leading-relaxed font-light">
+              {product.shortDescription}
+            </p>
+            <p className="text-sm text-gray-mid font-sans leading-relaxed tracking-wide font-light max-w-xl">
+              Cada nota de {product.name} ha sido seleccionada de manera meticulosa por maestros perfumistas para construir una composición equilibrada, expresando una firma de olor con carácter e identidad propia. Ideal para quienes buscan dejar una estela atemporal a su paso.
+            </p>
+          </div>
 
-                <div className="text-center px-1 xs:px-2">
-                  <p className="text-xs text-gold uppercase tracking-wider mb-2.5 flex items-center justify-center gap-1.5 font-medium">
-                    <Layers className="w-3.5 h-3.5 text-gray-mid shrink-0" />
-                    Fondo
-                  </p>
-                  <ul className="text-xs xs:text-sm space-y-1.5 w-fit mx-auto text-left">
-                    {product.notes.base.map((note) => (
-                      <li key={note} className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-mid opacity-50 shrink-0" />
-                        <span>{note}</span>
-                      </li>
-                    ))}
-                  </ul>
+          {/* Right Column: Olfactive Notes & Service details */}
+          <div className="lg:col-span-5 space-y-8">
+            <div className="border-b border-warm-200/50 pb-6">
+              <h3 className="font-serif text-lg text-charcoal mb-4">Notas olfativas</h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <Wind className="w-4 h-4 text-gold shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-xs uppercase tracking-wider text-gold-dark font-medium block">Salida</span>
+                    <span className="text-sm text-charcoal/80">{product.notes.top.join(", ")}</span>
+                  </div>
                 </div>
+                <div className="flex items-start gap-3">
+                  <Heart className="w-4 h-4 text-terracotta shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-xs uppercase tracking-wider text-gold-dark font-medium block">Corazón</span>
+                    <span className="text-sm text-charcoal/80">{product.notes.heart.join(", ")}</span>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Layers className="w-4 h-4 text-gray-mid shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-xs uppercase tracking-wider text-gold-dark font-medium block">Fondo</span>
+                    <span className="text-sm text-charcoal/80">{product.notes.base.join(", ")}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sillage Services */}
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center justify-between py-2 border-b border-warm-200/30 text-xs sm:text-sm text-charcoal/70 font-sans tracking-wide">
+                <span>Servicio de envoltura de regalo de cortesía Sillage</span>
+                <span className="text-gold-dark text-xs font-serif">→</span>
+              </div>
+              <div className="flex items-center justify-between py-2 border-b border-warm-200/30 text-xs sm:text-sm text-charcoal/70 font-sans tracking-wide">
+                <span>Envío express asegurado en 24h</span>
+                <span className="text-gold-dark text-xs font-serif">→</span>
               </div>
             </div>
           </div>

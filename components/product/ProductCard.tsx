@@ -84,16 +84,49 @@ export function ProductCard({ product, variant = "default", priority = false }: 
             />
           </button>
         </div>
-        <div className="absolute inset-0 p-8 flex items-center justify-center transition-transform duration-700 ease-out group-hover:scale-[1.05]">
+        <div className="absolute inset-0 p-3 flex items-center justify-center transition-transform duration-700 ease-out group-hover:scale-[1.04]">
           <Image
             src={product.images[0]}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="object-contain p-4 mix-blend-multiply"
+            className="object-contain p-1 mix-blend-multiply [filter:drop-shadow(0_12px_20px_rgba(0,0,0,0.07))]"
             priority={priority || product.badge === "top_ventas" || product.badge === "nuevo"}
             loading={priority || product.badge === "top_ventas" || product.badge === "nuevo" ? undefined : "lazy"}
           />
+        </div>
+
+        {/* Floating Add to Cart Button */}
+        <div className="absolute bottom-3 right-3 z-20">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (selectedVariant.stock === 0) return;
+              addItem({
+                variantId: selectedVariant.id,
+                productId: product.id,
+                slug: product.slug,
+                name: product.name,
+                brand: product.brand,
+                image: product.images[0],
+                size_ml: selectedVariant.size_ml,
+                price: currentPrice,
+                quantity: 1,
+              });
+              openCart();
+              toast.success(`${product.name} añadido a tu carrito`);
+            }}
+            disabled={selectedVariant.stock === 0}
+            className="w-10 h-10 rounded-full bg-white hover:bg-black text-charcoal hover:text-cream shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.15)] flex items-center justify-center transition-all duration-300 border border-warm-200/30 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Añadir al carrito"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shopping-bag">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -117,73 +150,14 @@ export function ProductCard({ product, variant = "default", priority = false }: 
           {product.shortDescription}
         </p>
 
-        {/* Size selector */}
-        <div className="mt-4">
-          <div className="flex flex-wrap gap-2">
-            {product.variants.map((v) => {
-              const isSelected = selectedVariant.id === v.id;
-              const isDisabled = v.stock === 0;
-              return (
-                <button
-                  key={v.id}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (!isDisabled) setSelectedVariant(v);
-                  }}
-                  disabled={isDisabled}
-                  className={cn(
-                    "px-3 py-1.5 text-sm border rounded-sm transition-[background-color,color,border-color,transform] duration-200 min-w-[50px] min-h-[44px]",
-                    isSelected
-                      ? "border-gold bg-black text-cream"
-                      : "border-gray-light text-gray-mid hover:border-gold",
-                    isDisabled && "opacity-50 cursor-not-allowed"
-                  )}
-                  title={isDisabled ? "Agotado" : undefined}
-                >
-                  {v.size_ml}ml
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         {/* Price */}
-        <div className="mt-4 flex items-center gap-2">
+        <div className="mt-auto pt-4 flex items-center gap-2">
           <span className="text-lg font-semibold">{formatPrice(currentPrice)}</span>
           {originalPrice && (
             <span className="text-sm text-gray-mid line-through">
               {formatPrice(originalPrice)}
             </span>
           )}
-        </div>
-
-        {/* Add to cart */}
-        <div className="mt-4">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (selectedVariant.stock === 0) return;
-              addItem({
-                variantId: selectedVariant.id,
-                productId: product.id,
-                slug: product.slug,
-                name: product.name,
-                brand: product.brand,
-                image: product.images[0],
-                size_ml: selectedVariant.size_ml,
-                price: currentPrice,
-                quantity: 1,
-              });
-              openCart();
-              toast.success(`${product.name} añadido a tu carrito`);
-            }}
-            disabled={selectedVariant.stock === 0}
-            className="w-full bg-black text-cream hover:bg-gray-mid font-medium py-3 px-6 rounded-card transition-colors min-h-[44px] active:bg-charcoal/80 active:scale-[0.97]"
-          >
-            {selectedVariant.stock === 0 ? "Agotado" : "Añadir al carrito"}
-          </button>
         </div>
       </div>
     </Link>

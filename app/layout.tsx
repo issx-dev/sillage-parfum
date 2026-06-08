@@ -51,9 +51,6 @@ export const metadata: Metadata = {
   description:
     "523 fragancias de las mejores casas del mundo. Envío en 24h y productos 100% originales.",
   keywords: ["perfumería", "lujo", "fragancias", "perfumes", "SILLAGE"],
-  alternates: {
-    canonical: "/",
-  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",

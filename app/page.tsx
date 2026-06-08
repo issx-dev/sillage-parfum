@@ -4,6 +4,14 @@ import { EditorialSplitSingle } from "@/components/home/EditorialSplitSingle";
 import { CategoriesGrid } from "@/components/home/CategoriesGrid";
 import { Newsletter } from "@/components/home/Newsletter";
 import { getFeaturedProducts, getNewArrivals, getDiscoverProducts } from "@/lib/data";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
+
 
 export default function HomePage() {
   const featured = getFeaturedProducts(6);

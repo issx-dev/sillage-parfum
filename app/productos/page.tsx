@@ -54,6 +54,9 @@ export function generateMetadata({ searchParams }: ProductosPageProps): Metadata
   return {
     title: label && titles[label] ? titles[label] : "Perfumes de Lujo | SILLAGE",
     description: label && descriptions[label] ? descriptions[label] : "Explora nuestra colección de fragancias de lujo de las mejores marcas.",
+    alternates: {
+      canonical: "/productos",
+    },
   };
 }
 
@@ -171,7 +174,10 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
             </p>
           </div>
         ) : (
-          <ProductGrid products={products} columns={4} />
+          <>
+            <h2 className="sr-only">Catálogo de fragancias</h2>
+            <ProductGrid products={products} columns={4} />
+          </>
         )}
       </div>
     </div>

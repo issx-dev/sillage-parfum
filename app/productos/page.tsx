@@ -21,6 +21,14 @@ const genderFilters = [
   { label: "Unisex", value: "unisex" },
 ];
 
+const badgeFilters = [
+  { label: "Todos", value: undefined },
+  { label: "Novedades", value: "nuevo" },
+  { label: "Ofertas", value: "oferta" },
+  { label: "Top Ventas", value: "top_ventas" },
+];
+
+
 interface ProductosPageProps {
   searchParams: { family?: string; badge?: string; gender?: string };
 }
@@ -80,16 +88,17 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
 
   // Composes a /productos href that overrides one dimension while preserving the others.
   // Passing `undefined` for a key clears that dimension; omitting it preserves the current value.
-  const buildHref = (overrides: { family?: string; gender?: string }) => {
+  const buildHref = (overrides: { family?: string; gender?: string; badge?: string }) => {
     const params = new URLSearchParams();
     
     // Clear family filter if gender filter is cleared (Todos) to avoid orphan filters.
     const isClearingGender = "gender" in overrides && overrides.gender === undefined;
     const familyVal = isClearingGender ? undefined : ("family" in overrides ? overrides.family : family);
     const genderVal = "gender" in overrides ? overrides.gender : gender;
+    const badgeVal = "badge" in overrides ? overrides.badge : badge;
 
     if (familyVal) params.set("family", familyVal);
-    if (badge) params.set("badge", badge);
+    if (badgeVal) params.set("badge", badgeVal);
     if (genderVal) params.set("gender", genderVal);
     const qs = params.toString();
     return qs ? `/productos?${qs}` : "/productos";
@@ -109,6 +118,18 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
         {/* Panel de Filtros */}
         <ScrollReveal>
           <div className="bg-cream/40 backdrop-blur-sm border border-warm-200/60 rounded-xl p-4 sm:p-6 mb-10 shadow-sm space-y-5">
+            {/* Header del panel con botón Limpiar si hay filtros activos */}
+            {(gender || family || badge) && (
+              <div className="flex justify-end pb-1 border-b border-warm-200/20">
+                <Link
+                  href="/productos"
+                  className="text-xs text-gray-mid hover:text-black transition-colors flex items-center gap-1 font-sans font-medium uppercase tracking-wider min-h-[32px] flex items-center"
+                >
+                  Limpiar todos los filtros ×
+                </Link>
+              </div>
+            )}
+
             {/* Género */}
             <div>
               <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
@@ -122,6 +143,32 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
                     <Link
                       key={filter.label}
                       href={buildHref({ gender: filter.value })}
+                      className={`flex-shrink-0 snap-center px-4 py-1.5 rounded-full text-xs sm:text-sm font-sans transition-[background-color,color,border-color] duration-200 min-h-[36px] flex items-center border ${
+                        isActive
+                          ? "bg-black text-cream border-black font-medium"
+                          : "border-gray-light bg-white/50 text-charcoal/80 hover:border-gold hover:bg-black hover:text-cream"
+                      }`}
+                    >
+                      {filter.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Colección */}
+            <div>
+              <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
+                Colección
+              </span>
+              <div className="flex flex-wrap gap-2.5 pb-2">
+                {badgeFilters.map((filter) => {
+                  const isActive =
+                    filter.value === badge || (filter.value === undefined && !badge);
+                  return (
+                    <Link
+                      key={filter.label}
+                      href={buildHref({ badge: filter.value })}
                       className={`flex-shrink-0 snap-center px-4 py-1.5 rounded-full text-xs sm:text-sm font-sans transition-[background-color,color,border-color] duration-200 min-h-[36px] flex items-center border ${
                         isActive
                           ? "bg-black text-cream border-black font-medium"

@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { getProductBySlug, getProducts } from "@/lib/data";
 import type { Metadata } from "next";
 import { formatPrice } from "@/lib/utils";
 import { Wind, Heart, Layers } from "lucide-react";
+import { ProductGallery } from "@/components/product/ProductGallery";
 
 interface ProductPageProps {
   params: { slug: string };
@@ -110,16 +110,9 @@ export default function ProductPage({ params }: ProductPageProps) {
       />
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
-          {/* Image */}
-          <div className="relative aspect-square bg-gradient-to-br from-gray-light to-cream rounded-card overflow-hidden">
-            <Image
-              src={product.images[0]}
-              alt={product.name}
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-contain p-8"
-              priority
-            />
+          {/* Image Gallery */}
+          <div className="w-full">
+            <ProductGallery images={product.images} name={product.name} />
           </div>
 
           {/* Info */}

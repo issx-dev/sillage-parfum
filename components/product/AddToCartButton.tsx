@@ -9,9 +9,10 @@ interface AddToCartButtonProps {
   item: CartItem;
   disabled?: boolean;
   className?: string;
+  children?: React.ReactNode;
 }
 
-export function AddToCartButton({ item, disabled, className }: AddToCartButtonProps) {
+export function AddToCartButton({ item, disabled, className, children }: AddToCartButtonProps) {
   const [pulse, setPulse] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
@@ -30,7 +31,7 @@ export function AddToCartButton({ item, disabled, className }: AddToCartButtonPr
       disabled={disabled}
       className={`w-full transition-transform duration-200 ${pulse ? "scale-95" : ""} ${className || ""}`}
     >
-      {disabled ? "Agotado" : "Añadir al carrito"}
+      {disabled ? "Agotado" : (children || "Añadir al carrito")}
     </Button>
   );
 }

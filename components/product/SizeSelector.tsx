@@ -11,7 +11,7 @@ interface SizeSelectorProps {
 
 export function SizeSelector({ variants, selectedVariant, onSelect }: SizeSelectorProps) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-3">
       {variants.map((v) => {
         const isSelected = selectedVariant?.id === v.id;
         const isDisabled = v.stock === 0;
@@ -22,15 +22,15 @@ export function SizeSelector({ variants, selectedVariant, onSelect }: SizeSelect
             onClick={() => !isDisabled && onSelect?.(v)}
             disabled={isDisabled}
             className={cn(
-              "px-3 py-1.5 text-sm border rounded transition-[background-color,color,border-color,transform] duration-200 min-w-[50px] min-h-[44px]",
+              "px-4 py-2 text-xs sm:text-sm border transition-all duration-300 min-w-[64px] min-h-[44px] rounded-md font-sans tracking-wide cursor-pointer",
               isSelected
-                ? "border-gold bg-black text-cream"
-                : "border-gray-light text-gray-mid hover:border-gold",
-              isDisabled && "opacity-50 cursor-not-allowed"
+                ? "border-charcoal text-charcoal font-semibold bg-warm-100/50 shadow-xs scale-102"
+                : "border-warm-300 text-gray-mid bg-transparent hover:border-charcoal hover:text-charcoal",
+              isDisabled && "opacity-30 cursor-not-allowed line-through hover:border-warm-300 hover:text-gray-mid"
             )}
             title={isDisabled ? "Agotado" : undefined}
           >
-            {v.size_ml}ml
+            {v.size_ml} ml
           </button>
         );
       })}

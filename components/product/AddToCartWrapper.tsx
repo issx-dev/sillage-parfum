@@ -3,7 +3,6 @@
 import { useState } from "react";
 import type { Product, Variant } from "@/types";
 import { AddToCartButton } from "./AddToCartButton";
-import { WishlistButton } from "./WishlistButton";
 import { useCartStore } from "@/store/cartStore";
 import { toast } from "sonner";
 import { formatPrice } from "@/lib/utils";
@@ -23,44 +22,30 @@ export function AddToCartWrapper({ product, firstVariant, hasDiscount }: Props) 
     ? selectedVariant.price * (1 - product.discount_percent / 100)
     : selectedVariant.price;
 
-  const handleAddToCart = () => {
-    addItem({
-      variantId: selectedVariant.id,
-      productId: product.id,
-      slug: product.slug,
-      name: product.name,
-      brand: product.brand,
-      image: product.images[0],
-      size_ml: selectedVariant.size_ml,
-      price: currentPrice,
-      quantity: 1,
-    });
-    toast.success(`${product.name} añadido a tu carrito`);
-  };
-
   return (
-    <div className="space-y-4">
-      <SizeSelector
-        variants={product.variants}
-        selectedVariant={selectedVariant}
-        onSelect={setSelectedVariant}
-      />
-      {/* Price display — reacts to size selection */}
-      <div className="mt-4">
-        {hasDiscount ? (
-          <div className="flex items-center gap-3">
-            <span className="text-2xl font-semibold text-gold-dark">
-              {formatPrice(selectedVariant.price * (1 - product.discount_percent / 100))}
-            </span>
-            <span className="text-lg text-gray-mid line-through">
-              {formatPrice(selectedVariant.price)}
-            </span>
-          </div>
-        ) : (
-          <span className="text-2xl font-semibold">{formatPrice(selectedVariant.price)}</span>
-        )}
+    <div className="space-y-6">
+      <div>
+        <span className="text-[10px] uppercase tracking-[0.15em] text-gray-mid block mb-3 font-semibold">
+          Tamaño
+        </span>
+        <SizeSelector
+          variants={product.variants}
+          selectedVariant={selectedVariant}
+          onSelect={setSelectedVariant}
+        />
       </div>
-      <div className="flex gap-4">
+
+      {/* Elegant discount details helper (only visible if there is a discount) */}
+      {hasDiscount && (
+        <div className="text-xs text-gray-mid tracking-wide pt-1">
+          Precio original: <span className="line-through">{formatPrice(selectedVariant.price)}</span>{" "}
+          <span className="text-terracotta font-medium ml-1.5">
+            (-{product.discount_percent}%)
+          </span>
+        </div>
+      )}
+
+      <div className="pt-2">
         <AddToCartButton
           item={{
             variantId: selectedVariant.id,
@@ -74,9 +59,10 @@ export function AddToCartWrapper({ product, firstVariant, hasDiscount }: Props) 
             quantity: 1,
           }}
           disabled={selectedVariant.stock === 0}
-          className="flex-1"
-        />
-        <WishlistButton productId={product.id} />
+          className="w-full h-12 text-xs uppercase tracking-widest font-semibold"
+        >
+          Añadir al carrito — {formatPrice(currentPrice)}
+        </AddToCartButton>
       </div>
     </div>
   );

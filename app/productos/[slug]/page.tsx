@@ -109,19 +109,19 @@ export default function ProductPage({ params }: ProductPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        {/* Upper section: Gallery + Purchase */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+        {/* Upper section: Gallery + Purchase (Dior inspired adjacent panels) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch border border-warm-200/50 rounded-card overflow-hidden bg-cream shadow-xs">
           {/* Image Gallery */}
-          <div className="lg:col-span-7 w-full">
-            <ProductGallery images={product.images} name={product.name} />
+          <div className="lg:col-span-8 w-full border-b lg:border-b-0 lg:border-r border-warm-200/50 flex flex-col justify-between">
+            <ProductGallery images={product.images} name={product.name} productId={product.id} />
           </div>
 
           {/* Quick Purchase Info */}
-          <div className="lg:col-span-5 flex flex-col pt-2 lg:pt-6">
+          <div className="lg:col-span-4 flex flex-col justify-center p-6 sm:p-8 lg:p-12 lg:py-16 bg-cream">
             <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-2">
               {product.family}
             </span>
-            <h1 className="font-serif text-3xl sm:text-4xl text-charcoal">{product.name}</h1>
+            <h1 className="font-serif text-3xl sm:text-4xl text-charcoal leading-tight">{product.name}</h1>
             <p className="text-xs uppercase tracking-wider text-gray-mid mt-1">
               {product.brand}
             </p>

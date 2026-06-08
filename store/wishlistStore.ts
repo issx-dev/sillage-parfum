@@ -33,6 +33,10 @@ export const useWishlistStore = create<WishlistStore>()(
     }),
     {
       name: "sillage-wishlist",
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        return persistedState as WishlistStore;
+      },
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

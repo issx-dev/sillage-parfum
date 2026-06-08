@@ -32,6 +32,11 @@ export function useCarouselState<T extends HTMLElement = HTMLDivElement>(): UseC
 
   const dragStart = useRef(0);
   const dragScrollLeft = useRef(0);
+  const isTouch = useRef(false);
+
+  useEffect(() => {
+    isTouch.current = window.matchMedia("(pointer: coarse)").matches;
+  }, []);
 
   const updateState = useCallback(() => {
     const el = ref.current;
@@ -72,6 +77,7 @@ export function useCarouselState<T extends HTMLElement = HTMLDivElement>(): UseC
   }, []);
 
   const handleMouseDown = useCallback((e: React.MouseEvent<T>) => {
+    if (isTouch.current) return;
     const el = ref.current;
     if (!el) return;
     setIsDragging(true);

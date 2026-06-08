@@ -86,6 +86,10 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: "sillage-cart",
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        return persistedState as CartStore;
+      },
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

@@ -62,5 +62,15 @@ export async function POST(request: NextRequest) {
     console.log("   saveOrder result:", result);
   }
 
+  if (event.type === "charge.refunded") {
+    const charge = event.data.object;
+    console.log(`[Webhook] Refund processed: ${charge.id} for ${charge.amount} ${charge.currency}`);
+  }
+
+  if (event.type === "payment_intent.payment_failed") {
+    const paymentIntent = event.data.object;
+    console.warn(`[Webhook] Payment failed: ${paymentIntent.id} — ${paymentIntent.last_payment_error?.message ?? "unknown"}`);
+  }
+
   return NextResponse.json({ received: true });
 }

@@ -361,9 +361,9 @@ export function SearchOverlay({
               <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-gold group-focus-within/input:w-full transition-[width] duration-700 ease-out" />
             </div>
 
-            <div className="flex-1 overflow-y-auto scrollbar-dark -mx-1 px-1">
+            <div className="flex-1 overflow-y-auto scrollbar-dark -mx-1 px-1 pb-20">
               {!hasQuery ? (
-                <div className="space-y-10">
+                <div className="space-y-6 md:space-y-10">
                   <section>
                     <p className="text-[9px] uppercase tracking-[0.3em] text-warm-400 mb-4">
                       Búsquedas frecuentes
@@ -376,7 +376,7 @@ export function SearchOverlay({
                   </section>
 
                   <section>
-                    <p className="text-[9px] uppercase tracking-[0.3em] text-warm-400 mb-6">
+                    <p className="text-[9px] uppercase tracking-[0.3em] text-warm-400 mb-4 md:mb-6">
                       Las más buscadas
                     </p>
 

@@ -179,7 +179,7 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
               toast.success(`${product.name} añadido a tu carrito`);
             }}
             disabled={selectedVariant.stock === 0}
-            className="w-full bg-black text-cream hover:bg-gray-mid font-medium py-3 px-6 rounded-card transition-colors min-h-[44px] active:scale-[0.97]"
+            className="w-full bg-black text-cream hover:bg-gray-mid font-medium py-3 px-6 rounded-card transition-colors min-h-[44px] active:bg-charcoal/80 active:scale-[0.97]"
           >
             {selectedVariant.stock === 0 ? "Agotado" : "Añadir al carrito"}
           </button>

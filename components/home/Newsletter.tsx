@@ -38,7 +38,7 @@ export function Newsletter() {
           <div className="max-w-2xl mx-auto text-center">
 
             {/* Label */}
-            <span className="text-[10px] uppercase tracking-[0.35em] font-semibold text-gold/70">
+            <span className="text-[11px] uppercase tracking-[0.35em] font-semibold text-gold/70">
               círculo sillage
             </span>
 

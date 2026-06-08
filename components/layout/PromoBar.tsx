@@ -116,10 +116,10 @@ export function PromoBar() {
         {/* Left Arrow - subtle premium fade in */}
         <button
           onClick={handlePrev}
-          className="hidden sm:flex opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[32px] min-h-[32px] items-center justify-start focus:outline-none"
+          className="hidden sm:flex opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[44px] min-h-[44px] items-center justify-start focus:outline-none"
           aria-label="Anuncio anterior"
         >
-          <ChevronLeft className="w-3.5 h-3.5 stroke-[1.5]" />
+          <ChevronLeft className="w-4 h-4 stroke-[1.5]" />
         </button>
 
         {/* Dynamic sliding promotion container */}
@@ -177,10 +177,10 @@ export function PromoBar() {
         {/* Right Arrow - subtle premium fade in */}
         <button
           onClick={handleNext}
-          className="hidden sm:flex opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[32px] min-h-[32px] items-center justify-end focus:outline-none"
+          className="hidden sm:flex opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[44px] min-h-[44px] items-center justify-end focus:outline-none"
           aria-label="Siguiente anuncio"
         >
-          <ChevronRight className="w-3.5 h-3.5 stroke-[1.5]" />
+          <ChevronRight className="w-4 h-4 stroke-[1.5]" />
         </button>
       </div>
     </div>

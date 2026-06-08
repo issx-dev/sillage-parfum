@@ -2,6 +2,7 @@
 
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Sheet, SheetContent } from "@/components/ui/Sheet";
 import Link from "next/link";
 import Image from "next/image";
@@ -28,11 +29,14 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:w-96 p-0 pb-[env(safe-area-inset-bottom)]">
+      <SheetContent side="right" showClose={false} className="w-full sm:w-96 p-0 pb-[env(safe-area-inset-bottom)]">
         <div className="flex flex-col h-full">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-light">
           <h2 className="font-serif text-xl">Tu carrito</h2>
+          <DialogPrimitive.Close className="min-w-[44px] min-h-[44px] flex items-center justify-center text-warm-500 hover:text-warm-900 transition-colors">
+            <X className="w-5 h-5" />
+          </DialogPrimitive.Close>
         </div>
 
         {/* Items */}

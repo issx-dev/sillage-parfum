@@ -53,7 +53,7 @@ export function HeroSection() {
               <span className="text-xs font-sans tracking-[0.15em] uppercase text-gold">Alta Perfumería de Autor</span>
             </div>
 
-            <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-normal leading-[1.08] tracking-tight">
+            <h1 className="font-serif text-[2.6rem] sm:text-5xl md:text-7xl font-normal leading-[1.08] tracking-tight">
               El arte de la <br />
               <span className="italic font-light text-gold">estela atemporal</span>.
             </h1>

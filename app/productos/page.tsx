@@ -93,7 +93,7 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
   };
 
   return (
-    <div className="pt-28 sm:pt-32 pb-16">
+    <div className="pt-32 sm:pt-36 pb-16">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -111,7 +111,7 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
               <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
                 Género
               </span>
-              <div className="flex gap-2.5 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-thin">
+              <div className="flex flex-wrap gap-2.5 pb-2">
                 {genderFilters.map((filter) => {
                   const isActive =
                     filter.value === gender || (filter.value === undefined && !gender);
@@ -138,7 +138,7 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
                 <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
                   Familia Olfativa
                 </span>
-                <div className="flex gap-2.5 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-thin">
+                <div className="flex flex-wrap gap-2.5 pb-2">
                   {familyFilters.map((filter) => {
                     const isActive =
                       filter.value === family ||

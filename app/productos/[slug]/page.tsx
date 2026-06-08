@@ -124,7 +124,7 @@ export default function ProductPage({ params }: ProductPageProps) {
 
           {/* Info */}
           <div className="flex flex-col">
-            <span className="text-xs px-2 py-1 bg-gray-light text-gray-mid rounded-full w-fit mb-2">
+            <span className="text-xs px-2 py-1 bg-gray-light text-charcoal rounded-full w-fit mb-2">
               {product.family}
             </span>
             <h1 className="font-serif text-3xl sm:text-4xl">{product.name}</h1>

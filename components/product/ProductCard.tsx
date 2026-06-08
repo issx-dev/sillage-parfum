@@ -13,6 +13,7 @@ import { cn, formatPrice } from "@/lib/utils";
 interface ProductCardProps {
   product: Product;
   variant?: "default" | "large";
+  priority?: boolean;
 }
 
 const badgeLabels: Record<string, string> = {
@@ -21,7 +22,7 @@ const badgeLabels: Record<string, string> = {
   top_ventas: "TOP VENTAS",
 };
 
-export function ProductCard({ product, variant = "default" }: ProductCardProps) {
+export function ProductCard({ product, variant = "default", priority = false }: ProductCardProps) {
   const [selectedVariant, setSelectedVariant] = useState<Variant>(
     product.variants.find((v) => v.stock > 0) || product.variants[0]
   );
@@ -90,8 +91,8 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             className="object-contain p-4 mix-blend-multiply"
-            priority={product.badge === "top_ventas" || product.badge === "nuevo"}
-            loading={product.badge === "top_ventas" || product.badge === "nuevo" ? undefined : "lazy"}
+            priority={priority || product.badge === "top_ventas" || product.badge === "nuevo"}
+            loading={priority || product.badge === "top_ventas" || product.badge === "nuevo" ? undefined : "lazy"}
           />
         </div>
       </div>
@@ -99,7 +100,7 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
         {/* Family pill */}
-        <span className="text-xs px-2 py-1 bg-gray-light text-gray-mid rounded-full w-fit mb-2">
+        <span className="text-xs px-2 py-1 bg-gray-light text-charcoal rounded-full w-fit mb-2">
           {product.family}
         </span>
 

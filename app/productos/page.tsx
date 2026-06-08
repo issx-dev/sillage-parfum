@@ -90,13 +90,10 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
   }
 
   // Composes a /productos href that overrides one dimension while preserving the others.
-  // Passing `undefined` for a key clears that dimension; omitting it preserves the current value.
   const buildHref = (overrides: { family?: string; gender?: string; badge?: string }) => {
     const params = new URLSearchParams();
     
-    // Clear family filter if gender filter is cleared (Todos) to avoid orphan filters.
-    const isClearingGender = "gender" in overrides && overrides.gender === undefined;
-    const familyVal = isClearingGender ? undefined : ("family" in overrides ? overrides.family : family);
+    const familyVal = "family" in overrides ? overrides.family : family;
     const genderVal = "gender" in overrides ? overrides.gender : gender;
     const badgeVal = "badge" in overrides ? overrides.badge : badge;
 
@@ -146,8 +143,8 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
                 <Dialog.Portal>
                   <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs animate-overlay-fade" />
                   <Dialog.Content className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-[400px] bg-cream border-l border-warm-200/50 p-6 shadow-2xl flex flex-col justify-between animate-drawer-slide">
-                    <div>
-                      <div className="flex items-center justify-between border-b border-warm-200/30 pb-4 mb-6">
+                    <div className="flex flex-col h-full overflow-hidden">
+                      <div className="flex items-center justify-between border-b border-warm-200/30 pb-4 mb-6 shrink-0">
                         <Dialog.Title className="font-serif text-xl tracking-wide">Filtros</Dialog.Title>
                         <Dialog.Close asChild>
                           <button className="p-2 -mr-2 text-gray-mid hover:text-black transition-colors cursor-pointer" aria-label="Cerrar filtros">
@@ -156,7 +153,7 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
                         </Dialog.Close>
                       </div>
 
-                      <div className="space-y-6">
+                      <div className="space-y-6 overflow-y-auto flex-1 pr-1 pb-6 scrollbar-dark">
                         {/* Género */}
                         <div>
                           <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
@@ -184,7 +181,7 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
                         </div>
 
                         {/* Colección */}
-                        <div>
+                        <div className="pt-5 border-t border-warm-200/30">
                           <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
                             Colección
                           </span>
@@ -210,33 +207,30 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
                         </div>
 
                         {/* Familia Olfativa */}
-                        {gender && (
-                          <div className="pt-5 border-t border-warm-200/30 animate-fade-in-slide">
-                            <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
-                              Familia Olfativa
-                            </span>
-                            <div className="flex flex-wrap gap-2 pb-2">
-                              {familyFilters.map((filter) => {
-                                const isActive =
-                                  filter.value === family ||
-                                  (filter.value === undefined && !family && !badge);
-                                return (
-                                  <Link
-                                    key={filter.label}
-                                    href={buildHref({ family: filter.value })}
-                                    className={`px-4 py-1.5 rounded-full text-xs font-sans transition-[background-color,color,border-color] duration-200 min-h-[36px] flex items-center border ${
-                                      isActive
-                                        ? "bg-black text-cream border-black font-medium"
-                                        : "border-gray-light bg-white/50 text-charcoal/80 hover:border-gold hover:bg-black hover:text-cream"
-                                    }`}
-                                  >
-                                    {filter.label}
-                                  </Link>
-                                );
-                              })}
-                            </div>
+                        <div className="pt-5 border-t border-warm-200/30">
+                          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
+                            Familia Olfativa
+                          </span>
+                          <div className="flex flex-wrap gap-2 pb-2">
+                            {familyFilters.map((filter) => {
+                              const isActive =
+                                filter.value === family || (filter.value === undefined && !family);
+                              return (
+                                <Link
+                                  key={filter.label}
+                                  href={buildHref({ family: filter.value })}
+                                  className={`px-4 py-1.5 rounded-full text-xs font-sans transition-[background-color,color,border-color] duration-200 min-h-[36px] flex items-center border ${
+                                    isActive
+                                      ? "bg-black text-cream border-black font-medium"
+                                      : "border-gray-light bg-white/50 text-charcoal/80 hover:border-gold hover:bg-black hover:text-cream"
+                                  }`}
+                                >
+                                  {filter.label}
+                                </Link>
+                              );
+                            })}
                           </div>
-                        )}
+                        </div>
                       </div>
                     </div>
                   </Dialog.Content>

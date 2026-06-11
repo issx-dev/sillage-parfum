@@ -66,7 +66,7 @@ const VARIANT_STYLES: Record<CarouselVariant, {
     cardBg: "bg-white",
     cardBorder: "",
     cardHover: "hover:shadow-gold",
-    imageBg: "bg-gradient-to-br from-warm-100 to-warm-200",
+    imageBg: "bg-warm-50/40",
     contentDivider: "",
     priceText: "text-warm-900",
     progressBg: "bg-warm-200/60",
@@ -232,10 +232,10 @@ export function ProductCarousel({
                           )}
                         >
                           {badgeLabel && (
-                            <span className="absolute top-3 left-3 px-2 py-1 bg-gold text-[10px] font-semibold text-black z-10 tracking-[0.1em] uppercase rounded-sm shadow-sm">
-                              {badgeLabel}
-                            </span>
-                          )}
+                              <span className="absolute top-3 left-3 z-10 text-[10px] font-sans tracking-[0.15em] uppercase text-gold border border-gold/30 px-2 py-0.5 bg-cream/90">
+                                {badgeLabel}
+                              </span>
+                            )}
                           <div className="absolute inset-0 p-6 flex items-center justify-center transition-transform duration-700 ease-out group-hover:scale-[1.05]">
                             <Image
                               src={product.images[0]}

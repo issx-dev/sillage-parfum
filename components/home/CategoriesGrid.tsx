@@ -10,6 +10,7 @@ interface Category {
   href: string;
   imageSrc: string;
   imageAlt: string;
+  sizes: string;
 }
 
 const categories: Category[] = [
@@ -18,38 +19,68 @@ const categories: Category[] = [
     href: "/productos?gender=masculino",
     imageSrc: "/images/products/sauvage-dior-front.jpg",
     imageAlt: "Fragancias Masculinas Sillage",
+    sizes: "(max-width: 768px) 50vw, (max-width: 1200px) 38vw, 30vw",
   },
   {
     name: "Femenino",
     href: "/productos?gender=femenino",
     imageSrc: "/images/products/chanel-5-front.jpg",
     imageAlt: "Fragancias Femeninas Sillage",
+    sizes: "(max-width: 768px) 50vw, (max-width: 1200px) 38vw, 30vw",
   },
   {
     name: "Unisex",
     href: "/productos?gender=unisex",
     imageSrc: "/images/products/baccarat-rouge-front.jpg",
     imageAlt: "Fragancias Unisex Sillage",
+    sizes: "(max-width: 768px) 100vw, (max-width: 1200px) 25vw, 20vw",
   },
   {
     name: "Nicho",
     href: "/productos?collection=exclusive",
     imageSrc: "/images/products/aventus-creed-front.jpg",
     imageAlt: "Alta Perfumería de Nicho Sillage",
+    sizes: "(max-width: 768px) 33vw, 25vw",
   },
   {
     name: "Bestsellers",
     href: "/productos?badge=top_ventas",
     imageSrc: "/images/products/acqua-di-gio-front.jpg",
     imageAlt: "Fragancias Bestsellers Sillage",
+    sizes: "(max-width: 768px) 33vw, 25vw",
   },
   {
     name: "Novedades",
     href: "/productos?badge=nuevo",
     imageSrc: "/images/products/black-orchid-front.jpg",
     imageAlt: "Nuevas Fragancias Sillage",
+    sizes: "(max-width: 768px) 33vw, 25vw",
   },
 ];
+
+function CategoryCard({ category, priority = false }: { category: Category; priority?: boolean }) {
+  return (
+    <div className="relative h-full rounded-card overflow-hidden bg-gradient-to-br from-warm-100 to-warm-200 border border-warm-200/40 shadow-sm hover-safe:scale-[1.02] hover-safe:shadow-lg transition-transform duration-500 p-4">
+      <div className="relative w-full h-full">
+        <Image
+          src={category.imageSrc}
+          alt={category.imageAlt}
+          fill
+          priority={priority}
+          sizes={category.sizes}
+          className="object-contain p-2 transform-gpu group-hover:scale-105 transition-transform duration-700 ease-out"
+          loading={priority ? undefined : "lazy"}
+        />
+      </div>
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute bottom-0 left-0 right-0 p-3 md:p-6 text-center z-10">
+        <span className="font-serif text-xs sm:text-base md:text-xl lg:text-2xl font-light tracking-wide text-white block">
+          {category.name}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export function CategoriesGrid() {
   return (
@@ -71,65 +102,33 @@ export function CategoriesGrid() {
 
         <ScrollReveal stagger={75}>
           {/* Large gender cards — editorial bento row */}
-          <div className="grid grid-cols-2 md:grid-cols-8 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-8 gap-3 md:gap-4 md:h-[300px] lg:h-[380px]">
             {categories.slice(0, 3).map((category, i) => (
               <Link
                 key={category.name}
                 href={category.href}
+                aria-label={`Ver colección ${category.name}`}
                 className={cn(
-                  "group block",
-                  i === 0 && "md:col-span-3",
-                  i === 1 && "md:col-span-3",
-                  i === 2 && "md:col-span-2",
+                  "group block h-48 md:h-full",
+                  i === 0 && "col-span-1 md:col-span-3",
+                  i === 1 && "col-span-1 md:col-span-3",
+                  i === 2 && "col-span-2 md:col-span-2",
                 )}
               >
-                <div className="relative aspect-[4/3] rounded-card overflow-hidden bg-gradient-to-br from-warm-100 to-warm-200 border border-warm-200/40 shadow-sm hover-safe:scale-[1.02] hover-safe:shadow-lg transition-transform duration-500 p-4">
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={category.imageSrc}
-                      alt={category.imageAlt}
-                      fill
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                      className="object-contain p-2"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-3 text-center z-10">
-                    <span className="font-serif text-sm sm:text-base text-white font-medium tracking-wide block">
-                      {category.name}
-                    </span>
-                  </div>
-                </div>
+                <CategoryCard category={category} />
               </Link>
             ))}
           </div>
           {/* Smaller inline row — Nicho, Bestsellers, Novedades */}
-          <div className="grid grid-cols-3 gap-3 md:gap-4 mt-3 md:mt-4">
+          <div className="grid grid-cols-3 gap-3 md:gap-4 mt-3 md:mt-4 md:h-[220px] lg:h-[280px]">
             {categories.slice(3).map((category) => (
               <Link
                 key={category.name}
                 href={category.href}
-                className="group block"
+                aria-label={`Ver colección ${category.name}`}
+                className="group block h-36 md:h-full"
               >
-                <div className="relative aspect-square rounded-card overflow-hidden bg-gradient-to-br from-warm-100 to-warm-200 border border-warm-200/40 shadow-sm hover-safe:scale-[1.02] hover-safe:shadow-lg transition-transform duration-500 p-4">
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={category.imageSrc}
-                      alt={category.imageAlt}
-                      fill
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                      className="object-contain p-2"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-3 text-center z-10">
-                    <span className="font-serif text-sm sm:text-base text-white font-medium tracking-wide block">
-                      {category.name}
-                    </span>
-                  </div>
-                </div>
+                <CategoryCard category={category} />
               </Link>
             ))}
           </div>

@@ -1,0 +1,21 @@
+name: Auditoría de Rendimiento y Calidad
+
+on:
+  deployment_status: # Se dispara cuando el bot de Vercel/Netlify notifica que el despliegue de preview está listo
+
+jobs:
+  lighthouse-audit:
+    # Se ejecuta en despliegues de Preview (PRs) y Production (main)
+    if: github.event.deployment_status.state == 'success' && (github.event.deployment_status.environment == 'Preview' || github.event.deployment_status.environment == 'Production')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ejecutar Auditoría Oficial de Google PageSpeed
+        uses: tbruyelle/gh-pagespeed-action@v2
+        with:
+          url: ${{ github.event.deployment_status.target_url }}
+          key: ${{ secrets.PAGESPEED_API_KEY }} # Opcional pero recomendado
+          # Umbrales mínimos requeridos para aprobar la integración (valores de 0 a 100)
+          performance: 90
+          accessibility: 95
+          best-practices: 95
+          seo: 90

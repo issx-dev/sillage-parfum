@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { Sparkles, Truck, Gift, ChevronLeft, ChevronRight, Copy, Check } from "lucide-react";
+import { Sparkles, Truck, Gift, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PromoMessage {
   text: string;
@@ -146,19 +146,10 @@ export function PromoBar() {
                   {currentPromo.promoCode ? (
                     <button
                       onClick={(e) => handleCopyCode(currentPromo.promoCode!, e)}
-                      className="inline-flex items-center justify-center gap-1 min-w-[4.5rem] text-[10px] sm:text-xs font-sans font-medium tracking-[0.1em] sm:tracking-[0.25em] text-gold hover:text-cream uppercase transition-colors duration-300 relative pb-0.5 border-b border-gold/30 hover:border-cream/40"
+                      className="font-sans tracking-[0.2em] text-xs uppercase hover:text-gold transition-colors cursor-pointer"
+                      aria-label="Copiar código de descuento"
                     >
-                      {copied ? (
-                        <>
-                          <Check className="w-2.5 h-2.5 shrink-0 text-gold" />
-                          <span>copiado</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-2.5 h-2.5 shrink-0" />
-                          <span>copiar</span>
-                        </>
-                      )}
+                      {copied ? "¡COPIADO!" : "CÓDIGO: SILLAGE2"}
                     </button>
                   ) : (
                     <Link

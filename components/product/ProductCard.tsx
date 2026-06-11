@@ -50,6 +50,30 @@ export function ProductCard({
 
   const activeWishlist = mounted && isWishlisted;
 
+  // Default variant: first in-stock, or first if none
+  const defaultVariant = product.variants.find((v) => v.stock > 0) || product.variants[0];
+
+  // Case detection
+  const allSoldOut = product.variants.every((v) => v.stock === 0);
+  const hasMultipleVariants = product.variants.length > 1;
+
+  // Cart handler (reusable across cases)
+  const handleAddToCart = (v: Variant) => {
+    addItem({
+      variantId: v.id,
+      productId: product.id,
+      slug: product.slug,
+      name: product.name,
+      brand: product.brand,
+      image: product.images[0],
+      size_ml: v.size_ml,
+      price: product.discount_percent > 0 ? v.price * (1 - product.discount_percent / 100) : v.price,
+      quantity: 1,
+    });
+    openCart();
+    toast.success(`${product.name} (${v.size_ml}ml) añadido al carrito`);
+  };
+
   const isCarousel = variant === "carousel";
   const isDark = theme === "dark";
   const hasDiscount = product.discount_percent > 0;
@@ -138,43 +162,73 @@ export function ProductCard({
           />
         </div>
 
-        {/* Buy bar — only in default variant, slides up on hover (desktop), always visible (mobile) */}
+        {/* Barra de Compra Rápida */}
         {!isCarousel && (
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (selectedVariant.stock === 0) return;
-              addItem({
-                variantId: selectedVariant.id,
-                productId: product.id,
-                slug: product.slug,
-                name: product.name,
-                brand: product.brand,
-                image: product.images[0],
-                size_ml: selectedVariant.size_ml,
-                price: currentPrice,
-                quantity: 1,
-              });
-              openCart();
-              toast.success(`${product.name} añadido a tu carrito`);
-            }}
-            disabled={selectedVariant.stock === 0}
-            aria-label="Añadir al carrito"
-            className={cn(
-              "w-full h-12 md:h-10 bg-black text-cream text-[10px] font-sans uppercase tracking-widest text-center",
-              "flex items-center justify-center gap-2",
-              "absolute bottom-0 left-0 right-0 z-20",
-              "md:translate-y-full md:group-hover:translate-y-0",
-              "focus:translate-y-0 focus-within:translate-y-0",
-              "transition-transform duration-300 ease-out",
-              "max-md:translate-y-0",
-              selectedVariant.stock === 0 && "opacity-50 cursor-not-allowed"
+          <>
+            {allSoldOut ? (
+              /* CASO A: Todo Agotado */
+              <div className="absolute bottom-0 left-0 right-0 z-20 w-full h-12 md:h-10 bg-warm-200 text-warm-500 text-[10px] font-sans uppercase tracking-widest flex items-center justify-center cursor-not-allowed max-md:relative">
+                Agotado
+              </div>
+            ) : hasMultipleVariants ? (
+              /* CASO C: Multivariante */
+              <div className={cn(
+                "w-full h-12 md:h-10 bg-black text-cream text-[10px] font-sans uppercase tracking-widest text-center",
+                "flex divide-x divide-warm-800",
+                "absolute bottom-0 left-0 right-0 z-20",
+                "md:translate-y-full md:group-hover:translate-y-0",
+                "focus-within:translate-y-0",
+                "transition-transform duration-300 ease-out",
+                "max-md:translate-y-0 max-md:relative"
+              )}>
+                {product.variants.map((v) => (
+                  <button
+                    key={v.id}
+                    disabled={v.stock === 0}
+                    aria-label={`Añadir ${v.size_ml}ml al carrito`}
+                    onMouseEnter={() => setSelectedVariant(v)}
+                    onMouseLeave={() => setSelectedVariant(defaultVariant)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (v.stock === 0) return;
+                      handleAddToCart(v);
+                    }}
+                    className={cn(
+                      "flex-1 h-full flex items-center justify-center hover:bg-gold hover:text-black transition-colors cursor-pointer",
+                      v.stock === 0 && "opacity-30 cursor-not-allowed line-through hover:bg-transparent hover:text-cream"
+                    )}
+                  >
+                    {v.size_ml}ml
+                  </button>
+                ))}
+              </div>
+            ) : (
+              /* CASO B: Monovariante */
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleAddToCart(selectedVariant);
+                }}
+                disabled={selectedVariant.stock === 0}
+                aria-label="Añadir al carrito"
+                className={cn(
+                  "w-full h-12 md:h-10 bg-black text-cream text-[10px] font-sans uppercase tracking-widest text-center",
+                  "flex items-center justify-center gap-2",
+                  "absolute bottom-0 left-0 right-0 z-20",
+                  "md:translate-y-full md:group-hover:translate-y-0",
+                  "focus:translate-y-0 focus-within:translate-y-0",
+                  "transition-transform duration-300 ease-out",
+                  "max-md:translate-y-0 max-md:relative",
+                  selectedVariant.stock === 0 && "opacity-50 cursor-not-allowed"
+                )}
+              >
+                <ShoppingBag className="w-3.5 h-3.5" />
+                Añadir · {selectedVariant.size_ml}ml
+              </button>
             )}
-          >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            Añadir al carrito
-          </button>
+          </>
         )}
       </div>
 

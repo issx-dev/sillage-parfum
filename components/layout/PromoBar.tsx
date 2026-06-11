@@ -146,7 +146,7 @@ export function PromoBar() {
                   {currentPromo.promoCode ? (
                     <button
                       onClick={(e) => handleCopyCode(currentPromo.promoCode!, e)}
-                      className="font-sans tracking-[0.2em] text-xs uppercase hover:text-gold transition-colors cursor-pointer"
+                      className="font-sans tracking-[0.2em] text-xs uppercase text-gold hover:text-cream transition-colors cursor-pointer bg-transparent border-none"
                       aria-label="Copiar código de descuento"
                     >
                       {copied ? "¡COPIADO!" : "CÓDIGO: SILLAGE2"}

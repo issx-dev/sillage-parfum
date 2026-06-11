@@ -112,7 +112,7 @@ function SuggestedChip({
   return (
     <button
       onClick={() => onClick(term)}
-      className="px-3.5 py-1.5 text-[10px] tracking-[0.2em] uppercase font-light text-warm-300 border border-warm-700 hover:border-gold/60 hover:text-cream hover:bg-gold/8 transition-[color,border-color,background-color] duration-300 rounded-none"
+      className="px-3.5 py-1.5 text-[10px] tracking-[0.2em] uppercase font-light text-warm-600 border border-warm-300 hover:border-gold/60 hover:text-gold hover:bg-gold/5 transition-[color,border-color,background-color] duration-300 rounded-none"
     >
       {term}
     </button>
@@ -135,9 +135,9 @@ function RecommendedCard({
       <Link
         href={`/productos/${product.slug}`}
         onClick={onClose}
-        className="group relative flex flex-col bg-warm-900/50 border border-warm-700/50 hover:border-gold/40 transition-[border-color] duration-500 overflow-hidden"
+        className="group relative flex flex-col bg-warm-50/60 border border-warm-200/60 hover:border-gold/40 transition-[border-color] duration-500 overflow-hidden"
       >
-        <div className="relative aspect-[4/5] bg-white/8 flex items-center justify-center overflow-hidden">
+        <div className="relative aspect-[4/5] bg-warm-100 flex items-center justify-center overflow-hidden">
           <Image
             src={product.images[0]}
             alt={product.name}
@@ -149,14 +149,14 @@ function RecommendedCard({
             <ArrowUpRight className="w-4 h-4 text-gold" />
           </span>
         </div>
-        <div className="px-4 py-4 border-t border-warm-700/40">
-          <span className="block text-[9px] uppercase tracking-[0.3em] text-warm-400 mb-1">
+        <div className="px-4 py-4 border-t border-warm-200/60">
+          <span className="block text-[9px] uppercase tracking-[0.3em] text-warm-600 mb-1">
             {product.brand}
           </span>
-          <span className="block text-sm font-serif text-cream group-hover:text-gold transition-colors duration-300 truncate leading-snug">
+          <span className="block text-sm font-serif text-warm-900 group-hover:text-gold transition-colors duration-300 truncate leading-snug">
             {product.name}
           </span>
-          <span className="block text-[10px] text-warm-400 mt-1.5">
+          <span className="block text-[10px] text-warm-600 mt-1.5">
             desde {formatPrice(defaultVariant.price)}
           </span>
         </div>
@@ -168,9 +168,9 @@ function RecommendedCard({
     <Link
       href={`/productos/${product.slug}`}
       onClick={onClose}
-      className="group flex items-center gap-3 py-3.5 border-b border-warm-700/30 last:border-0 transition-colors duration-300"
+      className="group flex items-center gap-3 py-3.5 border-b border-warm-200/60 last:border-0 transition-colors duration-300"
     >
-      <div className="relative w-12 h-12 bg-white/8 flex-shrink-0 flex items-center justify-center overflow-hidden">
+      <div className="relative w-12 h-12 bg-warm-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
         <Image
           src={product.images[0]}
           alt={product.name}
@@ -180,14 +180,14 @@ function RecommendedCard({
         />
       </div>
       <div className="flex-1 min-w-0">
-        <span className="block text-[9px] uppercase tracking-[0.2em] text-warm-400">
+        <span className="block text-[9px] uppercase tracking-[0.2em] text-warm-600">
           {product.brand}
         </span>
-        <span className="block text-xs text-cream truncate group-hover:text-gold transition-colors duration-300 mt-0.5 font-serif">
+        <span className="block text-xs text-warm-900 truncate group-hover:text-gold transition-colors duration-300 mt-0.5 font-serif">
           {product.name}
         </span>
       </div>
-      <span className="text-[11px] text-warm-300 flex-shrink-0">
+      <span className="text-[11px] text-warm-600 flex-shrink-0">
         {formatPrice(defaultVariant.price)}
       </span>
     </Link>
@@ -211,36 +211,36 @@ function ResultRow({
     <Link
       href={`/productos/${product.slug}`}
       onClick={onClose}
-      className="group flex items-center gap-4 py-4 border-b border-warm-700/30 last:border-0 transition-colors duration-300"
+      className="group flex items-center gap-4 py-4 border-b border-warm-200/60 last:border-0 transition-colors duration-300"
     >
-      <div className="relative w-14 h-14 bg-white/8 flex-shrink-0 overflow-hidden">
-        <Image
-          src={product.images[0]}
-          alt={product.name}
-          fill
-          sizes="56px"
-          className="object-contain p-2 group-hover:scale-105 transition-transform duration-500"
-        />
+<div className="relative w-14 h-14 bg-warm-100 flex-shrink-0 overflow-hidden">
+            <Image
+              src={product.images[0]}
+              alt={product.name}
+              fill
+              sizes="56px"
+              className="object-contain p-2 mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+            />
       </div>
       <div className="flex-1 min-w-0">
-        <span className="block text-[9px] uppercase tracking-[0.25em] text-warm-400 mb-0.5">
-          {product.brand}
-        </span>
-        <span className="block text-sm font-serif text-cream truncate group-hover:text-gold transition-colors duration-300">
-          {product.name}
-        </span>
-        <span className="block text-[10px] text-warm-400 mt-0.5 italic">
-          {product.family}
-        </span>
+<span className="block text-[9px] uppercase tracking-[0.25em] text-warm-600 mb-0.5">
+            {product.brand}
+          </span>
+          <span className="block text-sm font-serif text-warm-900 truncate group-hover:text-gold transition-colors duration-300">
+            {product.name}
+          </span>
+          <span className="block text-[10px] text-warm-600 mt-0.5 italic">
+            {product.family}
+          </span>
       </div>
       <div className="text-right flex-shrink-0">
-        <span className="block text-sm text-cream font-light">
-          {formatPrice(currentPrice)}
-        </span>
-        {hasDiscount && (
-          <span className="block text-[10px] text-warm-500 line-through">
-            {formatPrice(defaultVariant.price)}
+<span className="block text-sm text-warm-900 font-light">
+            {formatPrice(currentPrice)}
           </span>
+          {hasDiscount && (
+            <span className="block text-[10px] text-warm-500 line-through">
+              {formatPrice(defaultVariant.price)}
+            </span>
         )}
       </div>
     </Link>
@@ -302,7 +302,7 @@ export function SearchOverlay({
   return (
     <DialogPrimitive.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-black/95 animate-overlay-in" />
+        <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-cream/98 animate-overlay-in" />
         <DialogPrimitive.Content className="fixed inset-0 z-[60] flex flex-col h-full max-w-[860px] mx-auto w-full px-4 sm:px-6 md:px-12 py-6 md:py-12 overflow-hidden">
           <DialogPrimitive.Title>
             <VisuallyHidden>Búsqueda de fragancias</VisuallyHidden>
@@ -323,7 +323,7 @@ export function SearchOverlay({
               </div>
               <button
                 onClick={onClose}
-                className="group flex items-center gap-1.5 text-[9px] uppercase tracking-[0.2em] text-warm-300 hover:text-cream transition-colors duration-300"
+                className="group flex items-center gap-1.5 text-[9px] uppercase tracking-[0.2em] text-warm-600 hover:text-gold transition-colors duration-300"
                 aria-label="Cerrar búsqueda"
               >
                 <span className="hidden sm:inline">Cerrar</span>
@@ -340,18 +340,18 @@ export function SearchOverlay({
                 placeholder={`Buscar ${placeholder}...`}
                 className={cn(
                   "w-full bg-transparent py-3 pr-10 text-xl sm:text-2xl md:text-4xl",
-                  "text-cream placeholder-warm-500 font-serif font-light",
-                  "border-b border-warm-700 focus:border-gold",
+                  "text-charcoal placeholder-warm-400 font-serif font-light",
+                  "border-b border-warm-300 focus:border-gold",
                   "focus:outline-none transition-colors duration-500",
                   "tracking-wide leading-tight"
                 )}
               />
-              <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-warm-500 group-focus-within/input:text-gold transition-colors duration-300" />
+              <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-warm-400 group-focus-within/input:text-gold transition-colors duration-300" />
 
               {query && (
                 <button
                   onClick={() => setQuery("")}
-                  className="absolute right-7 top-1/2 -translate-y-1/2 text-[10px] uppercase tracking-[0.15em] text-warm-600 hover:text-warm-300 transition-colors duration-200"
+                  className="absolute right-7 top-1/2 -translate-y-1/2 text-[10px] uppercase tracking-[0.15em] text-warm-400 hover:text-warm-600 transition-colors duration-200"
                   aria-label="Limpiar"
                 >
                   ×
@@ -365,7 +365,7 @@ export function SearchOverlay({
               {!hasQuery ? (
                 <div className="space-y-6 md:space-y-10">
                   <section>
-                    <p className="text-[9px] uppercase tracking-[0.3em] text-warm-400 mb-4">
+                    <p className="text-[9px] uppercase tracking-[0.3em] text-warm-600 mb-4">
                       Búsquedas frecuentes
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -376,7 +376,7 @@ export function SearchOverlay({
                   </section>
 
                   <section>
-                    <p className="text-[9px] uppercase tracking-[0.3em] text-warm-400 mb-4 md:mb-6">
+                    <p className="text-[9px] uppercase tracking-[0.3em] text-warm-600 mb-4 md:mb-6">
                       Las más buscadas
                     </p>
 
@@ -400,10 +400,10 @@ export function SearchOverlay({
               ) : (
                 <div>
                   <div className="flex items-baseline justify-between mb-6">
-                    <p className="text-[9px] uppercase tracking-[0.3em] text-warm-400">
-                      Resultados
-                    </p>
-                    <span className="text-[10px] text-warm-400" aria-live="polite">
+<p className="text-[9px] uppercase tracking-[0.3em] text-warm-600">
+                        Resultados
+                      </p>
+                      <span className="text-[10px] text-warm-600" aria-live="polite">
                       {loading
                         ? "buscando…"
                         : error
@@ -414,14 +414,14 @@ export function SearchOverlay({
 
                   {error ? (
                     <div className="flex flex-col items-start pt-4 pb-16">
-                      <div className="h-[1px] w-full bg-warm-800/60 mb-10" />
-                      <p className="text-[9px] uppercase tracking-[0.3em] text-warm-400 mb-4">
+                      <div className="h-[1px] w-full bg-warm-200/60 mb-10" />
+                      <p className="text-[9px] uppercase tracking-[0.3em] text-warm-600 mb-4">
                         Error de búsqueda
                       </p>
-                      <h3 className="font-serif text-2xl md:text-3xl text-cream/80 font-light leading-snug max-w-[28ch] mb-6">
+                      <h3 className="font-serif text-2xl md:text-3xl text-warm-900 font-light leading-snug max-w-[28ch] mb-6">
                         No se pudo completar la búsqueda.
                       </h3>
-                      <p className="text-xs text-warm-400 max-w-[44ch] leading-relaxed">
+                      <p className="text-xs text-warm-600 max-w-[44ch] leading-relaxed">
                         Inténtelo de nuevo en unos instantes.
                       </p>
                     </div>
@@ -433,19 +433,19 @@ export function SearchOverlay({
                     </div>
                   ) : !loading ? (
                     <div className="flex flex-col items-start pt-4 pb-16">
-                      <div className="h-[1px] w-full bg-warm-800/60 mb-10" />
-                      <p className="text-[9px] uppercase tracking-[0.3em] text-warm-400 mb-4">
+                      <div className="h-[1px] w-full bg-warm-200/60 mb-10" />
+                      <p className="text-[9px] uppercase tracking-[0.3em] text-warm-600 mb-4">
                         Sin coincidencias
                       </p>
-                      <h3 className="font-serif text-2xl md:text-3xl text-cream/80 font-light leading-snug max-w-[28ch] mb-6">
+                      <h3 className="font-serif text-2xl md:text-3xl text-warm-900 font-light leading-snug max-w-[28ch] mb-6">
                         &ldquo;{query}&rdquo; no pertenece a nuestra colección.
                       </h3>
-                      <p className="text-xs text-warm-400 max-w-[44ch] leading-relaxed mb-8">
+                      <p className="text-xs text-warm-600 max-w-[44ch] leading-relaxed mb-8">
                         Pruebe con una nota olfativa (ámbar, bergamota), una familia (Floral, Amaderado) o el nombre exacto de la firma.
                       </p>
                       <button
                         onClick={() => setQuery("")}
-                        className="text-[10px] uppercase tracking-[0.2em] text-gold hover:text-cream transition-colors duration-300 pb-0.5 border-b border-gold/40 hover:border-cream/40"
+                        className="text-[10px] uppercase tracking-[0.2em] text-gold hover:text-warm-900 transition-colors duration-300 pb-0.5 border-b border-gold/40 hover:border-warm-900/40"
                       >
                         Restablecer
                       </button>
@@ -455,14 +455,14 @@ export function SearchOverlay({
               )}
             </div>
 
-            <footer className="mt-6 pt-4 border-t border-warm-800/40 flex items-center justify-between">
-              <span className="text-[9px] text-warm-400 uppercase tracking-[0.2em]">
+            <footer className="mt-6 pt-4 border-t border-warm-200/60 flex items-center justify-between">
+              <span className="text-[9px] text-warm-600 uppercase tracking-[0.2em]">
                 esc para cerrar
               </span>
               <Link
                 href="/productos"
                 onClick={onClose}
-                className="text-[9px] uppercase tracking-[0.2em] text-warm-400 hover:text-gold transition-colors duration-300 flex items-center gap-1.5"
+                className="text-[9px] uppercase tracking-[0.2em] text-warm-600 hover:text-gold transition-colors duration-300 flex items-center gap-1.5"
               >
                 Ver catálogo completo
                 <ArrowUpRight className="w-3 h-3" />

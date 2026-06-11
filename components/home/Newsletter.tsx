@@ -50,11 +50,10 @@ export function Newsletter() {
               Acceso anticipado a lanzamientos exclusivos, eventos privados y beneficios reservados para miembros.
             </p>
 
-            {/* Incentive */}
-            <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-full">
-              <span className="text-xs font-semibold text-gold">10% OFF</span>
-              <span className="text-xs text-warm-600 ml-1">en tu primera compra como miembro</span>
-            </div>
+            {/* Incentive — typographic text */}
+            <p className="mt-6 text-xs font-sans tracking-[0.15em] text-gold uppercase text-center">
+              Reciba un 10% de cortesía en su primera adquisición al unirse al Círculo
+            </p>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="mt-8">

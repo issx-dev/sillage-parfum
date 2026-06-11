@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, DM_Sans } from "next/font/google";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { PromoBar } from "@/components/layout/PromoBar";
 import { Navbar } from "@/components/layout/Navbar";
@@ -30,15 +30,15 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-const playfair = Playfair_Display({
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
   variable: "--font-serif",
   display: "swap",
 });
 
-const dmSans = DM_Sans({
+const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   variable: "--font-sans",
@@ -85,7 +85,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={`${playfair.variable} ${dmSans.variable}`} suppressHydrationWarning>
+    <html lang="es" className={`${cormorant.variable} ${inter.variable}`} suppressHydrationWarning>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <header className="fixed top-0 left-0 right-0 z-50">
           <PromoBar />

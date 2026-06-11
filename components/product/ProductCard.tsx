@@ -168,7 +168,7 @@ export function ProductCard({
               "md:translate-y-full md:group-hover:translate-y-0",
               "focus:translate-y-0 focus-within:translate-y-0",
               "transition-transform duration-300 ease-out",
-              "max-md:translate-y-0 max-md:relative",
+              "max-md:translate-y-0",
               selectedVariant.stock === 0 && "opacity-50 cursor-not-allowed"
             )}
           >

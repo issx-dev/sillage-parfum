@@ -27,7 +27,7 @@ const navLinks = [
   { href: "/productos?gender=unisex", label: "Unisex" },
   { href: "/productos?badge=nuevo", label: "Novedades" },
   { href: "/productos", label: "Marcas" },
-  { href: "/productos?badge=oferta", label: "Ofertas" },
+  { href: "/productos?badge=oferta", label: "Selección Especial" },
 ];
 
 export interface NavbarProps {

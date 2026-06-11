@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { useCarouselState } from "@/hooks/useCarouselState";
 import { Container } from "@/components/layout/Container";
-import { cn, formatPrice } from "@/lib/utils";
+import { ProductCard } from "@/components/product/ProductCard";
+import { cn } from "@/lib/utils";
 import type { Product } from "@/types";
 
 export type CarouselVariant = "light" | "dark";
@@ -28,12 +27,6 @@ interface ProductCarouselProps {
   showStatusBadges?: boolean;
 }
 
-const STATUS_BADGE_LABELS: Record<string, string> = {
-  nuevo: "NUEVO",
-  oferta: "OFERTA",
-  top_ventas: "TOP VENTAS",
-};
-
 /**
  * Variant-bound visual tokens. The component is intentionally a pure
  * presentation primitive — no copy defaults, no marketing strings.
@@ -47,12 +40,6 @@ const VARIANT_STYLES: Record<CarouselVariant, {
   navBorder: string;
   navText: string;
   navBg: string;
-  cardBg: string;
-  cardBorder: string;
-  cardHover: string;
-  imageBg: string;
-  contentDivider: string;
-  priceText: string;
   progressBg: string;
 }> = {
   light: {
@@ -63,12 +50,6 @@ const VARIANT_STYLES: Record<CarouselVariant, {
     navBorder: "border-warm-300",
     navText: "text-warm-600",
     navBg: "bg-white",
-    cardBg: "bg-white",
-    cardBorder: "",
-    cardHover: "hover:shadow-gold",
-    imageBg: "bg-warm-50/40",
-    contentDivider: "",
-    priceText: "text-warm-900",
     progressBg: "bg-warm-200/60",
   },
   dark: {
@@ -79,12 +60,6 @@ const VARIANT_STYLES: Record<CarouselVariant, {
     navBorder: "border-warm-700",
     navText: "text-warm-400",
     navBg: "bg-white/5",
-    cardBg: "bg-warm-900/30",
-    cardBorder: "border border-warm-800/50",
-    cardHover: "hover:border-gold/30",
-    imageBg: "",
-    contentDivider: "border-t border-warm-800/50",
-    priceText: "text-warm-50",
     progressBg: "bg-warm-800/60",
   },
 };
@@ -194,93 +169,21 @@ export function ProductCarousel({
                 isDragging ? "cursor-grabbing" : "cursor-grab"
               )}
             >
-              {products.map((product) => {
-                const hasDiscount = product.discount_percent > 0;
-                const statusBadge = hasDiscount || !showStatusBadges
-                  ? null
-                  : STATUS_BADGE_LABELS[product.badge || ""] || null;
-                const badgeLabel = hasDiscount
-                  ? `OFERTA -${product.discount_percent}%`
-                  : statusBadge;
-                const primaryVariant =
-                  product.variants.find((v) => v.stock > 0) || product.variants[0];
-                const currentPrice = hasDiscount
-                  ? primaryVariant.price * (1 - product.discount_percent / 100)
-                  : primaryVariant.price;
-
-                return (
+              {products.map((product) => (
                   <div
                     key={product.id}
                     className="w-[280px] sm:w-[320px] flex-shrink-0 snap-start pointer-events-none"
                   >
-                    <Link
-                      href={`/productos/${product.slug}`}
-                      className="block pointer-events-auto"
-                    >
-                      <div
-                        className={cn(
-                          "rounded-card overflow-hidden transition-[transform,box-shadow] duration-300 hover:scale-[1.03] group",
-                          styles.cardBg,
-                          styles.cardBorder,
-                          styles.cardHover
-                        )}
-                      >
-                        <div
-                          className={cn(
-                            "relative aspect-square overflow-hidden",
-                            styles.imageBg
-                          )}
-                        >
-                          {badgeLabel && (
-                              <span className="absolute top-3 left-3 z-10 text-[10px] font-sans tracking-[0.15em] uppercase text-gold border border-gold/30 px-2 py-0.5 bg-cream/90">
-                                {badgeLabel}
-                              </span>
-                            )}
-                          <div className="absolute inset-0 p-6 flex items-center justify-center transition-transform duration-700 ease-out group-hover:scale-[1.05]">
-                            <Image
-                              src={product.images[0]}
-                              alt={product.name}
-                              fill
-                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                              className="object-contain p-4"
-                              loading="lazy"
-                            />
-                          </div>
-                        </div>
-
-                        <div className={cn("p-4", styles.contentDivider)}>
-                          <p className="text-xs uppercase tracking-wider text-warm-500 mb-1">
-                            {product.brand}
-                          </p>
-                          <h3
-                            className={cn(
-                              "font-serif text-lg",
-                              styles.priceText
-                            )}
-                          >
-                            {product.name}
-                          </h3>
-                          <div className="mt-3 flex items-center gap-2">
-                            <span
-                              className={cn(
-                                "text-base font-semibold",
-                                styles.priceText
-                              )}
-                            >
-                              {formatPrice(currentPrice)}
-                            </span>
-                            {hasDiscount && (
-                              <span className="text-sm text-warm-500 line-through">
-                                {formatPrice(primaryVariant.price)}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
+                    <div className="pointer-events-auto">
+                      <ProductCard
+                        product={product}
+                        variant="carousel"
+                        theme={variant}
+                        showStatusBadges={showStatusBadges}
+                      />
+                    </div>
                   </div>
-                );
-              })}
+                ))}
             </div>
 
             <div

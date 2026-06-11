@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { ChevronDown, Star, ArrowUpRight } from "lucide-react";
+import { ChevronDown, ArrowUpRight } from "lucide-react";
 
 export function HeroSection() {
   const reducedMotion = useReducedMotion();
@@ -39,10 +39,9 @@ export function HeroSection() {
 
           {/* Left: Text content */}
           <div className="text-left lg:col-span-7 xl:col-span-8 flex flex-col justify-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/10 border border-gold/30 w-fit mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-gold" />
-              <span className="text-xs font-sans tracking-[0.15em] uppercase text-gold">Alta Perfumería de Autor</span>
-            </div>
+            <span className="text-xs font-sans tracking-[0.25em] uppercase text-gold block mb-6">
+              Alta Perfumería de Autor
+            </span>
 
             <h1 className="font-serif text-[2.6rem] sm:text-5xl md:text-7xl font-normal leading-[1.08] tracking-tight">
               El arte de la <br />
@@ -78,14 +77,9 @@ export function HeroSection() {
             </div>
 
             {/* Premium Stat Overlay */}
-            <div className="mt-12 inline-block backdrop-blur-md bg-white/5 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] rounded-card p-4 sm:p-5 w-fit hover:border-gold/30 transition-[border-color,box-shadow] duration-500">
-              <p className="text-sm sm:text-base flex items-center gap-3 text-cream/90 font-sans tracking-wide">
-                <Star className="w-4 h-4 text-gold fill-gold" />
-                <span className="font-semibold text-gold">4.9/5</span>
-                <span className="text-cream/40">|</span>
-                <span>12.847 firmas de aroma entregadas</span>
+            <p className="mt-10 text-[11px] font-sans tracking-[0.2em] text-cream/60 uppercase flex items-center gap-2">
+                ★ 4.9/5 · Avalado por más de 12.000 firmas de autor entregadas
               </p>
-            </div>
           </div>
 
           {/* Right: Premium Glassmorphism Card */}

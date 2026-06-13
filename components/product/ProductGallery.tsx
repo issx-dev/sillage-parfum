@@ -41,7 +41,7 @@ export function ProductGallery({ images, name, productId }: ProductGalleryProps)
       <Dialog.Root open={isLightboxOpen} onOpenChange={setIsLightboxOpen}>
         <Dialog.Trigger asChild>
           <button
-            className="absolute bottom-4 sm:bottom-6 right-4 sm:right-6 p-2.5 rounded-full bg-cream/80 backdrop-blur-xs hover:bg-white text-charcoal hover:text-black border border-warm-200/40 shadow-xs hover:shadow-md transition-all duration-300 z-10 cursor-pointer"
+            className="absolute bottom-4 sm:bottom-6 right-4 sm:right-6 w-11 h-11 flex items-center justify-center rounded-full bg-cream/80 backdrop-blur-xs hover:bg-white text-charcoal hover:text-black border border-warm-200/40 shadow-xs hover:shadow-md transition-all duration-300 z-10 cursor-pointer"
             aria-label="Ampliar imagen"
           >
             <Maximize2 className="w-4 h-4" />

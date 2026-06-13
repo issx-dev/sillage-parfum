@@ -34,7 +34,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-light">
           <h2 className="font-serif text-xl">Tu carrito</h2>
-          <DialogPrimitive.Close className="min-w-[44px] min-h-[44px] flex items-center justify-center text-warm-500 hover:text-warm-900 transition-colors">
+          <DialogPrimitive.Close aria-label="Cerrar carrito" className="min-w-[44px] min-h-[44px] flex items-center justify-center text-warm-500 hover:text-warm-900 transition-colors">
             <X className="w-5 h-5" />
           </DialogPrimitive.Close>
         </div>

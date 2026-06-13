@@ -143,7 +143,7 @@ function RecommendedCard({
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, 25vw"
-            className="object-contain p-6 group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+            className="object-contain p-6 group-hover:scale-[1.04] transition-transform duration-300 ease-out"
           />
           <span className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <ArrowUpRight className="w-4 h-4 text-gold" />
@@ -302,8 +302,8 @@ export function SearchOverlay({
   return (
     <DialogPrimitive.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-cream/98 animate-overlay-in" />
-        <DialogPrimitive.Content className="fixed inset-0 z-[60] flex flex-col h-full max-w-[860px] mx-auto w-full px-4 sm:px-6 md:px-12 py-6 md:py-12 overflow-hidden">
+        <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-cream animate-overlay-in" />
+        <DialogPrimitive.Content aria-modal="true" className="fixed inset-0 z-[60] flex flex-col h-full max-w-[860px] mx-auto w-full px-4 sm:px-6 md:px-12 py-6 md:py-12 overflow-hidden">
           <DialogPrimitive.Title>
             <VisuallyHidden>Búsqueda de fragancias</VisuallyHidden>
           </DialogPrimitive.Title>
@@ -342,7 +342,7 @@ export function SearchOverlay({
                   "w-full bg-transparent py-3 pr-10 text-xl sm:text-2xl md:text-4xl",
                   "text-charcoal placeholder-warm-400 font-serif font-light",
                   "border-b border-warm-300 focus:border-gold",
-                  "focus:outline-none transition-colors duration-500",
+                  "focus-visible:ring-1 focus-visible:ring-gold focus:outline-none transition-colors duration-500",
                   "tracking-wide leading-tight"
                 )}
               />

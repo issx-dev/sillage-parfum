@@ -44,7 +44,7 @@ const VARIANT_STYLES: Record<CarouselVariant, {
 }> = {
   light: {
     sectionBg: "bg-warm-50",
-    eyebrowText: "text-gold",
+    eyebrowText: "text-gold-dark",
     titleText: "text-warm-900",
     subtitleText: "text-warm-600",
     navBorder: "border-warm-300",

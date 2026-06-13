@@ -78,7 +78,7 @@ export function HeroSection() {
 
             {/* Premium Stat Overlay */}
             <p className="mt-10 text-[11px] font-sans tracking-[0.2em] text-cream/60 uppercase flex items-center gap-2">
-                ★ 4.9/5 · Avalado por más de 12.000 firmas de autor entregadas
+                ★ 4.9/5 · Calidad excepcional en alta perfumería de autor
               </p>
           </div>
 

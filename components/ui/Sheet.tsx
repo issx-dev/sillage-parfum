@@ -35,6 +35,7 @@ const SheetContent = React.forwardRef<
   <SheetPortal>
     <SheetOverlay />
     <DialogPrimitive.Content
+      aria-modal="true"
       ref={ref}
       className={cn(
         "fixed z-50 gap-4 bg-cream shadow-lg transition-[transform,opacity] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",

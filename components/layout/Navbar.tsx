@@ -129,18 +129,18 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
             </Link>
 
             {/* Desktop nav links */}
-            <div className="hidden md:flex items-center gap-6 lg:gap-8">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className={cn(
-                    "text-sm font-sans tracking-wide transition-colors duration-300",
-                    isSolid
-                      ? "text-charcoal/80 hover:text-gold"
-                      : "text-cream/80 hover:text-gold"
-                  )}
-                >
+<div className="hidden md:flex items-center gap-6 lg:gap-8">
+               {navLinks.map((link) => (
+                 <Link
+                   key={link.label}
+                   href={link.href}
+                   className={cn(
+                     "h-11 flex items-center text-sm font-sans tracking-wide transition-colors duration-300",
+                     isSolid
+                       ? "text-charcoal/80 hover:text-gold"
+                       : "text-cream/80 hover:text-gold"
+                   )}
+                 >
                   {link.label}
                 </Link>
               ))}

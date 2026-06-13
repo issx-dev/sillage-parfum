@@ -65,7 +65,7 @@ export function FilterDrawer({ gender, family, badge, activeFiltersCount }: Filt
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <button className="flex items-center gap-2 border border-warm-200 bg-white hover:bg-warm-50 text-charcoal px-5 py-2.5 rounded-full hover:border-gold transition-colors duration-300 text-[11px] uppercase tracking-[0.15em] font-sans font-medium shadow-sm cursor-pointer">
+        <button className="flex items-center justify-center gap-2 border border-warm-200 bg-white hover:bg-warm-50 text-charcoal px-5 h-11 rounded-full hover:border-gold transition-colors duration-300 text-[11px] uppercase tracking-[0.15em] font-sans font-medium shadow-sm cursor-pointer">
           <SlidersHorizontal className="w-3.5 h-3.5 text-gold-dark" />
           Filtrar {activeFiltersCount > 0 && `(${activeFiltersCount})`}
         </button>
@@ -73,7 +73,7 @@ export function FilterDrawer({ gender, family, badge, activeFiltersCount }: Filt
 
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs animate-overlay-fade" />
-        <Dialog.Content className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-[400px] bg-cream border-l border-warm-200/50 p-6 shadow-2xl flex flex-col justify-between animate-drawer-slide">
+        <Dialog.Content aria-modal="true" className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-[400px] bg-cream border-l border-warm-200/50 p-6 shadow-2xl flex flex-col justify-between animate-drawer-slide">
           <div className="flex flex-col h-full overflow-hidden">
             <div className="flex items-center justify-between border-b border-warm-200/30 pb-4 mb-6 shrink-0">
               <Dialog.Title className="font-serif text-xl tracking-wide">Filtros</Dialog.Title>

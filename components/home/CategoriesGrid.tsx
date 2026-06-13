@@ -68,7 +68,7 @@ function CategoryCard({ category, priority = false }: { category: Category; prio
           fill
           priority={priority}
           sizes={category.sizes}
-          className="object-contain p-2 transform-gpu group-hover:scale-105 transition-transform duration-700 ease-out"
+          className="object-contain p-2 transform-gpu group-hover:scale-105 transition-transform duration-300 ease-out"
           loading={priority ? undefined : "lazy"}
         />
       </div>
@@ -88,7 +88,7 @@ export function CategoriesGrid() {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <div className="text-center mb-12 lg:mb-16">
-              <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-gold">
+              <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-gold-dark">
               explora
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-warm-900 tracking-wide mt-2">
@@ -104,17 +104,16 @@ export function CategoriesGrid() {
           {/* Large gender cards — editorial bento row */}
           <div className="grid grid-cols-2 md:grid-cols-8 gap-3 md:gap-4 md:h-[300px] lg:h-[380px]">
             {categories.slice(0, 3).map((category, i) => (
-              <Link
-                key={category.name}
-                href={category.href}
-                aria-label={`Ver colección ${category.name}`}
-                className={cn(
-                  "group block h-48 md:h-full",
-                  i === 0 && "col-span-1 md:col-span-3",
-                  i === 1 && "col-span-1 md:col-span-3",
-                  i === 2 && "col-span-2 md:col-span-2",
-                )}
-              >
+<Link
+                 key={category.name}
+                 href={category.href}
+                 className={cn(
+                   "group block h-48 md:h-full",
+                   i === 0 && "col-span-1 md:col-span-3",
+                   i === 1 && "col-span-1 md:col-span-3",
+                   i === 2 && "col-span-2 md:col-span-2",
+                 )}
+               >
                 <CategoryCard category={category} />
               </Link>
             ))}
@@ -125,7 +124,6 @@ export function CategoriesGrid() {
               <Link
                 key={category.name}
                 href={category.href}
-                aria-label={`Ver colección ${category.name}`}
                 className="group block h-36 md:h-full"
               >
                 <CategoryCard category={category} />

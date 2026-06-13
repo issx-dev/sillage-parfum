@@ -23,15 +23,15 @@ const PROMOS: PromoMessage[] = [
     icon: <Sparkles className="w-3.5 h-3.5 text-gold/80 shrink-0" />,
   },
   {
-    text: "envío exprés de cortesía en compras superiores a 45€",
-    mobileText: "envío exprés de cortesía desde 45€",
+    text: "envío exprés de cortesía en compras superiores a 50€",
+    mobileText: "envío exprés de cortesía desde 50€",
     ctaText: "comprar",
     href: "/productos",
     icon: <Truck className="w-3.5 h-3.5 text-gold/80 shrink-0" />,
   },
   {
-    text: "obsequio exclusivo: 2 muestras selectas · código: SILLAGE2",
-    mobileText: "obsequio: 2 muestras · cód: SILLAGE2",
+    text: "obsequio exclusivo: 2 muestras selectas",
+    mobileText: "obsequio: 2 muestras",
     ctaText: "copiar",
     promoCode: "SILLAGE2",
     href: "/productos",
@@ -146,7 +146,7 @@ export function PromoBar() {
                   {currentPromo.promoCode ? (
                     <button
                       onClick={(e) => handleCopyCode(currentPromo.promoCode!, e)}
-                      className="font-sans tracking-[0.2em] text-xs uppercase text-gold hover:text-cream transition-colors cursor-pointer bg-transparent border-none"
+                      className="font-sans tracking-[0.2em] text-xs uppercase text-gold hover:text-cream transition-colors cursor-pointer bg-transparent border-none relative before:absolute before:inset-y-[-14px] before:inset-x-[-10px] before:content-['']"
                       aria-label="Copiar código de descuento"
                     >
                       {copied ? "¡COPIADO!" : "CÓDIGO: SILLAGE2"}
@@ -154,7 +154,7 @@ export function PromoBar() {
                   ) : (
                     <Link
                       href={currentPromo.href || "#"}
-                      className="text-[10px] sm:text-xs font-sans font-medium tracking-[0.1em] sm:tracking-[0.25em] text-gold hover:text-cream uppercase transition-colors duration-300 relative pb-0.5 after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-right after:scale-x-0 after:bg-cream after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100"
+                      className="text-[10px] sm:text-xs font-sans font-medium tracking-[0.1em] sm:tracking-[0.25em] text-gold hover:text-cream uppercase transition-colors duration-300 relative pb-0.5 before:absolute before:inset-y-[-14px] before:inset-x-[-10px] before:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-right after:scale-x-0 after:bg-cream after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100"
                     >
                       {currentPromo.ctaText}
                     </Link>

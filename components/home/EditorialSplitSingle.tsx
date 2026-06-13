@@ -54,7 +54,7 @@ const VARIANT_STYLES: Record<EditorialSplitVariant, {
   light: {
     sectionBg: "bg-warm-50",
     imageBg: "bg-warm-100",
-    eyebrowText: "text-gold",
+    eyebrowText: "text-gold-dark",
     titleText: "text-warm-900",
     bodyText: "text-warm-600",
     ctaText: "text-warm-900",
@@ -95,7 +95,7 @@ export function EditorialSplitSingle({
                 alt={imageAlt}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
-                className={`object-cover ${positionMap[imagePosition]} transition-transform duration-1000 ease-out group-hover:scale-105`}
+                className={`object-cover ${positionMap[imagePosition]} transition-transform duration-300 ease-out group-hover:scale-105`}
                 priority
               />
             </div>

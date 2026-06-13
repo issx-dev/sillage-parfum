@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "SILLAGE — Perfumería de Lujo",
   description:
-    "523 fragancias de las mejores casas del mundo. Envío en 24h y productos 100% originales.",
+    "Una colección seleccionada de fragancias de las mejores casas del mundo. Envío en 24h y productos 100% originales.",
   keywords: ["perfumería", "lujo", "fragancias", "perfumes", "SILLAGE"],
   icons: {
     icon: "/favicon.svg",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "SILLAGE — Perfumería de Lujo",
-    description: "523 fragancias de las mejores casas del mundo. Envío en 24h.",
+    description: "Una colección seleccionada de fragancias de las mejores casas del mundo. Envío en 24h.",
     url: siteUrl,
     siteName: "SILLAGE",
     locale: "es_ES",
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "SILLAGE — Perfumería de Lujo",
-    description: "523 fragancias de las mejores casas del mundo. Envío en 24h.",
+    description: "Una colección seleccionada de fragancias de las mejores casas del mundo. Envío en 24h.",
     images: [`${siteUrl}/images/og-default.jpg`],
   },
 };
@@ -86,6 +86,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${cormorant.variable} ${inter.variable}`} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://api.stripe.com" crossOrigin="anonymous" />
+      </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <header className="fixed top-0 left-0 right-0 z-50">
           <PromoBar />
@@ -115,7 +118,7 @@ export default function RootLayout({
                   name: "SILLAGE",
                   url: "https://sillage.com",
                   logo: "https://sillage.com/images/og-default.jpg",
-                  description: "Perfumería de lujo con más de 523 fragancias de las mejores casas del mundo.",
+                  description: "Perfumería de lujo con una selección exclusiva de fragancias de las mejores casas del mundo.",
                   sameAs: [
                     "https://instagram.com/sillage",
                     "https://facebook.com/sillage",

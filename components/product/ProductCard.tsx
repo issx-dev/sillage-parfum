@@ -106,10 +106,9 @@ export function ProductCard({
   const contentDivider = isDark ? "border-t border-warm-800/50" : "";
 
   return (
-    <Link
-      href={`/productos/${product.slug}`}
+    <div
       className={cn(
-        "group rounded-card overflow-hidden transition-[transform,box-shadow] duration-300 flex flex-col no-underline",
+        "group rounded-card overflow-hidden transition-[transform,box-shadow] duration-300 flex flex-col relative",
         // Card background & shadow
         isCarousel
           ? cn(cardBg, "hover:scale-[1.03]", cardHover)
@@ -121,8 +120,15 @@ export function ProductCard({
         "relative aspect-square overflow-hidden",
         isDark ? "" : "bg-warm-50/40",
       )}>
+        {/* Sibling Link to PDP covering the image container */}
+        <Link
+          href={`/productos/${product.slug}`}
+          className="absolute inset-0 z-0"
+          aria-label={`Ver detalles de ${product.name}`}
+        />
+
         {badgeLabel && (
-          <span className="absolute top-3 left-3 z-10 text-[10px] font-sans tracking-[0.15em] uppercase text-gold border border-gold/30 px-2 py-0.5 bg-cream/90">
+          <span className="absolute top-3 left-3 z-10 text-[10px] font-sans tracking-[0.15em] uppercase text-gold border border-gold/30 px-2 py-0.5 bg-cream/90 pointer-events-none">
             {badgeLabel}
           </span>
         )}
@@ -145,7 +151,7 @@ export function ProductCard({
           </button>
         )}
         <div className={cn(
-          "absolute inset-0 flex items-center justify-center transition-transform duration-700 ease-out",
+          "absolute inset-0 flex items-center justify-center transition-transform duration-300 ease-out pointer-events-none",
           isCarousel ? "p-6 group-hover:scale-[1.05]" : "p-3 group-hover:scale-[1.04]",
         )}>
           <Image
@@ -167,7 +173,7 @@ export function ProductCard({
           <>
             {allSoldOut ? (
               /* CASO A: Todo Agotado */
-              <div className="absolute bottom-0 left-0 right-0 z-20 w-full h-12 md:h-10 bg-warm-200 text-warm-500 text-[10px] font-sans uppercase tracking-widest flex items-center justify-center cursor-not-allowed max-md:relative">
+              <div className="absolute bottom-0 left-0 right-0 z-20 w-full h-12 md:h-10 bg-warm-200 text-warm-500 text-[10px] font-sans uppercase tracking-widest flex items-center justify-center cursor-not-allowed">
                 Agotado
               </div>
             ) : hasMultipleVariants ? (
@@ -179,7 +185,7 @@ export function ProductCard({
                 "md:translate-y-full md:group-hover:translate-y-0",
                 "focus-within:translate-y-0",
                 "transition-transform duration-300 ease-out",
-                "max-md:translate-y-0 max-md:relative"
+                "max-md:translate-y-0"
               )}>
                 {product.variants.map((v) => (
                   <button
@@ -220,7 +226,7 @@ export function ProductCard({
                   "md:translate-y-full md:group-hover:translate-y-0",
                   "focus:translate-y-0 focus-within:translate-y-0",
                   "transition-transform duration-300 ease-out",
-                  "max-md:translate-y-0 max-md:relative",
+                  "max-md:translate-y-0",
                   selectedVariant.stock === 0 && "opacity-50 cursor-not-allowed"
                 )}
               >
@@ -232,8 +238,11 @@ export function ProductCard({
         )}
       </div>
 
-      {/* Content */}
-      <div className={cn("p-4 flex flex-col flex-1", contentDivider)}>
+      {/* Content — wraps product info in a second Link to satisfy a11y & visual PDP clicks */}
+      <Link
+        href={`/productos/${product.slug}`}
+        className={cn("p-4 flex flex-col flex-1 no-underline", contentDivider)}
+      >
         {/* Brand */}
         <p className={cn("text-xs uppercase tracking-wider", brandColor, brandSpacing)}>
           {product.brand}
@@ -258,7 +267,7 @@ export function ProductCard({
             </span>
           )}
         </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 }

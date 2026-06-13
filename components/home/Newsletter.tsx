@@ -38,7 +38,7 @@ export function Newsletter() {
           <div className="max-w-2xl mx-auto text-center">
 
             {/* Label */}
-            <span className="text-[11px] uppercase tracking-[0.35em] font-semibold text-gold/70">
+            <span className="text-[11px] uppercase tracking-[0.35em] font-semibold text-gold-dark">
               círculo sillage
             </span>
 
@@ -51,7 +51,7 @@ export function Newsletter() {
             </p>
 
             {/* Incentive — typographic text */}
-            <p className="mt-6 text-xs font-sans tracking-[0.15em] text-gold uppercase text-center">
+            <p className="mt-6 text-xs font-sans tracking-[0.15em] text-gold-dark uppercase text-center">
               Reciba un 10% de cortesía en su primera adquisición al unirse al Círculo
             </p>
 
@@ -71,7 +71,7 @@ export function Newsletter() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="tu@email.com"
-                    className="flex-1 px-4 py-3.5 bg-transparent text-warm-900 placeholder:text-warm-400 text-base focus:outline-none min-h-[48px]"
+                    className="flex-1 px-4 py-3.5 bg-transparent text-warm-900 placeholder:text-warm-400 text-base focus-visible:ring-1 focus-visible:ring-gold focus:outline-none min-h-[48px]"
                     aria-label="Tu email"
                   />
                   <button

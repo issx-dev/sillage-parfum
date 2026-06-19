@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { Sparkles, Truck, Gift, ChevronLeft, ChevronRight } from "lucide-react";
+import { Sparkles, Truck, Gift, ChevronLeft, ChevronRight, Copy } from "lucide-react";
 
 interface PromoMessage {
   text: string;
@@ -105,25 +105,25 @@ export function PromoBar() {
 
   return (
     <div
-      className="w-full bg-black border-b border-warm-900/60 pb-1 pt-[calc(4px+env(safe-area-inset-top))] px-4 overflow-hidden relative z-40 select-none group/bar"
+      className="w-full bg-black border-b border-warm-900/60 h-8 px-4 overflow-hidden relative z-40 select-none group/bar"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* Visual top border styling for ultra-premium refraction */}
       <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
 
-      <div className="max-w-[1440px] mx-auto flex justify-between items-center relative min-h-[16px]">
-        {/* Left Arrow - subtle premium fade in */}
+      <div className="max-w-[1440px] mx-auto flex justify-between items-center relative h-full">
+        {/* Left Arrow — invisible touch target */}
         <button
           onClick={handlePrev}
-          className="hidden sm:flex opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[44px] min-h-[44px] items-center justify-start focus:outline-none"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden sm:flex opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[44px] min-h-[44px] items-center justify-start focus:outline-none"
           aria-label="Anuncio anterior"
         >
           <ChevronLeft className="w-4 h-4 stroke-[1.5]" />
         </button>
 
         {/* Dynamic sliding promotion container */}
-        <div className="flex-1 flex justify-center items-center overflow-hidden py-0.5 w-full">
+        <div className="flex-1 flex justify-center items-center overflow-hidden w-full">
           <div
             className={`flex items-center justify-center gap-1.5 sm:gap-2 transition-[opacity,transform] duration-300 ease-out max-w-full ${
               prefersReducedMotion
@@ -146,15 +146,24 @@ export function PromoBar() {
                   {currentPromo.promoCode ? (
                     <button
                       onClick={(e) => handleCopyCode(currentPromo.promoCode!, e)}
-                      className="font-sans tracking-[0.2em] text-xs uppercase text-gold hover:text-cream transition-colors cursor-pointer bg-transparent border-none relative before:absolute before:inset-y-[-14px] before:inset-x-[-10px] before:content-['']"
+                      className="font-sans tracking-[0.2em] text-xs uppercase text-gold hover:text-cream transition-colors cursor-pointer bg-transparent border-none relative before:absolute before:inset-y-[-14px] before:inset-x-[-10px] before:content-[''] whitespace-nowrap"
                       aria-label="Copiar código de descuento"
                     >
-                      {copied ? "¡COPIADO!" : "CÓDIGO: SILLAGE2"}
+                      {copied ? (
+                        "¡COPIADO!"
+                      ) : isMobile ? (
+                        <span className="inline-flex items-center gap-1">
+                          SILLAGE2
+                          <Copy className="w-3 h-3 text-gold/80" />
+                        </span>
+                      ) : (
+                        "CÓDIGO: SILLAGE2"
+                      )}
                     </button>
                   ) : (
                     <Link
                       href={currentPromo.href || "#"}
-                      className="text-[10px] sm:text-xs font-sans font-medium tracking-[0.1em] sm:tracking-[0.25em] text-gold hover:text-cream uppercase transition-colors duration-300 relative pb-0.5 before:absolute before:inset-y-[-14px] before:inset-x-[-10px] before:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-right after:scale-x-0 after:bg-cream after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100"
+                      className="text-[10px] sm:text-xs font-sans font-medium tracking-[0.1em] sm:tracking-[0.25em] text-gold hover:text-cream uppercase transition-colors duration-300 relative pb-0.5 before:absolute before:inset-y-[-14px] before:inset-x-[-10px] before:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:origin-right after:scale-x-0 after:bg-cream after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100 whitespace-nowrap"
                     >
                       {currentPromo.ctaText}
                     </Link>
@@ -165,10 +174,10 @@ export function PromoBar() {
           </div>
         </div>
 
-        {/* Right Arrow - subtle premium fade in */}
+        {/* Right Arrow — invisible touch target */}
         <button
           onClick={handleNext}
-          className="hidden sm:flex opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[44px] min-h-[44px] items-center justify-end focus:outline-none"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden sm:flex opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[44px] min-h-[44px] items-center justify-end focus:outline-none"
           aria-label="Siguiente anuncio"
         >
           <ChevronRight className="w-4 h-4 stroke-[1.5]" />

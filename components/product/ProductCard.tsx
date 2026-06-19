@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, X } from "lucide-react";
 import type { Product, Variant } from "@/types";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
@@ -38,6 +38,7 @@ export function ProductCard({
   const [selectedVariant, setSelectedVariant] = useState<Variant>(
     product.variants.find((v) => v.stock > 0) || product.variants[0]
   );
+  const [showSizeSelector, setShowSizeSelector] = useState(false);
   const [mounted, setMounted] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
@@ -101,6 +102,7 @@ export function ProductCard({
   const brandColor = isDark ? "text-warm-500" : "text-gray-mid";
   const brandSpacing = isCarousel ? "mb-1" : "mt-1";
   const nameColor = isDark ? "text-warm-50" : "";
+  const descColor = isDark ? "text-warm-400/80" : "text-gray-mid/80";
   const priceColor = isDark ? "text-warm-50" : "";
   const strikethroughColor = isDark ? "text-warm-500" : "text-gray-mid";
   const contentDivider = isDark ? "border-t border-warm-800/50" : "";
@@ -132,7 +134,7 @@ export function ProductCard({
             {badgeLabel}
           </span>
         )}
-        {/* WishlistButton — only in default variant, hover-visible on desktop, always on mobile, WCAG focus */}
+        {/* WishlistButton sitting above image — hover-visible on desktop, always on mobile, WCAG focus */}
         {!isCarousel && (
           <button
             onClick={(e) => {
@@ -142,12 +144,12 @@ export function ProductCard({
             }}
             aria-label={activeWishlist ? "Quitar de favoritos" : "Añadir a favoritos"}
             className={cn(
-              "absolute top-3 right-3 z-20 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center",
+              "absolute top-4 right-4 z-20 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-cream/80 backdrop-blur-sm border border-warm-200/30 shadow-xs hover:scale-110 active:scale-95",
               "md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 focus-within:opacity-100",
-              "transition-opacity duration-300"
+              "transition-all duration-300 cursor-pointer"
             )}
           >
-            <Heart className={cn("w-5 h-5", activeWishlist ? "fill-gold text-gold" : "text-cream")} />
+            <Heart className={cn("w-5 h-5 transition-colors duration-200", activeWishlist ? "fill-gold-dark text-gold-dark" : "text-gray-mid")} />
           </button>
         )}
         <div className={cn(
@@ -168,73 +170,80 @@ export function ProductCard({
           />
         </div>
 
-        {/* Barra de Compra Rápida */}
-        {!isCarousel && (
-          <>
-            {allSoldOut ? (
-              /* CASO A: Todo Agotado */
-              <div className="absolute bottom-0 left-0 right-0 z-20 w-full h-12 md:h-10 bg-warm-200 text-warm-500 text-[10px] font-sans uppercase tracking-widest flex items-center justify-center cursor-not-allowed">
-                Agotado
-              </div>
-            ) : hasMultipleVariants ? (
-              /* CASO C: Multivariante */
-              <div className={cn(
-                "w-full h-12 md:h-10 bg-black text-cream text-[10px] font-sans uppercase tracking-widest text-center",
-                "flex divide-x divide-warm-800",
-                "absolute bottom-0 left-0 right-0 z-20",
-                "md:translate-y-full md:group-hover:translate-y-0",
-                "focus-within:translate-y-0",
-                "transition-transform duration-300 ease-out",
-                "max-md:translate-y-0"
-              )}>
-                {product.variants.map((v) => (
-                  <button
-                    key={v.id}
-                    disabled={v.stock === 0}
-                    aria-label={`Añadir ${v.size_ml}ml al carrito`}
-                    onMouseEnter={() => setSelectedVariant(v)}
-                    onMouseLeave={() => setSelectedVariant(defaultVariant)}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      if (v.stock === 0) return;
-                      handleAddToCart(v);
-                    }}
-                    className={cn(
-                      "flex-1 h-full flex items-center justify-center hover:bg-gold hover:text-black transition-colors cursor-pointer",
-                      v.stock === 0 && "opacity-30 cursor-not-allowed line-through hover:bg-transparent hover:text-cream"
-                    )}
-                  >
-                    {v.size_ml}ml
-                  </button>
-                ))}
-              </div>
-            ) : (
-              /* CASO B: Monovariante */
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+        {/* Floating Add to Cart Button (Shopping Bag) */}
+        {!isCarousel && !allSoldOut && (
+          <div className="absolute bottom-4 right-4 z-20">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (hasMultipleVariants) {
+                  setShowSizeSelector(true);
+                } else {
                   handleAddToCart(selectedVariant);
-                }}
-                disabled={selectedVariant.stock === 0}
-                aria-label="Añadir al carrito"
-                className={cn(
-                  "w-full h-12 md:h-10 bg-black text-cream text-[10px] font-sans uppercase tracking-widest text-center",
-                  "flex items-center justify-center gap-2",
-                  "absolute bottom-0 left-0 right-0 z-20",
-                  "md:translate-y-full md:group-hover:translate-y-0",
-                  "focus:translate-y-0 focus-within:translate-y-0",
-                  "transition-transform duration-300 ease-out",
-                  "max-md:translate-y-0",
-                  selectedVariant.stock === 0 && "opacity-50 cursor-not-allowed"
-                )}
-              >
-                <ShoppingBag className="w-3.5 h-3.5" />
-                Añadir · {selectedVariant.size_ml}ml
-              </button>
-            )}
-          </>
+                }
+              }}
+              aria-label="Añadir al carrito"
+              className={cn(
+                "w-11 h-11 rounded-full bg-white text-charcoal shadow-md border border-warm-200/50 flex items-center justify-center transition-all duration-300 cursor-pointer active:scale-95 hover:bg-black hover:text-cream",
+                "md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 focus-within:opacity-100"
+              )}
+            >
+              <ShoppingBag className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+
+        {/* Out of Stock Overlay / Badge */}
+        {!isCarousel && allSoldOut && (
+          <div className="absolute bottom-4 right-4 z-20 bg-warm-200 text-warm-500 text-[9px] font-sans uppercase tracking-widest px-2.5 py-1.5 rounded-sm border border-warm-300 cursor-not-allowed select-none">
+            Agotado
+          </div>
+        )}
+
+        {/* Size Selection Drawer Panel Overlay */}
+        {!isCarousel && hasMultipleVariants && (
+          <div className={cn(
+            "absolute inset-x-0 bottom-0 z-30 bg-white border-t border-warm-200/60 p-4 transition-all duration-300 ease-out flex flex-col justify-center items-center rounded-b-card",
+            showSizeSelector ? "translate-y-0 opacity-100" : "translate-y-full opacity-0 pointer-events-none invisible"
+          )}>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowSizeSelector(false);
+              }}
+              className="absolute top-2 right-2 text-warm-500 hover:text-warm-900 p-1 min-w-[32px] min-h-[32px] flex items-center justify-center cursor-pointer"
+              aria-label="Cerrar selector de tamaños"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <p className="text-[10px] tracking-[0.2em] uppercase text-gold-dark mb-2.5 font-medium">Tamaño de frasco</p>
+            <div className="flex gap-2 w-full justify-center">
+              {product.variants.map((v) => (
+                <button
+                  key={v.id}
+                  disabled={v.stock === 0}
+                  aria-label={`Añadir ${v.size_ml}ml al carrito`}
+                  onMouseEnter={() => setSelectedVariant(v)}
+                  onMouseLeave={() => setSelectedVariant(defaultVariant)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (v.stock === 0) return;
+                    handleAddToCart(v);
+                    setShowSizeSelector(false);
+                  }}
+                  className={cn(
+                    "flex-1 max-w-[100px] h-11 border border-warm-200 bg-white text-charcoal text-[11px] uppercase tracking-wider flex items-center justify-center hover:border-gold hover:bg-warm-50 active:scale-95 transition-all rounded-md cursor-pointer",
+                    v.stock === 0 && "opacity-30 cursor-not-allowed line-through hover:bg-transparent hover:text-charcoal"
+                  )}
+                >
+                  {v.size_ml}ml
+                </button>
+              ))}
+            </div>
+          </div>
         )}
       </div>
 
@@ -251,6 +260,12 @@ export function ProductCard({
         <h3 className={cn("font-serif text-lg", nameColor)}>
           {product.name}
         </h3>
+        {/* Description */}
+        {product.shortDescription && (
+          <p className={cn("text-xs font-light mt-1 line-clamp-1", descColor)}>
+            {product.shortDescription}
+          </p>
+        )}
 
         {/* Price */}
         <div className="mt-auto pt-4 flex items-center gap-2">

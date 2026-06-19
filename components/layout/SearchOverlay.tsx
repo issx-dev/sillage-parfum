@@ -303,7 +303,7 @@ export function SearchOverlay({
     <DialogPrimitive.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-[60] bg-cream animate-overlay-in" />
-        <DialogPrimitive.Content aria-modal="true" className="fixed inset-0 z-[60] flex flex-col h-full max-w-[860px] mx-auto w-full px-4 sm:px-6 md:px-12 py-6 md:py-12 overflow-hidden">
+        <DialogPrimitive.Content aria-modal="true" className="fixed inset-0 z-[60] overflow-hidden">
           <DialogPrimitive.Title>
             <VisuallyHidden>Búsqueda de fragancias</VisuallyHidden>
           </DialogPrimitive.Title>

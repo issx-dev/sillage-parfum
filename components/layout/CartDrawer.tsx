@@ -91,7 +91,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
-                          className="p-1 min-w-[44px] min-h-[44px] flex items-center justify-center border border-gray-light rounded hover:bg-gray-light active:scale-95 transition-transform duration-150"
+                          className="w-8 h-8 flex items-center justify-center border border-gray-light rounded hover:bg-gray-light active:scale-95 transition-transform duration-150"
                           aria-label="Disminuir cantidad"
                         >
                           <Minus className="w-3 h-3" />
@@ -99,7 +99,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                         <span className="text-sm w-6 text-center">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-                          className="p-1 min-w-[44px] min-h-[44px] flex items-center justify-center border border-gray-light rounded hover:bg-gray-light active:scale-95 transition-transform duration-150"
+                          className="w-8 h-8 flex items-center justify-center border border-gray-light rounded hover:bg-gray-light active:scale-95 transition-transform duration-150"
                           aria-label="Aumentar cantidad"
                         >
                           <Plus className="w-3 h-3" />

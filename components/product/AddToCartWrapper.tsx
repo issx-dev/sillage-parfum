@@ -7,6 +7,7 @@ import { useCartStore } from "@/store/cartStore";
 import { toast } from "sonner";
 import { formatPrice } from "@/lib/utils";
 import { SizeSelector } from "./SizeSelector";
+import { WishlistButton } from "@/components/product/WishlistButton";
 
 interface Props {
   product: Product;
@@ -45,7 +46,7 @@ export function AddToCartWrapper({ product, firstVariant, hasDiscount }: Props) 
         </div>
       )}
 
-      <div className="pt-2">
+      <div className="pt-2 flex items-center gap-3">
         <AddToCartButton
           item={{
             variantId: selectedVariant.id,
@@ -63,6 +64,10 @@ export function AddToCartWrapper({ product, firstVariant, hasDiscount }: Props) 
         >
           Añadir al carrito — {formatPrice(currentPrice)}
         </AddToCartButton>
+        <WishlistButton
+          productId={product.id}
+          className="w-11 h-11 rounded-full border border-charcoal/30 text-charcoal hover:text-gold hover:border-gold transition-colors"
+        />
       </div>
     </div>
   );

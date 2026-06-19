@@ -103,21 +103,21 @@ export default function ProductPage({ params }: ProductPageProps) {
   };
 
   return (
-    <div className="pt-36 lg:pt-44 pb-24 lg:pb-32 min-h-[85vh] flex items-center">
+    <div className="pt-28 lg:pt-36 pb-24 lg:pb-32 min-h-[85vh]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        {/* Upper section: Gallery + Purchase (Dior inspired adjacent panels, responsive open flow on mobile) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch lg:border lg:border-warm-200/50 lg:rounded-card lg:overflow-hidden bg-transparent lg:bg-cream lg:shadow-xs">
+        {/* Upper section: Gallery + Purchase (50/50 layout, no gray box) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
           {/* Image Gallery */}
-          <div className="lg:col-span-7 xl:col-span-8 w-full border-b lg:border-b-0 lg:border-r border-warm-200/50 flex flex-col justify-between">
+          <div className="lg:col-span-6 w-full border-b lg:border-b-0 lg:border-r border-warm-200/50 flex flex-col justify-between">
             <ProductGallery images={product.images} name={product.name} productId={product.id} />
           </div>
 
           {/* Quick Purchase Info */}
-          <div className="lg:col-span-5 xl:col-span-4 flex flex-col justify-center p-4 sm:p-6 lg:p-12 lg:py-16 bg-transparent lg:bg-cream">
+          <div className="lg:col-span-6 flex flex-col justify-start lg:py-6 p-4 sm:p-6 lg:p-12">
             <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-2">
               {product.family}
             </span>

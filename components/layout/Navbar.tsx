@@ -165,40 +165,44 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
               <Link
                 href="/favoritos"
                 className={cn(
-                  "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300 active:scale-95",
-                  isSolid
-                    ? "text-charcoal/80 hover:text-gold"
-                    : "text-cream/80 hover:text-gold"
+                   "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95",
+                   isSolid
+                     ? "text-charcoal/80 hover:text-gold"
+                     : "text-cream/80 hover:text-gold"
                 )}
                 aria-label="Lista de deseos"
               >
-                <Heart className="w-5 h-5" />
-                {mounted && wishlistHydrated && wishlistCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-gold-dark text-cream text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
-                    {wishlistCount}
-                  </span>
-                )}
+                <span className="relative inline-flex">
+                  <Heart className="w-5 h-5" />
+                  {mounted && wishlistHydrated && wishlistCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-gold-dark text-cream text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
+                      {wishlistCount}
+                    </span>
+                  )}
+                </span>
               </Link>
 
               <button
                 onClick={openCart}
                 className={cn(
-                  "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center relative transition-colors duration-300 active:scale-95",
-                  isSolid
-                    ? "text-charcoal/80 hover:text-gold"
-                    : "text-cream/80 hover:text-gold"
+                   "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95",
+                   isSolid
+                     ? "text-charcoal/80 hover:text-gold"
+                     : "text-cream/80 hover:text-gold"
                 )}
                 aria-label="Carrito de compras"
               >
-                <ShoppingBag className="w-5 h-5" />
-                {mounted && cartHydrated && itemCount > 0 && (
-                  <span className={cn(
-                    "absolute -top-1 -right-1 text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium transition-colors duration-300",
-                    isSolid ? "bg-black text-cream" : "bg-gold text-black"
-                  )}>
-                    {itemCount}
-                  </span>
-                )}
+                <span className="relative inline-flex">
+                  <ShoppingBag className="w-5 h-5" />
+                  {mounted && cartHydrated && itemCount > 0 && (
+                    <span className={cn(
+                      "absolute -top-1 -right-1 text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium transition-colors duration-300",
+                      isSolid ? "bg-black text-cream" : "bg-gold text-black"
+                    )}>
+                      {itemCount}
+                    </span>
+                  )}
+                </span>
               </button>
             </div>
           </div>

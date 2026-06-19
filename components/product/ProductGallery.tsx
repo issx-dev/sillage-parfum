@@ -5,7 +5,6 @@ import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Maximize2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { WishlistButton } from "@/components/product/WishlistButton";
 
 interface ProductGalleryProps {
   images: string[];
@@ -18,7 +17,7 @@ export function ProductGallery({ images, name, productId }: ProductGalleryProps)
   const mainImage = images[0];
 
   return (
-    <div className="relative w-full aspect-square sm:aspect-[4/3] lg:aspect-[5/6] xl:aspect-[1/1] bg-warm-100/30 overflow-hidden flex items-center justify-center select-none">
+    <div className="relative w-full aspect-square sm:aspect-[4/3] lg:aspect-[5/6] xl:aspect-[1/1] overflow-hidden flex items-center justify-center select-none">
       
       {/* Product Image Container */}
       <div className="relative w-full h-full p-8 sm:p-12 lg:p-16 flex items-center justify-center">
@@ -30,11 +29,6 @@ export function ProductGallery({ images, name, productId }: ProductGalleryProps)
           className="object-contain p-6 mix-blend-multiply [filter:drop-shadow(0_16px_28px_rgba(0,0,0,0.06))]"
           priority
         />
-      </div>
-
-      {/* Floating Wishlist Button top-right */}
-      <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-20">
-        <WishlistButton productId={productId} />
       </div>
 
       {/* Floating Lightbox Trigger bottom-right */}

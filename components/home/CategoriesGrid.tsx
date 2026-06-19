@@ -17,42 +17,42 @@ const categories: Category[] = [
   {
     name: "Masculino",
     href: "/productos?gender=masculino",
-    imageSrc: "/images/products/sauvage-dior-front.jpg",
+    imageSrc: "/images/collections/masculine.jpg",
     imageAlt: "Fragancias Masculinas Sillage",
     sizes: "(max-width: 768px) 50vw, (max-width: 1200px) 38vw, 30vw",
   },
   {
     name: "Femenino",
     href: "/productos?gender=femenino",
-    imageSrc: "/images/products/chanel-5-front.jpg",
+    imageSrc: "/images/collections/feminine.jpg",
     imageAlt: "Fragancias Femeninas Sillage",
     sizes: "(max-width: 768px) 50vw, (max-width: 1200px) 38vw, 30vw",
   },
   {
     name: "Unisex",
     href: "/productos?gender=unisex",
-    imageSrc: "/images/products/baccarat-rouge-front.jpg",
+    imageSrc: "/images/collections/unisex.jpg",
     imageAlt: "Fragancias Unisex Sillage",
     sizes: "(max-width: 768px) 100vw, (max-width: 1200px) 25vw, 20vw",
   },
   {
     name: "Nicho",
     href: "/productos?collection=exclusive",
-    imageSrc: "/images/products/aventus-creed-front.jpg",
+    imageSrc: "/images/collections/exclusive.jpg",
     imageAlt: "Alta Perfumería de Nicho Sillage",
     sizes: "(max-width: 768px) 33vw, 25vw",
   },
   {
     name: "Bestsellers",
     href: "/productos?badge=top_ventas",
-    imageSrc: "/images/products/acqua-di-gio-front.jpg",
+    imageSrc: "/images/collections/bestsellers.jpg",
     imageAlt: "Fragancias Bestsellers Sillage",
     sizes: "(max-width: 768px) 33vw, 25vw",
   },
   {
     name: "Novedades",
     href: "/productos?badge=nuevo",
-    imageSrc: "/images/products/black-orchid-front.jpg",
+    imageSrc: "/images/collections/new-arrival.jpg",
     imageAlt: "Nuevas Fragancias Sillage",
     sizes: "(max-width: 768px) 33vw, 25vw",
   },
@@ -60,7 +60,7 @@ const categories: Category[] = [
 
 function CategoryCard({ category, priority = false }: { category: Category; priority?: boolean }) {
   return (
-    <div className="relative h-full rounded-card overflow-hidden bg-gradient-to-br from-warm-100 to-warm-200 border border-warm-200/40 shadow-sm hover-safe:scale-[1.02] hover-safe:shadow-lg transition-transform duration-500 p-4">
+    <div className="relative h-full rounded-card overflow-hidden hover-safe:scale-[1.02] hover-safe:shadow-lg transition-transform duration-500">
       <div className="relative w-full h-full">
         <Image
           src={category.imageSrc}
@@ -68,7 +68,7 @@ function CategoryCard({ category, priority = false }: { category: Category; prio
           fill
           priority={priority}
           sizes={category.sizes}
-          className="object-contain p-2 transform-gpu group-hover:scale-105 transition-transform duration-300 ease-out"
+          className="object-cover p-0 transform-gpu group-hover:scale-105 transition-transform duration-300 ease-out"
           loading={priority ? undefined : "lazy"}
         />
       </div>

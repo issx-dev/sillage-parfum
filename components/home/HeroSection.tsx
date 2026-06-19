@@ -29,7 +29,7 @@ export function HeroSection() {
         className="absolute inset-0 z-[1] select-none pointer-events-none"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(26, 26, 26, 0.4) 0%, rgba(26, 26, 26, 0.6) 70%, rgba(26, 26, 26, 0.9) 100%), radial-gradient(circle at center, transparent 30%, rgba(26, 26, 26, 0.7) 100%)",
+            "linear-gradient(to bottom, rgba(26, 26, 26, 0.4) 0%, rgba(26, 26, 26, 0.6) 70%, rgba(26, 26, 26, 0.9) 100%)",
         }}
       />
 
@@ -96,17 +96,17 @@ export function HeroSection() {
                 </h2>
               </div>
 
-              <div className="border-t border-white/10 pt-6">
-                <p className="text-xs text-cream/70 leading-relaxed font-sans uppercase tracking-[0.12em] space-y-1">
+              <div className="space-y-6">
+                <p className="font-serif lowercase text-xs text-cream/70 leading-relaxed tracking-wider space-y-1">
                   Salida: Bergamota & Pimienta Rosa <br />
                   Corazón: Jazmín & Rosa de Mayo <br />
                   Fondo: Ámbar, Sándalo & Vainilla
                 </p>
-                <div className="mt-8 flex items-center justify-between border-t border-white/5 pt-4">
-                  <span className="text-sm font-serif text-gold">100ml EDP</span>
+                <div className="flex items-center justify-between">
+                  <span className="font-sans text-xs text-cream/70">100ml EDP</span>
                   <Link href="/productos">
-                    <span className="text-xs uppercase tracking-wider text-cream/90 hover:text-gold transition-colors duration-300 flex items-center gap-1.5 cursor-pointer">
-                      Ver aroma <span className="text-gold text-sm">→</span>
+                    <span className="font-sans text-xs text-cream/70 hover:text-gold transition-colors duration-300 flex items-center gap-1.5 cursor-pointer">
+                      Ver aroma <ArrowUpRight className="w-3 h-3 inline text-gold" />
                     </span>
                   </Link>
                 </div>

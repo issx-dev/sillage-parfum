@@ -53,6 +53,20 @@ export default function HomePage() {
         variant="dark"
       />
 
+      {/* Feminine editorial — cream background, reverse layout */}
+      <EditorialSplitSingle
+        label="la collection féminine"
+        title="La sutileza que perdura"
+        description="Una oda a la feminidad atemporal. Aromas que capturan la esencia etérea de la mujer contemporánea con ingredientes nobles y composiciones envolventes."
+        ctaText="Descubrir fragancias femeninas"
+        href="/productos?gender=femenino"
+        imageSrc="/images/collections/feminine.jpg"
+        imageAlt="Colección Femenina Premium Sillage"
+        reverse={true}
+        imagePosition="left"
+        variant="light"
+      />
+
       {/* 4. CategoriesGrid — cream/warm background, clean grid of fragrance families */}
       <CategoriesGrid />
 

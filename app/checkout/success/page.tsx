@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { Button } from "@/components/ui/Button";
-import { formatPrice, formatSessionId } from "@/lib/utils";
+import { formatSessionId } from "@/lib/utils";
 
 interface SessionInfo {
-  id: string;
+  paymentStatus: string;
+  customerEmail: string | null;
   amountTotal: number;
-  customerEmail: string;
 }
 
 function SuccessContent() {
@@ -21,7 +21,6 @@ function SuccessContent() {
   const [session, setSession] = useState<SessionInfo | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     if (!sessionId) {
@@ -38,12 +37,12 @@ function SuccessContent() {
         }
         const data = await response.json();
         setSession({
-          id: data.id,
-          amountTotal: data.amountTotal,
-          customerEmail: data.customerEmail,
+          paymentStatus: data.payment_status,
+          amountTotal: data.amount_total ?? 0,
+          customerEmail: data.customer_email ?? null,
         });
         clearCart();
-      } catch (err) {
+      } catch {
         setError("No se pudo recuperar el pedido");
       } finally {
         setLoading(false);
@@ -87,7 +86,7 @@ function SuccessContent() {
         <div className="text-left space-y-3">
           <div className="flex justify-between">
             <span className="text-gray-mid">Número de pedido</span>
-            <span className="font-mono text-sm">{formatSessionId(session.id)}</span>
+            <span className="font-mono text-sm">{formatSessionId(sessionId)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-mid">Email</span>

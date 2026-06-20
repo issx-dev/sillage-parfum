@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
 import { SlidersHorizontal, X } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const familyFilters = [
   { label: "Todos", value: undefined },

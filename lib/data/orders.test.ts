@@ -1,86 +1,133 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { promises as fs } from "fs";
-import { existsSync, readdirSync, readFileSync } from "fs";
-import { rm } from "fs/promises";
-import os from "os";
-import path from "path";
-import { randomUUID } from "crypto";
-import { readOrders, saveOrder } from "./orders";
-import type { Order } from "@/types";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const mockOrder: Order = {
+// Mock the database module before importing the module under test
+vi.mock("@/lib/db", () => ({
+  db: {},
+  query: vi.fn(),
+}));
+
+import { readOrders, saveOrder } from "./orders";
+import { query } from "@/lib/db";
+
+const mockQuery = vi.mocked(query);
+
+const mockOrderRow = {
   id: "ord_test_123",
-  items: [
-    {
-      variantId: "sauvage-050",
-      productId: "sauvage-dior",
-      slug: "sauvage-dior-edt",
-      name: "Sauvage EDT",
-      brand: "Dior",
-      image: "/images/sauvage.jpg",
-      size_ml: 50,
-      price: 79,
-      quantity: 1,
-    },
-  ],
-  total: 79,
-  status: "paid",
-  customerEmail: "test@example.com",
-  createdAt: "2026-06-07T12:00:00.000Z",
   stripe_event_id: "evt_1",
+  stripe_session_id: "cs_test_123",
+  customer_email: "test@example.com",
+  amount_total: 7900,
+  currency: "eur",
+  payment_status: "paid",
+  order_data: {
+    items: [
+      {
+        variantId: "sauvage-050",
+        productId: "sauvage-dior",
+        slug: "sauvage-dior-edt",
+        name: "Sauvage EDT",
+        brand: "Dior",
+        image: "/images/sauvage.jpg",
+        size_ml: 50,
+        price: 79,
+        quantity: 1,
+      },
+    ],
+  },
+  created_at: new Date("2026-06-07T12:00:00.000Z"),
 };
 
-let tmpFile: string;
-let tmpDir: string;
-
-beforeEach(async () => {
-  tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "orders-test-"));
-  tmpFile = path.join(tmpDir, "orders.json");
-});
-
-afterEach(async () => {
-  if (existsSync(tmpDir)) {
-    await rm(tmpDir, { recursive: true, force: true });
-  }
-});
-
 describe("saveOrder", () => {
-  it("writes valid JSON containing exactly the order with stripe_event_id", async () => {
-    const result = await saveOrder(mockOrder, tmpFile, "evt_1");
-    expect(result).toEqual({ success: true, isDuplicate: false });
-
-    const raw = readFileSync(tmpFile, "utf-8");
-    const parsed = JSON.parse(raw) as Order[];
-
-    expect(Array.isArray(parsed)).toBe(true);
-    expect(parsed).toHaveLength(1);
-    expect(parsed[0]).toEqual({ ...mockOrder, stripe_event_id: "evt_1" });
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it("is idempotent on eventId — second save with same eventId does not append", async () => {
-    const first = await saveOrder(mockOrder, tmpFile, "evt_1");
-    const second = await saveOrder(mockOrder, tmpFile, "evt_1");
+  it("inserts a new order and returns success with isDuplicate=false", async () => {
+    mockQuery.mockResolvedValueOnce([{ id: "new-uuid" }]);
 
-    expect(first).toEqual({ success: true, isDuplicate: false });
-    expect(second).toEqual({ success: true, isDuplicate: true });
+    const result = await saveOrder(
+      {
+        id: "cs_test_123",
+        items: mockOrderRow.order_data.items,
+        total: 79,
+        status: "paid",
+        customerEmail: "test@example.com",
+        createdAt: "2026-06-07T12:00:00.000Z",
+      },
+      "evt_1"
+    );
 
-    const parsed = JSON.parse(readFileSync(tmpFile, "utf-8")) as Order[];
-    expect(parsed).toHaveLength(1);
+    expect(result).toEqual({ success: true, isDuplicate: false });
+    expect(mockQuery).toHaveBeenCalledTimes(1);
+
+    // Verify the SQL contains INSERT and ON CONFLICT
+    const callArgs = mockQuery.mock.calls[0]!;
+    expect(callArgs[0]).toContain("INSERT INTO orders");
+    expect(callArgs[0]).toContain("ON CONFLICT");
+  });
+
+  it("is idempotent on eventId — second save returns isDuplicate=true", async () => {
+    // ON CONFLICT DO NOTHING returns empty result set
+    mockQuery.mockResolvedValueOnce([]);
+
+    const result = await saveOrder(
+      {
+        id: "cs_test_123",
+        items: mockOrderRow.order_data.items,
+        total: 79,
+        status: "paid",
+        customerEmail: "test@example.com",
+        createdAt: "2026-06-07T12:00:00.000Z",
+      },
+      "evt_1"
+    );
+
+    expect(result).toEqual({ success: true, isDuplicate: true });
+  });
+
+  it("rejects orders missing customer_email", async () => {
+    await expect(
+      saveOrder(
+        {
+          id: "cs_test_123",
+          items: [],
+          total: 79,
+          status: "paid",
+          customerEmail: "",
+          createdAt: "2026-06-07T12:00:00.000Z",
+        },
+        "evt_1"
+      )
+    ).rejects.toThrow("customer_email is required");
   });
 });
 
 describe("readOrders", () => {
-  it("recovers from corrupt JSON by quarantining the file and returning []", async () => {
-    await fs.writeFile(tmpFile, "{not valid json", "utf-8");
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-    const result = await readOrders(tmpFile);
+  it("returns mapped orders from database", async () => {
+    mockQuery.mockResolvedValueOnce([mockOrderRow]);
 
-    expect(result).toEqual([]);
+    const orders = await readOrders();
 
-    const siblings = readdirSync(tmpDir);
-    const quarantined = siblings.filter((name) => name.startsWith("orders.json.corrupt."));
-    expect(quarantined).toHaveLength(1);
-    expect(quarantined[0]).toMatch(/^orders\.json\.corrupt\.\d+$/);
-    expect(existsSync(tmpFile)).toBe(false);
+    expect(orders).toHaveLength(1);
+    expect(orders[0]).toEqual({
+      id: "ord_test_123",
+      stripe_event_id: "evt_1",
+      items: mockOrderRow.order_data.items,
+      total: 79,
+      status: "paid",
+      customerEmail: "test@example.com",
+      createdAt: "2026-06-07T12:00:00.000Z",
+    });
+  });
+
+  it("returns empty array when no orders exist", async () => {
+    mockQuery.mockResolvedValueOnce([]);
+
+    const orders = await readOrders();
+    expect(orders).toEqual([]);
   });
 });

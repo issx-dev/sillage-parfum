@@ -164,6 +164,7 @@ export function ProductCarousel({
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUpOrLeave}
               onMouseLeave={handleMouseUpOrLeave}
+              style={{ touchAction: "pan-y" }}
               className={cn(
                 "flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-8 -mx-4 px-4 sm:mx-0 sm:px-0 select-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]",
                 isDragging ? "cursor-grabbing" : "cursor-grab"

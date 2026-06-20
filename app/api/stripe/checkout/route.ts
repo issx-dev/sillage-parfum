@@ -74,6 +74,7 @@ export async function POST(request: NextRequest) {
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      allow_promotion_codes: true,
       line_items: resolvedItems.map((item) => {
         let imageUrl = item.image;
         if (imageUrl && !imageUrl.startsWith("http")) {

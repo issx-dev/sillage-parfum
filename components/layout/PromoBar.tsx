@@ -91,6 +91,9 @@ export function PromoBar() {
     return () => {
       if (rotationTimerRef.current) clearInterval(rotationTimerRef.current);
     };
+    // handleNext is stable from useCallback; intentional omission keeps
+    // the interval tied only to the lifecycle conditions we care about.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex, prefersReducedMotion, isPaused]);
 
   const handleCopyCode = (code: string, e: React.MouseEvent) => {
@@ -101,7 +104,7 @@ export function PromoBar() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const currentPromo = PROMOS[currentIndex];
+  const currentPromo = PROMOS[currentIndex] ?? PROMOS[0]!;
 
   return (
     <div

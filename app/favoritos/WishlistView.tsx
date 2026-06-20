@@ -72,7 +72,7 @@ export function WishlistView({ allProducts }: WishlistViewProps) {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
           {wishlistProducts.map((product) => {
             const primaryVariant =
-              product.variants.find((v) => v.stock > 0) || product.variants[0];
+              product.variants.find((v) => v.stock > 0) ?? product.variants[0]!;
             const hasDiscount = product.discount_percent > 0;
             const currentPrice = hasDiscount
               ? primaryVariant.price * (1 - product.discount_percent / 100)
@@ -94,7 +94,7 @@ export function WishlistView({ allProducts }: WishlistViewProps) {
                     {/* Image */}
                     <div className="relative aspect-square bg-cream p-4">
                       <Image
-                        src={product.images[0]}
+                        src={product.images[0] ?? "/images/og-default.jpg"}
                         alt={product.name}
                         fill
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

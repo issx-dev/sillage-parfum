@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { cn, formatPrice, formatSessionId } from "./utils";
+import { cn, formatPrice, formatSessionId, applyDiscount } from "./utils";
 
 describe("cn (className merger)", () => {
   it("joins truthy strings with a space", () => {
@@ -96,5 +96,37 @@ describe("formatSessionId", () => {
     const result = formatSessionId(fifteen);
     expect(result).toHaveLength(14);
     expect(result).toBe("ABCDEFGHIJKLMN");
+  });
+});
+
+describe("applyDiscount", () => {
+  it("returns the original price when discount is 0", () => {
+    expect(applyDiscount(100, 0)).toBe(100);
+  });
+
+  it("applies a 10% discount and rounds to 2 decimals", () => {
+    expect(applyDiscount(50, 10)).toBe(45);
+    expect(applyDiscount(79.99, 10)).toBe(71.99);
+  });
+
+  it("applies a 100% discount (free)", () => {
+    expect(applyDiscount(50, 100)).toBe(0);
+  });
+
+  it("clamps discounts above 100% to 100% (never negative)", () => {
+    expect(applyDiscount(50, 150)).toBe(0);
+  });
+
+  it("treats negative discounts as 0 (no discount)", () => {
+    expect(applyDiscount(50, -10)).toBe(50);
+  });
+
+  it("returns 0 for negative or NaN prices (defensive)", () => {
+    expect(applyDiscount(-5, 10)).toBe(0);
+    expect(applyDiscount(NaN, 10)).toBe(0);
+  });
+
+  it("treats NaN discountPercent as 0", () => {
+    expect(applyDiscount(50, NaN)).toBe(50);
   });
 });

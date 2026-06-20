@@ -4,17 +4,15 @@ import { useState } from "react";
 import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Maximize2, X } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface ProductGalleryProps {
   images: string[];
   name: string;
-  productId: string;
 }
 
-export function ProductGallery({ images, name, productId }: ProductGalleryProps) {
+export function ProductGallery({ images, name }: ProductGalleryProps) {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-  const mainImage = images[0];
+  const mainImage = images[0] ?? "/images/og-default.jpg";
 
   return (
     <div className="relative w-full aspect-square sm:aspect-[4/3] lg:aspect-[5/6] xl:aspect-[1/1] overflow-hidden flex items-center justify-center select-none">

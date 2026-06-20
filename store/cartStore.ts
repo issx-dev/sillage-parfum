@@ -20,6 +20,18 @@ export interface CartStore {
   toggleCart: () => void;
 }
 
+function isCartItem(item: unknown): item is CartItem {
+  if (typeof item !== "object" || item === null) return false;
+  const c = item as Record<string, unknown>;
+  return (
+    typeof c.variantId === "string" &&
+    typeof c.productId === "string" &&
+    typeof c.name === "string" &&
+    typeof c.price === "number" &&
+    typeof c.quantity === "number"
+  );
+}
+
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
@@ -87,8 +99,23 @@ export const useCartStore = create<CartStore>()(
     {
       name: "sillage-cart",
       version: 1,
-      migrate: (persistedState: any, version: number) => {
-        return persistedState as CartStore;
+      migrate: (persistedState: unknown, _version: number) => {
+        if (
+          typeof persistedState !== "object" ||
+          persistedState === null
+        ) {
+          return { items: [], isCartOpen: false, _hasHydrated: false } as unknown as CartStore;
+        }
+        const ps = persistedState as Record<string, unknown>;
+        if (!Array.isArray(ps.items)) {
+          return { items: [], isCartOpen: false, _hasHydrated: false } as unknown as CartStore;
+        }
+        // Validate each item with the type guard
+        const validItems = (ps.items as unknown[]).filter(isCartItem);
+        return {
+          ...ps,
+          items: validItems,
+        } as unknown as CartStore;
       },
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
@@ -100,3 +127,12 @@ export const useCartStore = create<CartStore>()(
     }
   )
 );
+
+// Multi-tab sync: listen for storage events from other tabs
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (event) => {
+    if (event.key === "sillage-cart") {
+      useCartStore.persist.rehydrate();
+    }
+  });
+}

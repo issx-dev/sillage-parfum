@@ -22,10 +22,12 @@ export async function GET(request: NextRequest) {
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
+    // Filter response to only safe, non-sensitive metrics
     return NextResponse.json({
-      id: session.id,
-      amountTotal: session.amount_total || 0,
-      customerEmail: session.customer_email || "",
+      payment_status: session.payment_status,
+      customer_email: session.customer_email ?? null,
+      amount_total: session.amount_total ?? 0,
+      currency: session.currency ?? "eur",
     });
   } catch (error) {
     console.error("Error retrieving Stripe session:", error);

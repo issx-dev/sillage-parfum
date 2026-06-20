@@ -2,6 +2,7 @@ import "server-only";
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { saveOrder } from "@/lib/data/orders";
+import { env } from "@/lib/env";
 import type { Order } from "@/types";
 
 export async function POST(request: NextRequest) {
@@ -21,7 +22,7 @@ export async function POST(request: NextRequest) {
     event = stripe.webhooks.constructEvent(
       body,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      env.STRIPE_WEBHOOK_SECRET
     );
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
@@ -38,14 +39,13 @@ export async function POST(request: NextRequest) {
     console.log("   Items:", session.metadata?.items);
 
     const metadataItems = session.metadata?.items;
-    const order: Order = {
+    const order: Omit<Order, "stripe_event_id"> = {
       id: session.id,
       items: [],
-      total: session.amount_total ?? 0,
+      total: (session.amount_total ?? 0) / 100,
       status: "paid",
       customerEmail: session.customer_details?.email ?? session.customer_email ?? undefined,
       createdAt: new Date().toISOString(),
-      stripe_event_id: event.id,
     };
     if (metadataItems) {
       try {
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const result = await saveOrder(order, undefined, event.id);
+    const result = await saveOrder(order, event.id);
     console.log("   saveOrder result:", result);
   }
 

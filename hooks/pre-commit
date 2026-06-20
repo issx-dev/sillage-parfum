@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Pre-commit hook: prevent accidental commits of secrets.
+#
+# Fails if any file matching a sensitive pattern is staged.
+# Install with: ln -s ../../hooks/pre-commit .git/hooks/pre-commit
+# Or copy directly.
+
+set -euo pipefail
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Patterns that should NEVER be committed.
+SECRET_PATTERNS=(
+  '\.env$'
+  '\.env\.local$'
+  '\.env\.development\.local$'
+  '\.env\.test\.local$'
+  '\.env\.production\.local$'
+  '\.envrc$'
+  'secrets\.ya?ml$'
+  '\.npmrc$'  # may contain _authToken
+  'credentials\.json$'
+  'service-account.*\.json$'
+  '\.ssh/'
+  'id_rsa'
+  'id_ed25519'
+  '\.pem$'
+  '\.key$'
+)
+
+violations=()
+for file in $STAGED; do
+  for pat in "${SECRET_PATTERNS[@]}"; do
+    if [[ "$file" =~ $pat ]]; then
+      violations+=("$file")
+    fi
+  done
+done
+
+if [ ${#violations[@]} -ne 0 ]; then
+  echo "❌ COMMIT REJECTED — sensitive files detected in stage:"
+  printf '   - %s\n' "${violations[@]}"
+  echo
+  echo "These files are listed in .gitignore but were somehow staged."
+  echo "To unstage: git reset HEAD <file>"
+  echo "If this is a false positive, edit hooks/pre-commit to allow it."
+  exit 1
+fi
+
+# Also scan staged diffs for high-entropy lines that LOOK like keys.
+# Catches `STRIPE_SECRET_KEY=sk_...` accidentally added to a tracked file.
+if git diff --cached | grep -E '^\+.*(sk_(live|test)_[A-Za-z0-9]{20,}|whsec_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{30,})' >/dev/null 2>&1; then
+  echo "❌ COMMIT REJECTED — staged diff contains what looks like a live API key."
+  echo "   Pattern matched: Stripe (sk_/whsec_), AWS (AKIA), or GitHub (ghp_)."
+  echo "   Review the staged changes and remove the credential."
+  exit 1
+fi
+
+exit 0

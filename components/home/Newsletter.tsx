@@ -1,112 +1,93 @@
 "use client";
 
-import { useState } from "react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
+import { Instagram } from "lucide-react";
+
+function PinterestIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M8 12a4 4 0 1 0 8 0c0-3.2-2.2-5.5-4-8-1.8 2.5-4 4.8-4 8z" />
+      <path d="M9 17c0 2-1 4-3 6" />
+      <path d="M12 17c0 2 0 4 2 6" />
+    </svg>
+  );
+}
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+    </svg>
+  );
+}
 
 export function Newsletter() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [errorMsg, setErrorMsg] = useState("");
-
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg("");
-
-    if (!validateEmail(email)) {
-      setErrorMsg("Email inválido");
-      return;
-    }
-
-    setStatus("loading");
-    await new Promise((r) => setTimeout(r, 1000));
-    setStatus("success");
-    setEmail("");
-
-    setTimeout(() => setStatus("idle"), 3000);
-  };
-
   return (
     <section className="bg-warm-50 border-t border-warm-200/60 py-16 lg:py-20">
       <ScrollReveal>
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto text-center">
-
-            {/* Label */}
+            {/* Coming Soon Banner */}
             <span className="text-[11px] uppercase tracking-[0.35em] font-semibold text-gold-dark">
-              círculo sillage
+              próximamente · coming soon
             </span>
 
             <h2 className="font-serif text-2xl sm:text-3xl text-warm-900 font-light leading-snug mt-4 tracking-wide">
-              Member's Club
+              Member&apos;s Club
             </h2>
 
             <p className="text-sm font-light text-warm-600 mt-3 max-w-[46ch] mx-auto leading-relaxed">
               Acceso anticipado a lanzamientos exclusivos, eventos privados y beneficios reservados para miembros.
             </p>
 
-            {/* Incentive — typographic text */}
-            <p className="mt-6 text-xs font-sans tracking-[0.15em] text-gold-dark uppercase text-center">
-              Reciba un 10% de cortesía en su primera adquisición al unirse al Círculo
-            </p>
-
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="mt-8">
-              <div className="max-w-md mx-auto">
-                <label
-                  htmlFor="newsletter-email"
-                  className="text-xs uppercase tracking-wider text-warm-500 mb-2 block"
-                >
-                  Tu email
-                </label>
-                <div className="flex flex-col sm:flex-row gap-0 border border-warm-300 focus-within:border-gold transition-[border-color] duration-300">
-                  <input
-                    id="newsletter-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="tu@email.com"
-                    className="flex-1 px-4 py-3.5 bg-transparent text-warm-900 placeholder:text-warm-400 text-base focus-visible:ring-1 focus-visible:ring-gold focus:outline-none min-h-[48px]"
-                    aria-label="Tu email"
-                  />
-                  <button
-                    type="submit"
-                    disabled={status === "loading" || status === "success"}
-                    className={cn(
-                      "px-6 py-3.5 text-[10px] uppercase tracking-[0.25em] font-medium transition-[color,background-color] duration-300 min-h-[48px] flex items-center justify-center gap-2 border-t sm:border-t-0 sm:border-l border-warm-300 active:scale-95",
-                      status === "success"
-                        ? "text-gold bg-warm-100"
-                        : "text-warm-900 hover:text-gold hover:bg-gold/5"
-                    )}
-                  >
-                    {status === "loading" ? (
-                      <div className="w-4 h-4 border border-warm-400 border-t-gold rounded-full animate-spin" />
-                    ) : status === "success" ? (
-                      <>
-                        <Check className="w-4 h-4 text-green-500" />
-                        <span>Listo</span>
-                      </>
-                    ) : (
-                      "Unirme"
-                    )}
-                  </button>
-                </div>
-
-                {errorMsg && (
-                  <p className="mt-2 text-xs text-red-600/80">{errorMsg}</p>
-                )}
-              </div>
-            </form>
-
-            {/* Privacy note */}
-            <p className="mt-5 text-[11px] text-warm-500 max-w-[44ch] mx-auto leading-relaxed">
-              Al unirte aceptas nuestra política de privacidad. Puedes darte de baja en cualquier momento.
-            </p>
+            {/* Social Links */}
+            <div className="flex items-center justify-center gap-6 mt-8">
+              <a
+                href="https://instagram.com/sillage"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-warm-500 hover:text-gold transition-colors duration-200"
+                aria-label="SILLAGE en Instagram"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a
+                href="https://pinterest.com/sillage"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-warm-500 hover:text-gold transition-colors duration-200"
+                aria-label="SILLAGE en Pinterest"
+              >
+                <PinterestIcon className="w-5 h-5" />
+              </a>
+              <a
+                href="https://tiktok.com/@sillage"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-warm-500 hover:text-gold transition-colors duration-200"
+                aria-label="SILLAGE en TikTok"
+              >
+                <TikTokIcon className="w-5 h-5" />
+              </a>
+            </div>
           </div>
         </div>
       </ScrollReveal>

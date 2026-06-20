@@ -151,8 +151,8 @@ describe("ProductCard interactive elements", () => {
         await user.click(screen.getByRole("button", { name: /añadir al carrito/i }));
         const cartItems = useCartStore.getState().items;
         expect(cartItems).toHaveLength(1);
-        expect(cartItems[0].variantId).toBe("single-050");
-        expect(cartItems[0].size_ml).toBe(50);
+        expect(cartItems[0]!.variantId).toBe("single-050");
+        expect(cartItems[0]!.size_ml).toBe(50);
         expect(linkNavigateSpy).not.toHaveBeenCalled();
       });
     });
@@ -179,8 +179,8 @@ describe("ProductCard interactive elements", () => {
         );
         const cartItems = useCartStore.getState().items;
         expect(cartItems).toHaveLength(1);
-        expect(cartItems[0].variantId).toBe("test-100");
-        expect(cartItems[0].size_ml).toBe(100);
+        expect(cartItems[0]!.variantId).toBe("test-100");
+        expect(cartItems[0]!.size_ml).toBe(100);
         expect(linkNavigateSpy).not.toHaveBeenCalled();
       });
 
@@ -245,7 +245,7 @@ describe("ProductCard interactive elements", () => {
         );
         const cartItems = useCartStore.getState().items;
         expect(cartItems).toHaveLength(1);
-        expect(cartItems[0].price).toBe(45); // 50 * 0.9
+        expect(cartItems[0]!.price).toBe(45); // 50 * 0.9
       });
 
       it("renders a single OOS variant as Case A (Agotado)", () => {

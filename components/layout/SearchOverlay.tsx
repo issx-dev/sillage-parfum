@@ -23,13 +23,6 @@ const PLACEHOLDER_CYCLE = [
 
 const SUGGESTED_TERMS = ["Floral", "Amaderado", "Chanel", "Tom Ford", "Fresco", "Aldehídos"];
 
-const RECOMMENDED_SLUGS = [
-  "sauvage-dior-edt",
-  "chanel-5-edp",
-  "bleu-de-chanel-edp",
-  "black-orchid-edp",
-];
-
 // Recommended products are shipped as initial props from the server (Navbar)
 // to avoid an extra round-trip on first open.
 const INITIAL_RECOMMENDED: Product[] = [];
@@ -46,7 +39,7 @@ function usePlaceholderCycle(items: string[], interval = 3200): string {
     }, interval);
     return () => clearInterval(id);
   }, [items, interval]);
-  return items[index];
+  return items[index] ?? "";
 }
 
 /**
@@ -128,7 +121,7 @@ function RecommendedCard({
   featured?: boolean;
   onClose: () => void;
 }) {
-  const defaultVariant = product.variants[0];
+  const defaultVariant = product.variants[0]!;
 
   if (featured) {
     return (
@@ -139,7 +132,7 @@ function RecommendedCard({
       >
         <div className="relative aspect-[4/5] bg-warm-100 flex items-center justify-center overflow-hidden">
           <Image
-            src={product.images[0]}
+            src={product.images[0] ?? "/images/og-default.jpg"}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, 25vw"
@@ -172,7 +165,7 @@ function RecommendedCard({
     >
       <div className="relative w-12 h-12 bg-warm-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
         <Image
-          src={product.images[0]}
+          src={product.images[0] ?? "/images/og-default.jpg"}
           alt={product.name}
           fill
           sizes="48px"
@@ -201,7 +194,7 @@ function ResultRow({
   product: Product;
   onClose: () => void;
 }) {
-  const defaultVariant = product.variants[0];
+  const defaultVariant = product.variants[0]!;
   const hasDiscount = product.discount_percent > 0;
   const currentPrice = hasDiscount
     ? defaultVariant.price * (1 - product.discount_percent / 100)
@@ -215,7 +208,7 @@ function ResultRow({
     >
 <div className="relative w-14 h-14 bg-warm-100 flex-shrink-0 overflow-hidden">
             <Image
-              src={product.images[0]}
+              src={product.images[0] ?? "/images/og-default.jpg"}
               alt={product.name}
               fill
               sizes="56px"

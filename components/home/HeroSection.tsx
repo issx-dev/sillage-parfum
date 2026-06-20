@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ChevronDown, ArrowUpRight } from "lucide-react";
 
@@ -18,7 +17,6 @@ export function HeroSection() {
           src="/images/hero/hero-desktop.jpg"
           alt="Sillage Cinematic Campaign Background"
           className={`w-full h-full object-cover ${reducedMotion ? "opacity-60" : "opacity-50"}`}
-          // @ts-ignore
           fetchPriority="high"
           loading="eager"
         />

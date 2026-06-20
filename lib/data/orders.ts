@@ -1,69 +1,57 @@
 import "server-only";
-import { promises as fs } from "fs";
-import path from "path";
+import { query } from "@/lib/db";
 import type { Order } from "@/types";
-
-const ORDERS_FILE = path.join(process.cwd(), "data", "orders.json");
 
 export type SaveOrderResult = { success: boolean; isDuplicate: boolean };
 
 /**
- * Reads the orders file. Returns [] if the file does not exist.
- * On corrupt JSON, renames the corrupt file to `orders.json.corrupt.<timestamp>`
- * for forensic inspection and returns [].
+ * Reads all orders from the database, ordered by creation date descending.
  */
-export async function readOrders(filePath = ORDERS_FILE): Promise<Order[]> {
-  let raw: string;
-  try {
-    raw = await fs.readFile(filePath, "utf-8");
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
-      return [];
-    }
-    throw err;
-  }
+export async function readOrders(): Promise<Order[]> {
+  const rows = await query(
+    `SELECT id, stripe_event_id, stripe_session_id, customer_email, amount_total, currency, payment_status, order_data, created_at FROM orders ORDER BY created_at DESC`
+  );
 
-  try {
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) {
-      throw new Error("orders file root is not an array");
-    }
-    return parsed as Order[];
-  } catch (err) {
-    console.error("readOrders: corrupt JSON, quarantining file:", err);
-    const corruptPath = `${filePath}.corrupt.${Date.now()}`;
-    try {
-      await fs.rename(filePath, corruptPath);
-    } catch (renameErr) {
-      console.error("readOrders: failed to quarantine corrupt file:", renameErr);
-    }
-    return [];
-  }
+  return (rows as Record<string, unknown>[]).map((row) => {
+    const status = row.payment_status as string;
+    const mapped: Order["status"] =
+      status === "paid"
+        ? "paid"
+        : status === "refunded"
+          ? "refunded"
+          : "failed";
+    return {
+      id: row.id as string,
+      stripe_event_id: row.stripe_event_id as string,
+      items: (row.order_data as { items?: Order["items"] })?.items ?? [],
+      total: (row.amount_total as number) / 100,
+      status: mapped,
+      customerEmail: row.customer_email as string | undefined,
+      createdAt: new Date(row.created_at as string).toISOString(),
+    };
+  });
 }
 
 /**
- * Atomically appends an order to the orders file. Deduplicates by `eventId`:
- * if an order with the same stripe_event_id already exists, returns
- * `{ success: true, isDuplicate: true }` and writes nothing.
- * Uses write-to-tmp + rename for crash safety.
+ * Idempotent upsert: if an order with the same stripe_event_id exists,
+ * returns { success: true, isDuplicate: true } without creating a duplicate.
  */
 export async function saveOrder(
-  order: Order,
-  filePath = ORDERS_FILE,
+  order: Omit<Order, "stripe_event_id">,
   eventId: string
 ): Promise<SaveOrderResult> {
-  const existing = await readOrders(filePath);
-
-  if (existing.some((o) => o.stripe_event_id === eventId)) {
-    return { success: true, isDuplicate: true };
+  if (!order.customerEmail) {
+    throw new Error("saveOrder: customer_email is required");
   }
 
-  const fullOrder: Order = { ...order, stripe_event_id: eventId };
-  const next = [...existing, fullOrder];
+  const amountCents = Math.round(order.total * 100);
+  const orderData = JSON.stringify({ items: order.items });
 
-  const tmpPath = `${filePath}.tmp`;
-  await fs.writeFile(tmpPath, JSON.stringify(next, null, 2), "utf-8");
-  await fs.rename(tmpPath, filePath);
+  const result = await query(
+    `INSERT INTO orders (stripe_event_id, stripe_session_id, customer_email, amount_total, currency, payment_status, order_data) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (stripe_event_id) DO NOTHING RETURNING id`,
+    [eventId, order.id, order.customerEmail ?? "", amountCents, "eur", order.status, orderData]
+  );
 
-  return { success: true, isDuplicate: false };
+  const isDuplicate = result.length === 0;
+  return { success: true, isDuplicate };
 }

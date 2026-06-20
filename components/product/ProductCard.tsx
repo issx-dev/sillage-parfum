@@ -8,7 +8,7 @@ import type { Product, Variant } from "@/types";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { toast } from "sonner";
-import { cn, formatPrice } from "@/lib/utils";
+import { cn, formatPrice, applyDiscount } from "@/lib/utils";
 
 export type ProductCardVariant = "default" | "carousel";
 export type CardTheme = "light" | "dark";
@@ -36,7 +36,7 @@ export function ProductCard({
   showStatusBadges = true,
 }: ProductCardProps) {
   const [selectedVariant, setSelectedVariant] = useState<Variant>(
-    product.variants.find((v) => v.stock > 0) || product.variants[0]
+    product.variants.find((v) => v.stock > 0) ?? product.variants[0]!
   );
   const [showSizeSelector, setShowSizeSelector] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -52,7 +52,7 @@ export function ProductCard({
   const activeWishlist = mounted && isWishlisted;
 
   // Default variant: first in-stock, or first if none
-  const defaultVariant = product.variants.find((v) => v.stock > 0) || product.variants[0];
+  const defaultVariant = product.variants.find((v) => v.stock > 0) ?? product.variants[0]!;
 
   // Case detection
   const allSoldOut = product.variants.every((v) => v.stock === 0);
@@ -66,9 +66,9 @@ export function ProductCard({
       slug: product.slug,
       name: product.name,
       brand: product.brand,
-      image: product.images[0],
+      image: product.images[0] ?? "",
       size_ml: v.size_ml,
-      price: product.discount_percent > 0 ? v.price * (1 - product.discount_percent / 100) : v.price,
+      price: applyDiscount(v.price, product.discount_percent),
       quantity: 1,
     });
     openCart();
@@ -90,9 +90,7 @@ export function ProductCard({
       ? statusBadge
       : badgeLabels[product.badge || ""] || null;
 
-  const currentPrice = hasDiscount
-    ? selectedVariant.price * (1 - product.discount_percent / 100)
-    : selectedVariant.price;
+  const currentPrice = applyDiscount(selectedVariant.price, product.discount_percent);
 
   const originalPrice = hasDiscount ? selectedVariant.price : null;
 
@@ -157,7 +155,7 @@ export function ProductCard({
           isCarousel ? "p-6 group-hover:scale-[1.05]" : "p-3 group-hover:scale-[1.04]",
         )}>
           <Image
-            src={product.images[0]}
+            src={product.images[0] ?? "/images/og-default.jpg"}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

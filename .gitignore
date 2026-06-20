@@ -34,9 +34,27 @@ tsconfig.tsbuildinfo
 # Debug scripts and outputs (may contain secrets)
 debug/
 
+# Dev tools (local scripts, not source)
+dev-tools/
+
 # Audit artifacts (dev-only, not source)
 .audit/
 .playwright-cli/
+
+# Design audit screenshots and stray capture files
+# (public/ assets stay — only the root-level design captures are excluded)
+*.png
+!public/**/*.png
+cart_drawer.png
+catalog.png
+home.png
+product_detail.png
+raw_chanel.png
+search_overlay.png
+
+# Coverage / test artifacts
+coverage/
+*.lcov
 
 # Runtime data (orders JSON written by webhook handler — not source)
 /data/

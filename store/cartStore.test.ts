@@ -49,8 +49,8 @@ describe("cartStore", () => {
       useCartStore.getState().addItem(itemA);
       const { items } = useCartStore.getState();
       expect(items).toHaveLength(1);
-      expect(items[0].variantId).toBe("sauvage-050");
-      expect(items[0].quantity).toBe(1);
+      expect(items[0]!.variantId).toBe("sauvage-050");
+      expect(items[0]!.quantity).toBe(1);
     });
 
     it("increments quantity of an existing variantId by the added item's quantity", () => {
@@ -58,8 +58,8 @@ describe("cartStore", () => {
       useCartStore.getState().addItem(itemADiffQty); // quantity 3
       const { items } = useCartStore.getState();
       expect(items).toHaveLength(1);
-      expect(items[0].variantId).toBe("sauvage-050");
-      expect(items[0].quantity).toBe(4); // 1 + 3
+      expect(items[0]!.variantId).toBe("sauvage-050");
+      expect(items[0]!.quantity).toBe(4); // 1 + 3
     });
 
     it("adds distinct variantIds as separate items", () => {
@@ -81,7 +81,7 @@ describe("cartStore", () => {
       useCartStore.getState().removeItem("sauvage-050");
       const { items } = useCartStore.getState();
       expect(items).toHaveLength(1);
-      expect(items[0].variantId).toBe("chn5-100");
+      expect(items[0]!.variantId).toBe("chn5-100");
     });
 
     it("is a no-op when variantId is not in the cart", () => {
@@ -98,7 +98,7 @@ describe("cartStore", () => {
       useCartStore.getState().updateQuantity("sauvage-050", 5);
       const { items } = useCartStore.getState();
       expect(items).toHaveLength(1);
-      expect(items[0].quantity).toBe(5);
+      expect(items[0]!.quantity).toBe(5);
     });
 
     it("removes the item when quantity is 0 or negative", () => {
@@ -116,7 +116,7 @@ describe("cartStore", () => {
       useCartStore.getState().updateQuantity("nope", 99);
       const { items } = useCartStore.getState();
       expect(items).toHaveLength(1);
-      expect(items[0].quantity).toBe(1);
+      expect(items[0]!.quantity).toBe(1);
     });
   });
 

@@ -23,6 +23,7 @@ export default defineConfig({
       "lib/**/*.{test,spec}.{ts,tsx}",
       "store/**/*.{test,spec}.{ts,tsx}",
       "hooks/**/*.{test,spec}.{ts,tsx}",
+      "*.{test,spec}.{ts,tsx}",
     ],
   },
 });

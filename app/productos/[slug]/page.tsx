@@ -1,9 +1,12 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { getProductBySlug, getProducts } from "@/lib/data";
 import type { Metadata } from "next";
-import { formatPrice } from "@/lib/utils";
+import { applyDiscount } from "@/lib/utils";
+import { SITE_URL } from "@/lib/site-config";
 import { Wind, Heart, Layers } from "lucide-react";
 import { ProductGallery } from "@/components/product/ProductGallery";
+import { AddToCartWrapper } from "@/components/product/AddToCartWrapper";
 
 interface ProductPageProps {
   params: { slug: string };
@@ -22,10 +25,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     notFound();
   }
   const lowestPrice = Math.min(...product.variants.map((v) => v.price));
-  const hasDiscount = product.discount_percent > 0;
-  const finalPrice = hasDiscount
-    ? lowestPrice * (1 - product.discount_percent / 100)
-    : lowestPrice;
+  const finalPrice = applyDiscount(lowestPrice, product.discount_percent);
 
   return {
     title: `${product.name} — SILLAGE`,
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     openGraph: {
       title: `${product.name} — SILLAGE`,
       description: product.shortDescription,
-      url: `https://sillage.com/productos/${product.slug}`,
+      url: `${SITE_URL}/productos/${product.slug}`,
       type: "website",
       images: [
         {
@@ -60,18 +60,17 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   };
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage({ params }: ProductPageProps) {
   const product = getProductBySlug(params.slug);
+  const nonce = (await headers()).get("x-nonce") ?? "";
 
   if (!product) {
     notFound();
   }
 
-  const firstVariant = product.variants.find((v) => v.stock > 0) || product.variants[0];
+  const firstVariant = product.variants.find((v) => v.stock > 0) ?? product.variants[0]!;
   const hasDiscount = product.discount_percent > 0;
-  const finalPrice = hasDiscount
-    ? firstVariant.price * (1 - product.discount_percent / 100)
-    : firstVariant.price;
+  const finalPrice = applyDiscount(firstVariant.price, product.discount_percent);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -79,8 +78,8 @@ export default function ProductPage({ params }: ProductPageProps) {
     name: product.name,
     description: product.shortDescription,
     image: product.images?.[0]
-      ? `https://sillage.com${product.images[0]}`
-      : "https://sillage.com/images/og-default.jpg",
+      ? `${SITE_URL}${product.images[0]}`
+      : `${SITE_URL}/images/og-default.jpg`,
     sku: product.id,
     brand: {
       "@type": "Brand",
@@ -88,7 +87,7 @@ export default function ProductPage({ params }: ProductPageProps) {
     },
     offers: {
       "@type": "Offer",
-      url: `https://sillage.com/productos/${product.slug}`,
+      url: `${SITE_URL}/productos/${product.slug}`,
       priceCurrency: "EUR",
       price: finalPrice.toFixed(2),
       availability:
@@ -106,6 +105,7 @@ export default function ProductPage({ params }: ProductPageProps) {
     <div className="pt-28 lg:pt-36 pb-24 lg:pb-32 min-h-[85vh]">
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -113,7 +113,7 @@ export default function ProductPage({ params }: ProductPageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
           {/* Image Gallery */}
           <div className="lg:col-span-6 w-full border-b lg:border-b-0 lg:border-r border-warm-200/50 flex flex-col justify-between">
-            <ProductGallery images={product.images} name={product.name} productId={product.id} />
+            <ProductGallery images={product.images} name={product.name} />
           </div>
 
           {/* Quick Purchase Info */}
@@ -141,7 +141,7 @@ export default function ProductPage({ params }: ProductPageProps) {
               {product.shortDescription}
             </p>
             <p className="text-sm text-gray-mid font-sans leading-relaxed tracking-wide font-light max-w-xl">
-              Cada nota de {product.name} ha sido seleccionada de manera meticulosa por maestros perfumistas para construir una composición equilibrada, expresando una firma de olor con carácter e identidad propia. Ideal para quienes buscan dejar una estela atemporal a su paso.
+              Cada nota de {product.name} ha sido seleccionada de manera meticulosa por maestros perfumistas para construir una composición equilibrada, expresando una firma de oler con carácter e identidad propia. Ideal para quienes buscan dejar una estela atemporal a su paso.
             </p>
           </div>
 
@@ -191,6 +191,3 @@ export default function ProductPage({ params }: ProductPageProps) {
     </div>
   );
 }
-
-import { AddToCartWrapper } from "@/components/product/AddToCartWrapper";
-import type { Variant } from "@/types";

@@ -11,7 +11,6 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { Product } from "@/types";
 import { cn } from "@/lib/utils";
-import { SCROLL_THRESHOLD } from "@/lib/constants";
 import { Container } from "@/components/layout/Container";
 
 // Lazy-load the search overlay — it pulls in Radix Dialog + icons, only needed

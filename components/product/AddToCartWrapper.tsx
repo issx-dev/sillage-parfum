@@ -3,9 +3,7 @@
 import { useState } from "react";
 import type { Product, Variant } from "@/types";
 import { AddToCartButton } from "./AddToCartButton";
-import { useCartStore } from "@/store/cartStore";
-import { toast } from "sonner";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, applyDiscount } from "@/lib/utils";
 import { SizeSelector } from "./SizeSelector";
 import { WishlistButton } from "@/components/product/WishlistButton";
 
@@ -17,11 +15,8 @@ interface Props {
 
 export function AddToCartWrapper({ product, firstVariant, hasDiscount }: Props) {
   const [selectedVariant, setSelectedVariant] = useState<Variant>(firstVariant);
-  const addItem = useCartStore((s) => s.addItem);
 
-  const currentPrice = hasDiscount
-    ? selectedVariant.price * (1 - product.discount_percent / 100)
-    : selectedVariant.price;
+  const currentPrice = applyDiscount(selectedVariant.price, product.discount_percent);
 
   return (
     <div className="space-y-6">
@@ -54,7 +49,7 @@ export function AddToCartWrapper({ product, firstVariant, hasDiscount }: Props) 
             slug: product.slug,
             name: product.name,
             brand: product.brand,
-            image: product.images[0],
+            image: product.images[0] ?? "",
             size_ml: selectedVariant.size_ml,
             price: currentPrice,
             quantity: 1,

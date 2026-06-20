@@ -19,11 +19,10 @@ export default function AvisoLegalPage() {
               Sociedad de la Información y el Comercio Electrónico, se indican los siguientes datos:
             </p>
             <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>Denominación social: SILLAGE PARFUMS, S.L.</li>
-              <li>NIF: B-XXXXXXXX</li>
+              <li>NIF: B-XXXXXXXX{/* TODO: Replace with real NIF */}</li>
               <li>Domicilio social: Calle de Serrano 45, 28001 Madrid, España</li>
               <li>Correo electrónico: info@sillage.com</li>
-              <li>Inscrita en el Registro Mercantil de Madrid, Tomo XXXXX, Folio XX, Sección X, Hoja M-XXXXXX</li>
+              <li>Inscrita en el Registro Mercantil de Madrid, Tomo XXXXX, Folio XX, Sección X, Hoja M-XXXXXX{/* TODO: Replace with real registry data */}</li>
             </ul>
           </div>
 

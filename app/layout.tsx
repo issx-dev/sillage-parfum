@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { PromoBar } from "@/components/layout/PromoBar";
@@ -7,6 +8,7 @@ import { CartDrawerWrapper } from "@/components/layout/CartDrawerWrapper";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "sonner";
 import { getProductBySlug } from "@/lib/data";
+import { SITE_URL } from "@/lib/site-config";
 import type { Product } from "@/types";
 
 const RECOMMENDED_SLUGS = [
@@ -22,7 +24,7 @@ function getRecommendedProducts(): Product[] {
   );
 }
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sillage.com";
+const siteUrl = SITE_URL;
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -79,16 +81,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const nonce = (await headers()).get("x-nonce") ?? "";
+
   return (
     <html lang="es" className={`${cormorant.variable} ${inter.variable}`} suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://api.stripe.com" crossOrigin="anonymous" />
-      </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <header className="fixed top-0 left-0 right-0 z-50">
           <PromoBar />
@@ -109,6 +110,7 @@ export default function RootLayout({
         />
         <script
           type="application/ld+json"
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
@@ -116,8 +118,8 @@ export default function RootLayout({
                 {
                   "@type": "Organization",
                   name: "SILLAGE",
-                  url: "https://sillage.com",
-                  logo: "https://sillage.com/images/og-default.jpg",
+                  url: siteUrl,
+                  logo: `${siteUrl}/images/og-default.jpg`,
                   description: "Perfumería de lujo con una selección exclusiva de fragancias de las mejores casas del mundo.",
                   sameAs: [
                     "https://instagram.com/sillage",
@@ -126,11 +128,11 @@ export default function RootLayout({
                 },
                 {
                   "@type": "WebSite",
-                  url: "https://sillage.com",
+                  url: siteUrl,
                   name: "SILLAGE — Perfumería de Lujo",
                   potentialAction: {
                     "@type": "SearchAction",
-                    target: "https://sillage.com/productos?q={search_term_string}",
+                    target: `${siteUrl}/productos?q={search_term_string}`,
                     "query-input": "required name=search_term_string",
                   },
                 },

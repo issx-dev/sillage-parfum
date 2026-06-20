@@ -1,7 +1,6 @@
 "use client";
 
 import { useCartStore } from "@/store/cartStore";
-import { useWishlistStore } from "@/store/wishlistStore";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Sheet, SheetContent } from "@/components/ui/Sheet";
 import Link from "next/link";
@@ -10,6 +9,7 @@ import { Minus, Plus, X, ShoppingBag } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { useState, useEffect } from "react";
 
 interface CartDrawerProps {
   open: boolean;
@@ -20,9 +20,14 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const items = useCartStore((s) => s.items);
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const getTotal = useCartStore((s) => s.getTotal);
   const cartHydrated = useCartStore((s) => s._hasHydrated);
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // Prevent hydration mismatch: only render cart content after mount
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  const total = getTotal();
   const freeShippingRemaining = Math.max(0, FREE_SHIPPING_THRESHOLD - total);
 
   const shippingProgress = Math.min(100, (total / FREE_SHIPPING_THRESHOLD) * 100);
@@ -41,7 +46,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
 
         {/* Items */}
         <div className="flex-1 overflow-y-auto p-4">
-          {!cartHydrated ? (
+          {!mounted || !cartHydrated ? (
             <div className="space-y-4">
               {[...Array(3)].map((_, i) => (
                 <div key={i} className="flex gap-3 p-3 bg-white rounded-card">
@@ -124,7 +129,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
         </div>
 
         {/* Footer */}
-        {items.length > 0 && (
+        {mounted && cartHydrated && items.length > 0 && (
           <div className="p-4 border-t border-gray-light bg-cream">
             {/* Free shipping bar */}
             {freeShippingRemaining > 0 ? (

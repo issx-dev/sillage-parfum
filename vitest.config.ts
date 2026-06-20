@@ -7,7 +7,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": resolve(__dirname, "./"),
+      "@": resolve(__dirname, "./src"),
       // Stub Next.js' "server-only" guard for unit tests.
       // The real package throws when imported outside a Next server runtime.
       "server-only": resolve(__dirname, "./test/shims/server-only.ts"),
@@ -18,12 +18,12 @@ export default defineConfig({
     globals: true,
     setupFiles: ["./vitest.setup.ts"],
     include: [
-      "app/**/*.{test,spec}.{ts,tsx}",
-      "components/**/*.{test,spec}.{ts,tsx}",
-      "lib/**/*.{test,spec}.{ts,tsx}",
-      "store/**/*.{test,spec}.{ts,tsx}",
-      "hooks/**/*.{test,spec}.{ts,tsx}",
-      "*.{test,spec}.{ts,tsx}",
+      "src/app/**/*.{test,spec}.{ts,tsx}",
+      "src/components/**/*.{test,spec}.{ts,tsx}",
+      "src/lib/**/*.{test,spec}.{ts,tsx}",
+      "src/store/**/*.{test,spec}.{ts,tsx}",
+      "src/hooks/**/*.{test,spec}.{ts,tsx}",
+      "src/*.{test,spec}.{ts,tsx}",
     ],
   },
 });

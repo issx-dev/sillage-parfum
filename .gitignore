@@ -42,15 +42,10 @@ dev-tools/
 .playwright-cli/
 
 # Design audit screenshots and stray capture files
-# (public/ assets stay — only the root-level design captures are excluded)
+# (public/ and docs/ assets stay — only the root-level design captures are excluded)
 *.png
 !public/**/*.png
-cart_drawer.png
-catalog.png
-home.png
-product_detail.png
-raw_chanel.png
-search_overlay.png
+!docs/**/*.png
 
 # Coverage / test artifacts
 coverage/

@@ -117,7 +117,7 @@ export default function ProductPage({ params }: ProductPageProps) {
           </div>
 
           {/* Quick Purchase Info */}
-          <div className="lg:col-span-6 flex flex-col justify-start lg:py-6 p-4 sm:p-6 lg:p-12">
+          <div className="lg:col-span-6 flex flex-col justify-center p-4 sm:p-6 lg:p-12 lg:py-12">
             <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-2">
               {product.family}
             </span>

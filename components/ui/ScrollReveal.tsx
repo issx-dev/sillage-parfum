@@ -24,7 +24,7 @@ export function ScrollReveal({ children, className, stagger = 0 }: ScrollRevealP
       ref={ref as React.RefObject<HTMLDivElement>}
       className={cn(
         "transition-[opacity,transform] duration-700 ease-out",
-        isIntersecting ? "opacity-100 translate-y-0" : "opacity-100 translate-y-2",
+        isIntersecting ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2",
         className
       )}
       style={stagger ? { transitionDelay: `${stagger}ms` } : undefined}

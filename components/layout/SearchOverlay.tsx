@@ -334,6 +334,8 @@ export function SearchOverlay({
             <div className="relative mb-10 md:mb-14 group/input">
               <input
                 ref={inputRef}
+                id="search-input"
+                name="search"
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}

@@ -41,7 +41,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12 mb-12">
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title}>
-              <h3 className="text-xs uppercase tracking-[0.2em] font-semibold mb-4 text-gold/70">{title}</h3>
+              <h3 className="text-xs uppercase tracking-[0.2em] font-semibold mb-4 text-gold">{title}</h3>
               <ul className="space-y-2">
                 {links.map((link) => (
                   <li key={link.label}>
@@ -90,8 +90,27 @@ export function Footer() {
           <div className="w-14 h-9 flex items-center justify-center" aria-label="Bizum">
             <svg viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
               <rect width="48" height="32" rx="4" fill="currentColor" className="text-cream/10" />
-              <path d="M24 8a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm0 2.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z" fill="currentColor" className="text-cream/60" />
-              <path d="M21 16h6m-3-3v6" stroke="currentColor" className="text-cream/60" stroke-width="1.5" stroke-linecap="round" />
+              <path
+                d="M17.5 16.5c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6-6-2.7-6-6zm6 4c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4z"
+                fill="currentColor"
+                className="text-cream/60"
+              />
+              <path
+                d="M23.5 11c-1.5-2.5.5-4 2.5-4s3.5 2 3.5 4.5S27 16 25 17.5"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                fill="none"
+                className="text-cream/60"
+              />
+              <path
+                d="M24.5 22c1.5 2.5-.5 4-2.5 4s-3.5-2-3.5-4.5 2.5-4.5 4.5-6"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                fill="none"
+                className="text-cream/60"
+              />
             </svg>
           </div>
         </div>

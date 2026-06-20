@@ -138,11 +138,10 @@ describe("ProductCard interactive elements", () => {
     // ─── Case B: single variant in stock ───────────────────────────────────
 
     describe("Case B: single variant in stock", () => {
-      it("renders add-to-cart button with size label", () => {
+      it("renders add-to-cart button", () => {
         render(<ProductCard product={singleVariantProduct} />);
         const button = screen.getByRole("button", { name: /añadir al carrito/i });
         expect(button).toBeInTheDocument();
-        expect(button).toHaveTextContent(/añadir/i);
       });
 
       it("adds the variant to cart on click and does NOT navigate", async () => {

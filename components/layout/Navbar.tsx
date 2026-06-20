@@ -129,13 +129,13 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
             </Link>
 
             {/* Desktop nav links */}
-<div className="hidden md:flex items-center gap-6 lg:gap-8">
+            <div className="hidden md:flex items-center gap-6 lg:gap-8">
                {navLinks.map((link) => (
                  <Link
                    key={link.label}
                    href={link.href}
                    className={cn(
-                     "h-11 flex items-center text-sm font-sans tracking-wide transition-colors duration-300",
+                     "min-h-[44px] flex items-center text-sm font-sans tracking-wide transition-colors duration-300",
                      isSolid
                        ? "text-charcoal/80 hover:text-gold"
                        : "text-cream/80 hover:text-gold"
@@ -175,7 +175,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
                 <span className="relative inline-flex">
                   <Heart className="w-5 h-5" />
                   {mounted && wishlistHydrated && wishlistCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-gold-dark text-cream text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
+                    <span className="absolute -top-1.5 -right-1.5 bg-gold-dark text-cream text-[9px] min-w-4 h-4 px-1 rounded-full flex items-center justify-center font-semibold leading-none">
                       {wishlistCount}
                     </span>
                   )}
@@ -196,7 +196,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
                   <ShoppingBag className="w-5 h-5" />
                   {mounted && cartHydrated && itemCount > 0 && (
                     <span className={cn(
-                      "absolute -top-1 -right-1 text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium transition-colors duration-300",
+                      "absolute -top-1.5 -right-1.5 text-[9px] min-w-4 h-4 px-1 rounded-full flex items-center justify-center font-semibold leading-none transition-colors duration-300",
                       isSolid ? "bg-black text-cream" : "bg-gold text-black"
                     )}>
                       {itemCount}

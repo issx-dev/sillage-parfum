@@ -146,7 +146,7 @@ export function ProductCard({
             className={cn(
               "absolute top-4 right-4 z-20 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-cream/80 backdrop-blur-sm border border-warm-200/30 shadow-xs hover:scale-110 active:scale-95",
               "md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 focus-within:opacity-100",
-              "transition-all duration-300 cursor-pointer"
+              "transition-[background-color,color,border-color,box-shadow,opacity,transform] duration-300 cursor-pointer"
             )}
           >
             <Heart className={cn("w-5 h-5 transition-colors duration-200", activeWishlist ? "fill-gold-dark text-gold-dark" : "text-gray-mid")} />
@@ -185,7 +185,7 @@ export function ProductCard({
               }}
               aria-label="Añadir al carrito"
               className={cn(
-                "w-11 h-11 rounded-full bg-white text-charcoal shadow-md border border-warm-200/50 flex items-center justify-center transition-all duration-300 cursor-pointer active:scale-95 hover:bg-black hover:text-cream",
+                "w-11 h-11 rounded-full bg-white text-charcoal shadow-md border border-warm-200/50 flex items-center justify-center transition-[background-color,color,border-color,box-shadow,opacity,transform] duration-300 cursor-pointer active:scale-95 hover:bg-black hover:text-cream",
                 "md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 focus-within:opacity-100"
               )}
             >
@@ -204,7 +204,7 @@ export function ProductCard({
         {/* Size Selection Drawer Panel Overlay */}
         {!isCarousel && hasMultipleVariants && (
           <div className={cn(
-            "absolute inset-x-0 bottom-0 z-30 bg-white border-t border-warm-200/60 p-4 transition-all duration-300 ease-out flex flex-col justify-center items-center rounded-b-card",
+            "absolute inset-x-0 bottom-0 z-30 bg-white border-t border-warm-200/60 p-4 transition-[background-color,color,border-color,box-shadow,opacity,transform] duration-300 ease-out flex flex-col justify-center items-center rounded-b-card",
             showSizeSelector ? "translate-y-0 opacity-100" : "translate-y-full opacity-0 pointer-events-none invisible"
           )}>
             <button
@@ -235,7 +235,7 @@ export function ProductCard({
                     setShowSizeSelector(false);
                   }}
                   className={cn(
-                    "flex-1 max-w-[100px] h-11 border border-warm-200 bg-white text-charcoal text-[11px] uppercase tracking-wider flex items-center justify-center hover:border-gold hover:bg-warm-50 active:scale-95 transition-all rounded-md cursor-pointer",
+                    "flex-1 max-w-[100px] h-11 border border-warm-200 bg-white text-charcoal text-[11px] uppercase tracking-wider flex items-center justify-center hover:border-gold hover:bg-warm-50 active:scale-95 transition-[background-color,color,border-color,box-shadow,opacity,transform] rounded-md cursor-pointer",
                     v.stock === 0 && "opacity-30 cursor-not-allowed line-through hover:bg-transparent hover:text-charcoal"
                   )}
                 >

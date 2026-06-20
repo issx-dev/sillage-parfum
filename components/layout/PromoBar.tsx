@@ -30,8 +30,8 @@ const PROMOS: PromoMessage[] = [
     icon: <Truck className="w-3.5 h-3.5 text-gold/80 shrink-0" />,
   },
   {
-    text: "obsequio exclusivo: 2 muestras selectas",
-    mobileText: "obsequio: 2 muestras",
+    text: "descuento exclusivo: 10% en su selección",
+    mobileText: "10% de descuento",
     ctaText: "copiar",
     promoCode: "SILLAGE2",
     href: "/productos",

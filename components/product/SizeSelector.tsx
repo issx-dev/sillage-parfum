@@ -22,7 +22,7 @@ export function SizeSelector({ variants, selectedVariant, onSelect }: SizeSelect
             onClick={() => !isDisabled && onSelect?.(v)}
             disabled={isDisabled}
             className={cn(
-              "px-4 py-2 text-xs sm:text-sm border transition-all duration-300 min-w-[64px] min-h-[44px] rounded-md font-sans tracking-wide cursor-pointer",
+              "px-4 py-2 text-xs sm:text-sm border transition-[background-color,color,border-color,box-shadow,opacity,transform] duration-300 min-w-[64px] min-h-[44px] rounded-md font-sans tracking-wide cursor-pointer",
               isSelected
                 ? "border-charcoal text-charcoal font-semibold bg-warm-100/50 shadow-xs scale-102"
                 : "border-warm-300 text-gray-mid bg-transparent hover:border-charcoal hover:text-charcoal",

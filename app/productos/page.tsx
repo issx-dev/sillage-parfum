@@ -76,21 +76,19 @@ export default function ProductosPage({ searchParams }: ProductosPageProps) {
 
         {/* Barra de Control de Filtros */}
         <ScrollReveal>
-          <div className="flex items-center justify-between mb-8 pb-4 border-b border-warm-200/30">
-            <span className="text-xs font-sans text-gray-mid tracking-wider uppercase">
+          <div className="flex items-center justify-between gap-2 mb-8 pb-4 border-b border-warm-200/30">
+            <span className="text-xs font-sans text-gray-mid tracking-wider uppercase whitespace-nowrap">
               {products.length} {products.length === 1 ? "aroma" : "aromas"}
             </span>
-
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 sm:gap-6">
               {(gender || family || badge) && (
                 <Link
                   href="/productos"
-                  className="text-xs text-gray-mid hover:text-black transition-colors flex items-center gap-1 font-sans font-medium uppercase tracking-wider min-h-[32px]"
+                  className="text-xs text-gray-mid hover:text-black transition-colors flex items-center gap-1 font-sans font-medium uppercase tracking-wider min-h-[32px] whitespace-nowrap"
                 >
                   Limpiar filtros ×
                 </Link>
               )}
-
               {/* Client Component for drawer & self-closing interaction */}
               <FilterDrawer
                 gender={gender}

@@ -57,7 +57,8 @@ export function HeroSection() {
               <Link
                 href="/productos"
                 className="group relative inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] font-medium text-cream hover:text-gold transition-colors duration-300 pb-2
-                           after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-gold after:origin-right after:scale-x-100"
+                           after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-gold after:origin-right after:scale-x-100
+                           before:absolute before:inset-y-[-12px] before:inset-x-[-8px] before:content-['']"
               >
                 Descubrir colección
                 <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
@@ -70,7 +71,8 @@ export function HeroSection() {
                            after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-cream/40
                            after:origin-right after:scale-x-0
                            after:transition-transform after:duration-500 after:ease-out
-                           hover:after:origin-left hover:after:scale-x-100"
+                           hover:after:origin-left hover:after:scale-x-100
+                           before:absolute before:inset-y-[-12px] before:inset-x-[-8px] before:content-['']"
               >
                 Guía de fragancias
               </Link>
@@ -84,9 +86,9 @@ export function HeroSection() {
 
           {/* Right: Premium Glassmorphism Card */}
           <div className="hidden lg:flex items-center justify-end lg:col-span-5 xl:col-span-4 pr-4">
-            <div className="relative w-full max-w-[350px] aspect-[3/4] rounded-card backdrop-blur-md bg-white/5 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_24px_48px_rgba(0,0,0,0.5)] p-8 flex flex-col justify-between overflow-hidden group hover:border-gold/30 transition-[border-color] duration-700">
+            <div className="relative w-full max-w-[350px] aspect-[3/4] rounded-card backdrop-blur-md bg-white/5 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_24px_48px_rgba(0,0,0,0.5)] p-8 flex flex-col justify-between overflow-hidden group hover:border-gold/30 transition-[border-color] duration-500">
               {/* Subtle animated background glow */}
-              <div className="absolute -right-20 -top-20 w-44 h-44 rounded-full bg-gold/10 blur-3xl group-hover:bg-gold/20 transition-[background-color] duration-700" />
+              <div className="absolute -right-20 -top-20 w-44 h-44 rounded-full bg-gold/10 blur-3xl group-hover:bg-gold/20 transition-[background-color] duration-500" />
 
               <div>
                 <span className="font-serif text-xs uppercase tracking-[0.25em] text-gold block mb-2">Colección Privada</span>

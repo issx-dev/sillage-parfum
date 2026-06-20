@@ -32,10 +32,10 @@ export function ProductGallery({ images, name, productId }: ProductGalleryProps)
       </div>
 
       {/* Floating Lightbox Trigger bottom-right */}
-      <Dialog.Root open={isLightboxOpen} onOpenChange={setIsLightboxOpen}>
+      <Dialog.Root open={isLightboxOpen} onOpenChange={setIsLightboxOpen} modal={true}>
         <Dialog.Trigger asChild>
           <button
-            className="absolute bottom-4 sm:bottom-6 right-4 sm:right-6 w-11 h-11 flex items-center justify-center rounded-full bg-cream/80 backdrop-blur-xs hover:bg-white text-charcoal hover:text-black border border-warm-200/40 shadow-xs hover:shadow-md transition-all duration-300 z-10 cursor-pointer"
+            className="absolute bottom-4 sm:bottom-6 right-4 sm:right-6 w-11 h-11 flex items-center justify-center rounded-full bg-cream/80 backdrop-blur-xs hover:bg-white text-charcoal hover:text-black border border-warm-200/40 shadow-xs hover:shadow-md transition-[background-color,color,border-color,box-shadow,opacity,transform] duration-300 z-10 cursor-pointer"
             aria-label="Ampliar imagen"
           >
             <Maximize2 className="w-4 h-4" />
@@ -44,7 +44,7 @@ export function ProductGallery({ images, name, productId }: ProductGalleryProps)
 
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md animate-overlay-fade" />
-          <Dialog.Content className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <Dialog.Content aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="relative w-full max-w-[85vh] aspect-square flex items-center justify-center">
               <Dialog.Close asChild>
                 <button

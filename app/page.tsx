@@ -36,7 +36,7 @@ export default function HomePage() {
         products={allProducts}
         eyebrow="selección sillage"
         title="Lo más elegido"
-        subtitle="Bestsellers y novedades selecionados por su carácter excepcional."
+        subtitle="Bestsellers y novedades seleccionados por su carácter excepcional."
       />
 
       {/* 3. EditorialSplitSingle — dark background, ONE powerful brand story */}

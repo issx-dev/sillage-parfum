@@ -28,9 +28,9 @@ describe("CSP header construction", () => {
     expect(csp).toContain("https://js.stripe.com");
   });
 
-  it("includes all required CSP directives", () => {
+  it("includes all required CSP directives (production mode)", () => {
     const nonce = btoa(crypto.randomUUID());
-    const csp = buildCSP(nonce);
+    const csp = buildCSP(nonce, false);
 
     expect(csp).toContain("default-src 'self'");
     expect(csp).toContain("style-src 'self' 'unsafe-inline' https://fonts.googleapis.com");
@@ -40,16 +40,39 @@ describe("CSP header construction", () => {
     expect(csp).toContain("base-uri 'self'");
     expect(csp).toContain("form-action 'self' https://checkout.stripe.com");
     expect(csp).toContain("object-src 'none'");
+    // Production must NOT include unsafe-eval or ws://
+    expect(csp).not.toContain("unsafe-eval");
+    expect(csp).not.toContain("ws://");
+  });
+
+  it("includes unsafe-eval and ws:// in dev mode", () => {
+    const nonce = btoa(crypto.randomUUID());
+    const csp = buildCSP(nonce, true);
+
+    expect(csp).toContain("'unsafe-eval'");
+    expect(csp).toContain("ws://localhost:*");
+    expect(csp).toContain("ws://127.0.0.1:*");
+    // Dev must still include all security directives
+    expect(csp).toContain("object-src 'none'");
+    expect(csp).toContain("form-action 'self' https://checkout.stripe.com");
   });
 });
 
-function buildCSP(nonce: string): string {
+function buildCSP(nonce: string, isDev = false): string {
+  const scriptSrc = isDev
+    ? `script-src 'self' 'nonce-${nonce}' 'unsafe-eval' https://js.stripe.com`
+    : `script-src 'self' 'nonce-${nonce}' https://js.stripe.com`;
+
+  const connectSrc = isDev
+    ? `connect-src 'self' https://api.stripe.com ws://localhost:* ws://127.0.0.1:*`
+    : `connect-src 'self' https://api.stripe.com`;
+
   return [
     `default-src 'self'`,
-    `script-src 'self' 'nonce-${nonce}' https://js.stripe.com`,
+    scriptSrc,
     `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
     `img-src 'self' data: https://images.unsplash.com https://*.sillage.com`,
-    `connect-src 'self' https://api.stripe.com`,
+    connectSrc,
     `frame-src https://js.stripe.com https://hooks.stripe.com`,
     `base-uri 'self'`,
     `form-action 'self' https://checkout.stripe.com`,

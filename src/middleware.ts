@@ -73,12 +73,22 @@ function inMemoryRateLimit(ip: string, limit: number): RateLimitResult {
 // CSP helper
 // ---------------------------------------------------------------------------
 function buildCSP(nonce: string): string {
+  const isDev = process.env.NODE_ENV !== "production";
+
+  const scriptSrc = isDev
+    ? `script-src 'self' 'nonce-${nonce}' 'unsafe-eval' https://js.stripe.com`
+    : `script-src 'self' 'nonce-${nonce}' https://js.stripe.com`;
+
+  const connectSrc = isDev
+    ? `connect-src 'self' https://api.stripe.com ws://localhost:* ws://127.0.0.1:*`
+    : `connect-src 'self' https://api.stripe.com`;
+
   return [
     `default-src 'self'`,
-    `script-src 'self' 'nonce-${nonce}' https://js.stripe.com`,
+    scriptSrc,
     `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
     `img-src 'self' data: https://images.unsplash.com https://*.sillage.com`,
-    `connect-src 'self' https://api.stripe.com`,
+    connectSrc,
     `frame-src https://js.stripe.com https://hooks.stripe.com`,
     `base-uri 'self'`,
     `form-action 'self' https://checkout.stripe.com`,

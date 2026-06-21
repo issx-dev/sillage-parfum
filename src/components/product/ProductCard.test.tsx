@@ -263,4 +263,13 @@ describe("ProductCard interactive elements", () => {
       });
     });
   });
+
+  describe("contrast classes", () => {
+    it("asserts that light theme descriptions use text-charcoal/70 instead of text-gray-mid/80", () => {
+      render(<ProductCard product={fixtureProduct} theme="light" />);
+      const description = screen.getByText(fixtureProduct.shortDescription || "");
+      expect(description.className).toContain("text-charcoal/70");
+      expect(description.className).not.toContain("text-gray-mid/80");
+    });
+  });
 });

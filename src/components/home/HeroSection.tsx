@@ -9,8 +9,16 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-[100dvh] flex items-center overflow-hidden bg-black text-cream">
+      {/* Preload critical hero images responsively */}
+      <link rel="preload" as="image" href="/images/hero/hero-mobile.avif" media="(max-width: 639px)" type="image/avif" />
+      <link rel="preload" as="image" href="/images/hero/hero-desktop.avif" media="(min-width: 640px)" type="image/avif" />
+
       {/* Background Media */}
       <picture className="absolute inset-0 w-full h-full z-0 select-none pointer-events-none">
+        <source media="(max-width: 639px)" srcSet="/images/hero/hero-mobile.avif" type="image/avif" />
+        <source media="(min-width: 640px)" srcSet="/images/hero/hero-desktop.avif" type="image/avif" />
+        <source media="(max-width: 639px)" srcSet="/images/hero/hero-mobile.webp" type="image/webp" />
+        <source media="(min-width: 640px)" srcSet="/images/hero/hero-desktop.webp" type="image/webp" />
         <source media="(max-width: 639px)" srcSet="/images/hero/hero-mobile.jpg" />
         <source media="(min-width: 640px)" srcSet="/images/hero/hero-desktop.jpg" />
         <img
@@ -19,6 +27,8 @@ export function HeroSection() {
           className={`w-full h-full object-cover ${reducedMotion ? "opacity-60" : "opacity-50"}`}
           fetchPriority="high"
           loading="eager"
+          width={1024}
+          height={1024}
         />
       </picture>
 

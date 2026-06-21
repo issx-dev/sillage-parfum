@@ -22,5 +22,7 @@ describe("PromoBar container layout", () => {
     
     expect(outerContainer.className).toContain("overflow-visible");
     expect(outerContainer.className).not.toContain("overflow-hidden");
+    expect(outerContainer.className).toContain("pt-[env(safe-area-inset-top)]");
+    expect(outerContainer.className).toContain("min-h-8");
   });
 });

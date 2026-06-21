@@ -106,6 +106,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <script
         type="application/ld+json"
         nonce={nonce}
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full">

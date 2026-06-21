@@ -53,3 +53,5 @@ coverage/
 
 # Runtime data (orders JSON written by webhook handler — not source)
 /data/
+# Local AI runtime state
+.atl/

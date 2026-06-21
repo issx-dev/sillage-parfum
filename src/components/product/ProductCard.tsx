@@ -100,7 +100,7 @@ export function ProductCard({
   const brandColor = isDark ? "text-warm-500" : "text-gray-mid";
   const brandSpacing = isCarousel ? "mb-1" : "mt-1";
   const nameColor = isDark ? "text-warm-50" : "";
-  const descColor = isDark ? "text-warm-400/80" : "text-gray-mid/80";
+  const descColor = isDark ? "text-warm-400/80" : "text-charcoal/70";
   const priceColor = isDark ? "text-warm-50" : "";
   const strikethroughColor = isDark ? "text-warm-500" : "text-gray-mid";
   const contentDivider = isDark ? "border-t border-warm-800/50" : "";

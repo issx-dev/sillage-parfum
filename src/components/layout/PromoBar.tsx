@@ -108,7 +108,7 @@ export function PromoBar() {
 
   return (
     <div
-      className="w-full bg-black border-b border-warm-900/60 h-8 px-4 overflow-hidden relative z-40 select-none group/bar"
+      className="w-full bg-black border-b border-warm-900/60 h-8 px-4 overflow-visible relative z-40 select-none group/bar"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >

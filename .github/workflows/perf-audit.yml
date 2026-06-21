@@ -9,13 +9,11 @@ jobs:
     if: github.event.deployment_status.state == 'success' && (github.event.deployment_status.environment == 'Preview' || github.event.deployment_status.environment == 'Production')
     runs-on: ubuntu-latest
     steps:
-      - name: Ejecutar Auditoría Oficial de Google PageSpeed
-        uses: tbruyelle/gh-pagespeed-action@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Ejecutar Auditoría de Calidad con Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
         with:
-          url: ${{ github.event.deployment_status.target_url }}
-          key: ${{ secrets.PAGESPEED_API_KEY }} # Opcional pero recomendado
-          # Umbrales mínimos requeridos para aprobar la integración (valores de 0 a 100)
-          performance: 90
-          accessibility: 95
-          best-practices: 95
-          seo: 90
+          urls: ${{ github.event.deployment_status.target_url }}
+          temporaryPublicStorage: true

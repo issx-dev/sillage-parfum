@@ -66,7 +66,8 @@ describe("RootLayout structure and styling", () => {
 
     const header = container.querySelector("header");
     expect(header).toBeInTheDocument();
-    expect(header?.className).toContain("pt-[env(safe-area-inset-top)]");
+    expect(header?.className).not.toContain("pt-[env(safe-area-inset-top)]");
+    expect(header?.className).not.toContain("bg-black");
     expect(header?.className).toContain("fixed");
     expect(header?.className).toContain("top-0");
   });

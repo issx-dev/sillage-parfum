@@ -218,29 +218,50 @@ export function ProductCard({
             </button>
             <p className="text-[10px] tracking-[0.2em] uppercase text-gold-dark mb-2.5 font-medium">Tamaño de frasco</p>
             <div className="flex gap-2 w-full justify-center">
-              {product.variants.map((v) => (
-                <button
-                  key={v.id}
-                  disabled={v.stock === 0}
-                  aria-label={`Añadir ${v.size_ml}ml al carrito`}
-                  onMouseEnter={() => setSelectedVariant(v)}
-                  onMouseLeave={() => setSelectedVariant(defaultVariant)}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (v.stock === 0) return;
-                    handleAddToCart(v);
-                    setShowSizeSelector(false);
-                  }}
-                  className={cn(
-                    "flex-1 max-w-[100px] h-11 border border-warm-200 bg-white text-charcoal text-[11px] uppercase tracking-wider flex items-center justify-center hover:border-gold hover:bg-warm-50 active:scale-95 transition-[background-color,color,border-color,box-shadow,opacity,transform] rounded-md cursor-pointer",
-                    v.stock === 0 && "opacity-30 cursor-not-allowed line-through hover:bg-transparent hover:text-charcoal"
-                  )}
-                >
-                  {v.size_ml}ml
-                </button>
-              ))}
+              {product.variants.map((v) => {
+                const isSelected = selectedVariant.id === v.id;
+                return (
+                  <button
+                    key={v.id}
+                    disabled={v.stock === 0}
+                    aria-label={isSelected ? `Confirmar ${v.size_ml}ml al carrito` : `Seleccionar ${v.size_ml}ml`}
+                    onMouseEnter={() => setSelectedVariant(v)}
+                    onMouseLeave={() => setSelectedVariant(defaultVariant)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (v.stock === 0) return;
+
+                      if (isSelected) {
+                        handleAddToCart(v);
+                        setShowSizeSelector(false);
+                      } else {
+                        setSelectedVariant(v);
+                      }
+                    }}
+                    className={cn(
+                      "flex-1 max-w-[100px] h-11 border border-warm-200 bg-white text-charcoal text-[11px] uppercase tracking-wider flex items-center justify-center hover:border-gold hover:bg-warm-50 active:scale-95 transition-[background-color,color,border-color,box-shadow,opacity,transform] rounded-md cursor-pointer",
+                      isSelected && "border-gold bg-warm-50 font-semibold",
+                      v.stock === 0 && "opacity-30 cursor-not-allowed line-through hover:bg-transparent hover:text-charcoal"
+                    )}
+                  >
+                    {v.size_ml}ml
+                  </button>
+                );
+              })}
             </div>
+            {/* Confirmation button — always visible, shows the currently selected variant */}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleAddToCart(selectedVariant);
+                setShowSizeSelector(false);
+              }}
+              className="mt-3 w-full h-10 bg-black text-white text-xs uppercase tracking-wider font-semibold rounded-md flex items-center justify-center active:scale-[0.98] transition-transform cursor-pointer"
+            >
+              Añadir {selectedVariant.size_ml}ml al carrito
+            </button>
           </div>
         )}
       </div>

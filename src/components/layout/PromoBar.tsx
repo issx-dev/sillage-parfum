@@ -119,7 +119,7 @@ export function PromoBar() {
         {/* Left Arrow — invisible touch target */}
         <button
           onClick={handlePrev}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden sm:flex opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[44px] min-h-[44px] items-center justify-start focus:outline-none"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 flex opacity-60 sm:opacity-0 sm:group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[44px] min-h-[44px] items-center justify-start focus:outline-none"
           aria-label="Anuncio anterior"
         >
           <ChevronLeft className="w-4 h-4 stroke-[1.5]" />
@@ -180,7 +180,7 @@ export function PromoBar() {
         {/* Right Arrow — invisible touch target */}
         <button
           onClick={handleNext}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden sm:flex opacity-0 group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[44px] min-h-[44px] items-center justify-end focus:outline-none"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 flex opacity-60 sm:opacity-0 sm:group-hover/bar:opacity-60 hover:!opacity-100 transition-[opacity] duration-300 text-cream/80 hover:text-gold min-w-[44px] min-h-[44px] items-center justify-end focus:outline-none"
           aria-label="Siguiente anuncio"
         >
           <ChevronRight className="w-4 h-4 stroke-[1.5]" />

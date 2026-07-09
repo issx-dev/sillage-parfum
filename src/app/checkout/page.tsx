@@ -30,6 +30,9 @@ export default function CheckoutPage() {
     );
   }
 
+  // NOTE: This page redirects to Stripe Checkout which handles the payment form.
+  // If local form fields (email, name, address) are added in the future,
+  // include autoComplete attributes for mobile conversion optimization.
   const handleCheckout = async () => {
     setLoading(true);
     setError("");

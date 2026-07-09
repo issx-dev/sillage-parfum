@@ -329,7 +329,10 @@ export function SearchOverlay({
                 ref={inputRef}
                 id="search-input"
                 name="search"
-                type="text"
+                type="search"
+                inputMode="search"
+                autoComplete="off"
+                enterKeyHint="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={`Buscar ${placeholder}...`}
@@ -356,7 +359,7 @@ export function SearchOverlay({
               <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-gold group-focus-within/input:w-full transition-[width] duration-700 ease-out" />
             </div>
 
-            <div className="flex-1 overflow-y-auto scrollbar-dark -mx-1 px-1 pb-20">
+            <div className="flex-1 overflow-y-auto overscroll-y-contain scrollbar-dark -mx-1 px-1 pb-20">
               {!hasQuery ? (
                 <div className="space-y-6 md:space-y-10">
                   <section>

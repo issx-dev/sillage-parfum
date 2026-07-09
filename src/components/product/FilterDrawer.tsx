@@ -83,7 +83,7 @@ export function FilterDrawer({ gender, family, badge, activeFiltersCount }: Filt
               </Dialog.Close>
             </div>
 
-            <div className="space-y-6 overflow-y-auto flex-1 pr-1 pb-6 scrollbar-dark">
+            <div className="space-y-6 overflow-y-auto overscroll-y-contain flex-1 pr-1 pb-6 scrollbar-dark">
               {/* Género */}
               <div>
                 <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-3">
@@ -97,7 +97,7 @@ export function FilterDrawer({ gender, family, badge, activeFiltersCount }: Filt
                       <Link
                         key={filter.label}
                         href={buildHref({ gender: filter.value })}
-                        className={`px-4 py-1.5 rounded-full text-xs font-sans transition-[background-color,color,border-color] duration-200 min-h-[36px] flex items-center border ${
+                        className={`px-4 py-1.5 rounded-full text-xs font-sans transition-[background-color,color,border-color] duration-200 min-h-[44px] flex items-center border ${
                           isActive
                             ? "bg-black text-cream border-black font-medium"
                             : "border-gray-light bg-white/50 text-charcoal/80 hover:border-gold hover:bg-black hover:text-cream"
@@ -123,7 +123,7 @@ export function FilterDrawer({ gender, family, badge, activeFiltersCount }: Filt
                       <Link
                         key={filter.label}
                         href={buildHref({ badge: filter.value })}
-                        className={`px-4 py-1.5 rounded-full text-xs font-sans transition-[background-color,color,border-color] duration-200 min-h-[36px] flex items-center border ${
+                        className={`px-4 py-1.5 rounded-full text-xs font-sans transition-[background-color,color,border-color] duration-200 min-h-[44px] flex items-center border ${
                           isActive
                             ? "bg-black text-cream border-black font-medium"
                             : "border-gray-light bg-white/50 text-charcoal/80 hover:border-gold hover:bg-black hover:text-cream"
@@ -149,7 +149,7 @@ export function FilterDrawer({ gender, family, badge, activeFiltersCount }: Filt
                       <Link
                         key={filter.label}
                         href={buildHref({ family: filter.value })}
-                        className={`px-4 py-1.5 rounded-full text-xs font-sans transition-[background-color,color,border-color] duration-200 min-h-[36px] flex items-center border ${
+                        className={`px-4 py-1.5 rounded-full text-xs font-sans transition-[background-color,color,border-color] duration-200 min-h-[44px] flex items-center border ${
                           isActive
                             ? "bg-black text-cream border-black font-medium"
                             : "border-gray-light bg-white/50 text-charcoal/80 hover:border-gold hover:bg-black hover:text-cream"

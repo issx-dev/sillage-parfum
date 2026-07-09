@@ -46,7 +46,7 @@ export function ProductGallery({ images, name }: ProductGalleryProps) {
             <div className="relative w-full max-w-[85vh] aspect-square flex items-center justify-center">
               <Dialog.Close asChild>
                 <button
-                  className="absolute -top-12 right-0 p-2 text-white/70 hover:text-white transition-colors cursor-pointer"
+                  className="absolute top-4 right-4 z-50 p-2 text-white/70 hover:text-white transition-colors cursor-pointer"
                   aria-label="Cerrar vista ampliada"
                 >
                   <X className="w-6 h-6" />

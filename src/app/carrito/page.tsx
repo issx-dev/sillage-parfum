@@ -95,7 +95,7 @@ export default function CarritoPage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
-                        className="p-2 border border-gray-light rounded hover:bg-gray-light active:scale-95 transition-transform duration-150 min-w-[40px] min-h-[40px]"
+                        className="p-2 border border-gray-light rounded hover:bg-gray-light active:scale-95 transition-transform duration-150 min-w-[44px] min-h-[44px]"
                         aria-label="Disminuir cantidad"
                       >
                         <Minus className="w-4 h-4" />
@@ -103,7 +103,7 @@ export default function CarritoPage() {
                       <span className="w-8 text-center">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-                        className="p-2 border border-gray-light rounded hover:bg-gray-light active:scale-95 transition-transform duration-150 min-w-[40px] min-h-[40px]"
+                        className="p-2 border border-gray-light rounded hover:bg-gray-light active:scale-95 transition-transform duration-150 min-w-[44px] min-h-[44px]"
                         aria-label="Aumentar cantidad"
                       >
                         <Plus className="w-4 h-4" />
@@ -114,7 +114,7 @@ export default function CarritoPage() {
                 </div>
                 <button
                   onClick={() => removeItem(item.variantId)}
-                  className="p-2 text-gray-mid hover:text-gold-dark active:scale-95 transition-transform duration-150 min-w-[40px] min-h-[40px]"
+                  className="p-2 text-gray-mid hover:text-gold-dark active:scale-95 transition-transform duration-150 min-w-[44px] min-h-[44px]"
                   aria-label="Eliminar producto"
                 >
                   <X className="w-5 h-5" />

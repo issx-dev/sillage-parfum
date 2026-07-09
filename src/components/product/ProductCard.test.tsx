@@ -160,22 +160,36 @@ describe("ProductCard interactive elements", () => {
     // ─── Case C: multiple variants ─────────────────────────────────────────
 
     describe("Case C: multiple variants", () => {
-      it("renders per-size variant buttons", () => {
+      it("renders per-size variant buttons with correct aria-labels", () => {
         render(<ProductCard product={fixtureProduct} />);
+        // Default selected variant (first in-stock: 50ml) shows "Confirmar"
+        // Buttons are in the closed drawer but visible in the DOM
         expect(
-          screen.getByRole("button", { name: /añadir 50ml al carrito/i })
+          screen.getByRole("button", { name: /confirmar 50ml al carrito/i })
         ).toBeInTheDocument();
+        // Non-selected variant shows "Seleccionar"
         expect(
-          screen.getByRole("button", { name: /añadir 100ml al carrito/i })
+          screen.getByRole("button", { name: /seleccionar 100ml/i })
         ).toBeInTheDocument();
       });
 
-      it("adds correct variant to cart when clicking a variant button", async () => {
+      it("selects variant on first tap and confirms on second tap (double-tap flow)", async () => {
         const user = userEvent.setup();
         render(<ProductCard product={fixtureProduct} />);
 
+        // Open the drawer
+        await user.click(screen.getByRole("button", { name: /añadir al carrito/i }));
+
+        // First tap: select 100ml → price updates, label changes to "Confirmar"
         await user.click(
-          screen.getByRole("button", { name: /añadir 100ml al carrito/i })
+          screen.getByRole("button", { name: /seleccionar 100ml/i })
+        );
+        expect(screen.getByText("90,00 €")).toBeInTheDocument();
+        expect(screen.queryByText("50,00 €")).not.toBeInTheDocument();
+
+        // Second tap on the same chip: confirm → add to cart
+        await user.click(
+          screen.getByRole("button", { name: /confirmar 100ml al carrito/i })
         );
         const cartItems = useCartStore.getState().items;
         expect(cartItems).toHaveLength(1);
@@ -184,39 +198,37 @@ describe("ProductCard interactive elements", () => {
         expect(linkNavigateSpy).not.toHaveBeenCalled();
       });
 
-      it("updates displayed price when hovering over variant button", async () => {
+      it("updates displayed price when selecting a different variant", async () => {
         const user = userEvent.setup();
         render(<ProductCard product={fixtureProduct} />);
 
         // Default price: first in-stock variant (50ml → 50,00 €)
         expect(screen.getByText("50,00 €")).toBeInTheDocument();
 
-        // Hover over 100ml variant → price updates
-        await user.hover(
-          screen.getByRole("button", { name: /añadir 100ml al carrito/i })
+        // Open the drawer
+        await user.click(screen.getByRole("button", { name: /añadir al carrito/i }));
+
+        // Select 100ml variant → price updates
+        await user.click(
+          screen.getByRole("button", { name: /seleccionar 100ml/i })
         );
         expect(screen.getByText("90,00 €")).toBeInTheDocument();
         expect(screen.queryByText("50,00 €")).not.toBeInTheDocument();
 
-        // Unhover → price reverts to default
-        await user.unhover(
-          screen.getByRole("button", { name: /añadir 100ml al carrito/i })
+        // Select back 50ml → price reverts
+        await user.click(
+          screen.getByRole("button", { name: /seleccionar 50ml/i })
         );
         expect(screen.getByText("50,00 €")).toBeInTheDocument();
       });
 
-      it("disables out-of-stock variant button and does not add to cart on click", async () => {
-        const user = userEvent.setup();
+      it("disables out-of-stock variant button", () => {
         render(<ProductCard product={mixedStockProduct} />);
 
         const oosButton = screen.getByRole("button", {
-          name: /añadir 100ml al carrito/i,
+          name: /seleccionar 100ml/i,
         });
         expect(oosButton).toBeDisabled();
-
-        await user.click(oosButton);
-        // Disabled buttons should not trigger click handlers
-        expect(useCartStore.getState().items).toHaveLength(0);
       });
 
       it("shows discounted price and applies discount on add-to-cart", async () => {
@@ -230,22 +242,22 @@ describe("ProductCard interactive elements", () => {
         // Default: 50ml variant at 10% off → 50 * 0.9 = 45
         expect(screen.getByText("45,00 €")).toBeInTheDocument();
 
-        // Hover 100ml variant → 90 * 0.9 = 81
-        await user.hover(
-          screen.getByRole("button", { name: /añadir 100ml al carrito/i })
+        // Open the drawer
+        await user.click(screen.getByRole("button", { name: /añadir al carrito/i }));
+
+        // Select 100ml → 90 * 0.9 = 81
+        await user.click(
+          screen.getByRole("button", { name: /seleccionar 100ml/i })
         );
         expect(screen.getByText("81,00 €")).toBeInTheDocument();
 
-        // Click 50ml variant → discounted price added to cart
-        await user.unhover(
-          screen.getByRole("button", { name: /añadir 100ml al carrito/i })
-        );
+        // Confirm via double-tap
         await user.click(
-          screen.getByRole("button", { name: /añadir 50ml al carrito/i })
+          screen.getByRole("button", { name: /confirmar 100ml al carrito/i })
         );
         const cartItems = useCartStore.getState().items;
         expect(cartItems).toHaveLength(1);
-        expect(cartItems[0]!.price).toBe(45); // 50 * 0.9
+        expect(cartItems[0]!.price).toBe(81); // 90 * 0.9
       });
 
       it("renders a single OOS variant as Case A (Agotado)", () => {

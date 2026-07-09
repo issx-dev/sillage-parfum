@@ -80,9 +80,9 @@ export function ProductCarousel({
     scrollProgress,
     isDragging,
     scroll,
-    handleMouseDown,
-    handleMouseMove,
-    handleMouseUpOrLeave,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUpOrLeave,
   } = useCarouselState<HTMLDivElement>();
 
   if (!products || products.length === 0) return null;
@@ -160,31 +160,28 @@ export function ProductCarousel({
           <div className="relative">
             <div
               ref={ref}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUpOrLeave}
-              onMouseLeave={handleMouseUpOrLeave}
-              style={{ touchAction: "pan-y" }}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUpOrLeave}
+              onPointerLeave={handlePointerUpOrLeave}
               className={cn(
                 "flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-8 -mx-4 px-4 sm:mx-0 sm:px-0 select-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]",
                 isDragging ? "cursor-grabbing" : "cursor-grab"
               )}
             >
               {products.map((product) => (
-                  <div
-                    key={product.id}
-                    className="w-[280px] sm:w-[320px] flex-shrink-0 snap-start pointer-events-none"
-                  >
-                    <div className="pointer-events-auto">
-                      <ProductCard
-                        product={product}
-                        variant="carousel"
-                        theme={variant}
-                        showStatusBadges={showStatusBadges}
-                      />
-                    </div>
-                  </div>
-                ))}
+                <div
+                  key={product.id}
+                  className="w-[280px] sm:w-[320px] flex-shrink-0 snap-start"
+                >
+                  <ProductCard
+                    product={product}
+                    variant="carousel"
+                    theme={variant}
+                    showStatusBadges={showStatusBadges}
+                  />
+                </div>
+              ))}
             </div>
 
             <div

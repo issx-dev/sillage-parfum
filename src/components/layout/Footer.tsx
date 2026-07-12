@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
+import { FaCcVisa, FaCcMastercard, FaCcPaypal, FaInstagram, FaTiktok, FaPinterest, FaFacebook } from "react-icons/fa6";
 
 const footerLinks = {
   Categorías: [
@@ -15,10 +16,10 @@ const footerLinks = {
     { href: "/legal/cookies", label: "Cookies" },
   ],
   Síguenos: [
-    { href: "https://instagram.com/sillage", label: "Instagram", external: true },
-    { href: "https://tiktok.com/@sillage", label: "TikTok", external: true },
-    { href: "https://pinterest.com/sillage", label: "Pinterest", external: true },
-    { href: "https://facebook.com/sillage", label: "Facebook", external: true },
+    { href: "https://instagram.com/sillage", label: "Instagram", external: true, icon: <FaInstagram className="w-4 h-4" /> },
+    { href: "https://tiktok.com/@sillage", label: "TikTok", external: true, icon: <FaTiktok className="w-4 h-4" /> },
+    { href: "https://pinterest.com/sillage", label: "Pinterest", external: true, icon: <FaPinterest className="w-4 h-4" /> },
+    { href: "https://facebook.com/sillage", label: "Facebook", external: true, icon: <FaFacebook className="w-4 h-4" /> },
   ],
 };
 
@@ -46,9 +47,10 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-cream/60 hover:text-cream transition-colors duration-200"
+                      className="text-sm text-cream/60 hover:text-cream transition-colors duration-200 inline-flex items-center gap-2"
                       {...((link as { external?: boolean }).external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     >
+                      {(link as { icon?: React.ReactNode }).icon}
                       {link.label}
                     </Link>
                   </li>
@@ -56,68 +58,29 @@ export function Footer() {
               </ul>
             </div>
           ))}
+          {/* Sobre Nosotros — editorial column balancing the 4-col desktop grid */}
+          <div>
+            <h3 className="text-xs uppercase tracking-[0.2em] font-semibold mb-4 text-gold">Sobre Nosotros</h3>
+            <p className="text-sm text-cream/60 leading-relaxed font-sans font-light">
+              Sillage es una casa de alta perfumería dedicada a la curaduría de fragancias exclusivas de autor. Cada aroma en nuestra colección es seleccionado por su estela y carácter atemporal.
+            </p>
+          </div>
         </div>
 
         {/* Payment icons */}
-        <div className="flex justify-center gap-4 mb-12 flex-wrap">
-          {/* Visa */}
-          <div className="w-14 h-9 flex items-center justify-center">
-            <svg viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full" role="img" aria-label="Visa">
-              <rect width="48" height="32" rx="4" fill="currentColor" className="text-cream/10" />
-              <path d="M19.5 21.5h-3l1.9-11h3l-1.9 11zm12.7-10.7c-.6-.2-1.5-.5-2.7-.5-3 0-5.1 1.5-5.1 3.7 0 1.6 1.5 2.5 2.6 3.1 1.2.6 1.6.9 1.6 1.5 0 .8-1 1.2-1.9 1.2-1.3 0-2-.2-3-.7l-.4-.2-.5 2.7c.8.3 2.2.7 3.7.7 3.2 0 5.2-1.5 5.2-3.8 0-1.3-.8-2.2-2.5-3-1-.5-1.7-.9-1.7-1.5 0-.5.5-1 1.7-1 1 0 1.7.2 2.2.4l.3.1.5-2.4zm8 0h-2.3c-.7 0-1.3.2-1.6.9l-4.5 10.7h3.2l.6-1.7h3.9l.4 1.7h2.8l-2.5-11.6zm-3.7 7.5l1.2-3.1.4-1.2.3 1.1.7 3.2h-2.6zm-17.5-7.5l-3 7.5-.3-1.5c-.5-1.8-2.2-3.7-4-4.6l2.7 10.4h3.3l4.9-11 .2-.8h-3.8z" fill="currentColor" className="text-cream/60" />
-              <path d="M13.7 10.5H8.6l0 .2c3.9 1 6.5 3.3 7.6 6.2l-1.1-5.4c-.2-.8-.8-1-1.4-1z" fill="currentColor" className="text-cream/60" />
-            </svg>
-          </div>
-          {/* Mastercard */}
-          <div className="w-14 h-9 flex items-center justify-center">
-            <svg viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full" role="img" aria-label="Mastercard">
-              <rect width="48" height="32" rx="4" fill="currentColor" className="text-cream/10" />
-              <circle cx="19" cy="16" r="7" fill="currentColor" className="text-cream/50" />
-              <circle cx="29" cy="16" r="7" fill="currentColor" className="text-cream/50" />
-              <path d="M24 11.5a7 7 0 0 0 0 9 7 7 0 0 0 0-9z" fill="currentColor" className="text-cream/30" />
-            </svg>
-          </div>
-          {/* PayPal */}
-          <div className="w-14 h-9 flex items-center justify-center">
-            <svg viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full" role="img" aria-label="PayPal">
-              <rect width="48" height="32" rx="4" fill="currentColor" className="text-cream/10" />
-              <path d="M26.5 10h-5.2c-.4 0-.7.3-.8.7L18.5 22c0 .3.2.5.5.5h2.5c.4 0 .7-.3.8-.7l.5-3.4c.1-.4.4-.7.8-.7h1.7c3.5 0 5.5-1.7 6-5 .2-1.5-.5-3-3.2-3zm.5 4.8c-.3 2-1.8 2-3.2 2h-.8l.6-3.5c0-.2.2-.4.5-.4h.4c1 0 1.9 0 2.4.6.3.3.3.8.1 1.3z" fill="currentColor" className="text-cream/60" />
-              <path d="M17 10h-5c-.3 0-.6.2-.6.5L10 22c0 .3.2.5.5.5h2.4c.4 0 .7-.3.8-.7l.5-3.2c.1-.4.4-.7.8-.7h1.6c3.3 0 5.2-1.6 5.7-5 .2-1.4-.1-2.6-1-3.1-.6-.5-1.5-.7-2.7-.7z" fill="currentColor" className="text-cream/60" />
-            </svg>
-          </div>
-          {/* Bizum */}
-          <div className="w-14 h-9 flex items-center justify-center">
-            <svg viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full" role="img" aria-label="Bizum">
-              <rect width="48" height="32" rx="4" fill="currentColor" className="text-cream/10" />
-              <path
-                d="M17.5 16.5c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6-6-2.7-6-6zm6 4c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4z"
-                fill="currentColor"
-                className="text-cream/60"
-              />
-              <path
-                d="M23.5 11c-1.5-2.5.5-4 2.5-4s3.5 2 3.5 4.5S27 16 25 17.5"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                fill="none"
-                className="text-cream/60"
-              />
-              <path
-                d="M24.5 22c1.5 2.5-.5 4-2.5 4s-3.5-2-3.5-4.5 2.5-4.5 4.5-6"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                fill="none"
-                className="text-cream/60"
-              />
-            </svg>
-          </div>
+        <div className="flex justify-center items-center gap-6 mb-12 flex-wrap text-cream/40">
+          <FaCcVisa className="w-10 h-7" role="img" aria-label="Visa" />
+          <FaCcMastercard className="w-10 h-7" role="img" aria-label="Mastercard" />
+          <FaCcPaypal className="w-10 h-7" role="img" aria-label="PayPal" />
+          <svg viewBox="0 0 168.2 50" className="w-14 h-5" fill="currentColor" role="img" aria-label="Bizum">
+            <path fillRule="evenodd" clipRule="evenodd" d="M83.1 17.8c-1.4 0-2.6 1.2-2.6 2.5v19.2c0 1.4 1.2 2.6 2.6 2.6 1.4 0 2.6-1.2 2.6-2.6V20.4c0-1.4-1.1-2.6-2.6-2.6zm0-9.5c-1.6 0-2.9 1.3-2.9 2.9 0 1.6 1.3 3 2.9 3 1.6 0 2.9-1.3 2.9-3 0-1.6-1.4-2.9-2.9-2.9zm25.4 12.1c0-1.6-1.3-2.2-2.4-2.2H93.1c-1.3 0-2.3 1-2.3 2.2 0 1.3 1 2.3 2.3 2.3h8.5L90.7 37.9c-.3.4-.5 1.1-.5 1.5 0 1.6 1.3 2.5 2.4 2.5h13.7c1.3 0 2.3-1 2.3-2.3 0-1.3-1-2.3-2.3-2.3H97l10.7-14.9c.5-.7.7-1.4.7-2zM70.5 32.4c0 3.2-1.4 5.1-4.5 5.1-3.2 0-4.5-1.9-4.5-5.1v-9.8h4.7c3.8 0 4.3 2.1 4.3 4.4v5.4zm5.2-5.5c0-5.4-2.8-8.8-9.4-8.8h-4.8v-7.2c0-1.4-1.2-2.6-2.5-2.6-1.4 0-2.6 1.2-2.6 2.6v21.6c0 5.4 2.9 9.7 9.7 9.7 6.7 0 9.7-4.4 9.7-9.7v.1zm53-14.6c-1.4 0-2.6 1.2-2.6 2.6v12c0 3.2-1.4 5.1-4.5 5.1-3.2 0-4.5-1.9-4.5-5.1v-12c0-1.4-1.2-2.6-2.5-2.6-1.4 0-2.6 1.2-2.6 2.6v12c0 5.4 2.9 9.7 9.7 9.7 6.7 0 9.7-4.4 9.7-9.7v-12c0-1.4-1.2-2.6-2.6-2.6h-.1zm39.5 9.8c0-5.4-2.5-9.7-9.2-9.7-3 0-5.2.9-6.7 2.4-1.5-1.4-3.6-2.4-6.7-2.4-6.7 0-9.2 4.4-9.2 9.7v12c0 1.4 1.2 2.6 2.5 2.6 1.4 0 2.6-1.2 2.6-2.6v-12c0-3.2 1-5.1 4.1-5.1 3.1 0 4.1 1.9 4.1 5.1v12c0 1.4 1.2 2.6 2.5 2.6 1.4 0 2.6-1.2 2.6-2.6v-12c0-3.2 1-5.1 4.1-5.1 3.1 0 4.1 1.9 4.1 5.1v12c0 1.4 1.2 2.6 2.5 2.6 1.4 0 2.6-1.2 2.6-2.6l-.1-12zM9.2 17.9c1.8 1.3 4.4.9 5.7-.9l4.8-6.6C21 8.6 20.6 6 18.8 4.7c-1.8-1.3-4.4-.9-5.7.9l-4.8 6.6C7 14 7.4 16.5 9.2 17.9zm21.8-9.3c-1.8-1.3-4.4-.9-5.7.9L6.1 35.8c-1.3 1.8-.9 4.4.9 5.7 1.8 1.3 4.4.9 5.7-.9l19.1-26.3c1.4-1.9 1-4.5-.8-5.7zM7.4 6.5c1.3-1.8.9-4.4-.9-5.7C4.7-.5 2.1-.2.8 1.7-.5 3.5-.2 6 1.7 7.4 3.5 8.7 6 8.3 7.4 6.5zm29 36.1c-1.8-1.3-4.4-.9-5.7.9-1.3 1.8-.9 4.4.9 5.7 1.8 1.3 4.4.9 5.7-.9 1.3-1.8.9-4.4-.9-5.7zm-7.5-10.4c-1.8-1.3-4.4-.9-5.7.9l-4.8 6.6c-1.3 1.8-.9 4.4.9 5.7 1.8 1.3 4.4.9 5.7-.9l4.8-6.6c1.3-1.8.9-4.4-.9-5.7z" />
+          </svg>
         </div>
 
         {/* Bottom bar */}
         <div className="border-t border-gray-mid/20 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-cream/60">
-            © 2025 SILLAGE · Todos los derechos reservados
+            © 2026 SILLAGE · Todos los derechos reservados
           </p>
           <div className="flex gap-4">
             <Link href="/legal/aviso" className="text-xs text-cream/60 hover:text-cream transition-colors duration-200">Aviso legal</Link>

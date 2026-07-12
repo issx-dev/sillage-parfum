@@ -1,43 +1,7 @@
 "use client";
 
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { Instagram } from "lucide-react";
-
-function PinterestIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M8 12a4 4 0 1 0 8 0c0-3.2-2.2-5.5-4-8-1.8 2.5-4 4.8-4 8z" />
-      <path d="M9 17c0 2-1 4-3 6" />
-      <path d="M12 17c0 2 0 4 2 6" />
-    </svg>
-  );
-}
-
-function TikTokIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
-    </svg>
-  );
-}
+import { FaInstagram, FaPinterest, FaTiktok, FaFacebook } from "react-icons/fa6";
 
 export function Newsletter() {
   return (
@@ -67,16 +31,7 @@ export function Newsletter() {
                 className="text-warm-500 hover:text-gold transition-colors duration-200"
                 aria-label="SILLAGE en Instagram"
               >
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a
-                href="https://pinterest.com/sillage"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-warm-500 hover:text-gold transition-colors duration-200"
-                aria-label="SILLAGE en Pinterest"
-              >
-                <PinterestIcon className="w-5 h-5" />
+                <FaInstagram className="w-5 h-5" />
               </a>
               <a
                 href="https://tiktok.com/@sillage"
@@ -85,7 +40,25 @@ export function Newsletter() {
                 className="text-warm-500 hover:text-gold transition-colors duration-200"
                 aria-label="SILLAGE en TikTok"
               >
-                <TikTokIcon className="w-5 h-5" />
+                <FaTiktok className="w-5 h-5" />
+              </a>
+              <a
+                href="https://pinterest.com/sillage"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-warm-500 hover:text-gold transition-colors duration-200"
+                aria-label="SILLAGE en Pinterest"
+              >
+                <FaPinterest className="w-5 h-5" />
+              </a>
+              <a
+                href="https://facebook.com/sillage"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-warm-500 hover:text-gold transition-colors duration-200"
+                aria-label="SILLAGE en Facebook"
+              >
+                <FaFacebook className="w-5 h-5" />
               </a>
             </div>
           </div>

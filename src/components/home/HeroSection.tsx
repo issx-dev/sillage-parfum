@@ -106,6 +106,34 @@ export function HeroSection() {
                 </h2>
               </div>
 
+              {/* Celestial Trajectory — poetic constellation visual */}
+              <div className="relative h-28 my-4 flex items-center justify-center pointer-events-none select-none">
+                <svg width="100%" height="100%" viewBox="0 0 200 100" fill="none" className="w-full max-w-[240px]">
+                  {/* Delicate celestial path lines */}
+                  <path d="M 30,70 Q 100,20 170,45" stroke="rgba(212, 206, 197, 0.25)" strokeWidth="0.75" strokeDasharray="3 3" />
+                  <path d="M 170,45 Q 120,85 60,30" stroke="rgba(212, 206, 197, 0.15)" strokeWidth="0.75" strokeDasharray="3 3" />
+
+                  {/* Star 1 — Tiny gold sparkle */}
+                  <g transform="translate(30,70)">
+                    <path d="M -4,0 L 4,0 M 0,-4 L 0,4" stroke="rgba(212, 175, 55, 0.6)" strokeWidth="1" />
+                    <circle r="1" fill="white" />
+                  </g>
+
+                  {/* Star 2 — Core signature star (slow pulse animation) */}
+                  <g transform="translate(170,45)">
+                    <circle r="5" fill="rgba(212, 175, 55, 0.15)" className="animate-pulse" />
+                    <path d="M -8,0 L 8,0 M 0,-8 L 0,8" stroke="rgba(212, 175, 55, 0.85)" strokeWidth="1.25" />
+                    <circle r="1.5" fill="white" />
+                  </g>
+
+                  {/* Star 3 — Minor star */}
+                  <g transform="translate(60,30)">
+                    <path d="M -5,0 L 5,0 M 0,-5 L 0,5" stroke="rgba(212, 206, 197, 0.5)" strokeWidth="1" />
+                    <circle r="1" fill="white" />
+                  </g>
+                </svg>
+              </div>
+
               <div className="space-y-6">
                 <p className="font-serif lowercase text-xs text-cream/70 leading-relaxed tracking-wider space-y-1">
                   Salida: Bergamota & Pimienta Rosa <br />

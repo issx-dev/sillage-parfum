@@ -100,6 +100,7 @@ export default async function RootLayout({
         <Footer />
         <Toaster
           position="bottom-right"
+          style={{ bottom: "calc(1rem + env(safe-area-inset-bottom))" }}
           toastOptions={{
             style: {
               background: "var(--color-cream)",

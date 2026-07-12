@@ -24,7 +24,7 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="bg-black text-cream">
+    <footer className="bg-black text-cream pb-[env(safe-area-inset-bottom)]">
       <Container className="py-12 lg:py-16">
         {/* Logo + tagline */}
         <div className="text-center mb-12">

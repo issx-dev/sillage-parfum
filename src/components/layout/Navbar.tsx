@@ -45,6 +45,8 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const touchStartX = useRef(0);
+  const scrollYRef = useRef(0);
 
   const openCart = useCartStore((s) => s.openCart);
   const itemCount = useCartStore((s) => s.items.reduce((sum, item) => sum + item.quantity, 0));
@@ -76,13 +78,21 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
     timerRef.current = setTimeout(() => setMobileOpen(false), 300);
   }, []);
 
-  // Lock body scroll while the mobile menu is open. Mirrors SearchOverlay.tsx:272-283.
+  // iOS-proof body scroll lock. overflow:hidden alone fails on iOS Safari
+  // because of elastic bounce. We use position:fixed + scroll offset instead.
   useEffect(() => {
     if (mobileOpen) {
-      const prev = document.body.style.overflow;
+      scrollYRef.current = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollYRef.current}px`;
+      document.body.style.width = "100%";
       document.body.style.overflow = "hidden";
       return () => {
-        document.body.style.overflow = prev;
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.overflow = "";
+        window.scrollTo(0, scrollYRef.current);
         if (timerRef.current) {
           clearTimeout(timerRef.current);
         }
@@ -220,21 +230,28 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
             onClick={closeMobileMenu}
             aria-hidden="true"
           />
-          {/* Panel — slides in from right; full-width on small screens, fixed 320px ≥ sm */}
-          <div
-            className={cn(
-              "absolute top-0 right-0 bottom-0 w-full sm:max-w-sm bg-cream shadow-2xl flex flex-col",
-              "transition-transform duration-300 ease-out",
-              reducedMotion
-                ? "translate-x-0"
-                : mobileVisible
-                ? "translate-x-0"
-                : "translate-x-full"
-            )}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Menú de navegación"
-          >
+           {/* Panel — slides in from right; full-width on small screens, fixed 320px ≥ sm */}
+           <div
+             className={cn(
+               "absolute top-0 right-0 bottom-0 w-full sm:max-w-sm bg-cream shadow-2xl flex flex-col",
+               "transition-transform duration-300 ease-out",
+               reducedMotion
+                 ? "translate-x-0"
+                 : mobileVisible
+                 ? "translate-x-0"
+                 : "translate-x-full"
+             )}
+             role="dialog"
+             aria-modal="true"
+             aria-label="Menú de navegación"
+             onTouchStart={(e) => { touchStartX.current = e.touches[0]?.clientX ?? 0; }}
+             onTouchMove={(e) => {
+               const touch = e.touches[0];
+               if (!touch) return;
+               const deltaX = touch.clientX - touchStartX.current;
+               if (deltaX > 80) closeMobileMenu();
+             }}
+           >
             {/* Header */}
             <div className="flex justify-between items-center px-6 pt-6 pb-4">
               <span className="font-serif text-2xl text-gold tracking-wider">SILLAGE</span>
@@ -248,7 +265,7 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
             </div>
 
             {/* Nav links */}
-            <nav className="flex flex-col gap-1 flex-1 overflow-y-auto px-2">
+            <nav className="flex flex-col gap-1 flex-1 overflow-y-auto overscroll-y-contain px-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.label}

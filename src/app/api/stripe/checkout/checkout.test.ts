@@ -66,7 +66,7 @@ describe("POST /api/stripe/checkout", () => {
   });
 
   it("creates a valid Stripe session with promotion codes enabled", async () => {
-    mockGetVariant.mockReturnValueOnce({
+    mockGetVariant.mockResolvedValueOnce({
       product: mockProduct,
       variant: mockVariant,
     });
@@ -120,7 +120,7 @@ describe("POST /api/stripe/checkout", () => {
   });
 
   it("rejects invalid items with 404", async () => {
-    mockGetVariant.mockReturnValueOnce(null);
+    mockGetVariant.mockResolvedValueOnce(null);
 
     const request = new NextRequest("http://localhost:3000/api/stripe/checkout", {
       method: "POST",

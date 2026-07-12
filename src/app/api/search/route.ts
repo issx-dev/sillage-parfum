@@ -10,6 +10,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ query: q, results: [] });
   }
 
-  const results = searchProducts(q);
+  const results = await searchProducts(q);
   return NextResponse.json({ query: q, results });
 }

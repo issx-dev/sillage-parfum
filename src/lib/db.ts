@@ -21,3 +21,23 @@ export async function query(
 ): Promise<unknown[]> {
   return db.unsafe(sql, values as postgres.Serializable[]) as unknown as Promise<unknown[]>;
 }
+
+/**
+ * Query function used inside a transaction — same signature as `query`.
+ */
+export type TxQuery = typeof query;
+
+/**
+ * Execute a callback within a database transaction.
+ * All queries inside the callback run on the same pooled connection.
+ * If the callback throws, the transaction is rolled back automatically
+ * by the postgres driver and the error re-propagates to the caller.
+ */
+export async function transaction<T>(fn: (txQuery: TxQuery) => Promise<T>): Promise<T> {
+  return db.begin(async (trx) => {
+    const txQuery: TxQuery = async (sql, values = []) => {
+      return trx.unsafe(sql, values as postgres.Serializable[]) as unknown as Promise<unknown[]>;
+    };
+    return fn(txQuery);
+  }) as Promise<T>;
+}

@@ -51,13 +51,26 @@ async function checkRateLimit(
 // ---------------------------------------------------------------------------
 // In-memory rate limiter (fallback when Upstash is unavailable)
 // ---------------------------------------------------------------------------
-const rateLimitMap = new Map<string, number[]>();
-const WINDOW_MS = 60_000;
+export const rateLimitMap = new Map<string, number[]>();
+export const WINDOW_MS = 60_000;
 
-function inMemoryRateLimit(ip: string, limit: number): RateLimitResult {
+export function inMemoryRateLimit(ip: string, limit: number): RateLimitResult {
   const now = Date.now();
-  const timestamps = rateLimitMap.get(ip) ?? [];
   const windowStart = now - WINDOW_MS;
+
+  // Stale entry cleanup — purge on each call to prevent unbounded map growth.
+  // Delete entries where all timestamps are outside the window; for entries
+  // with a mix of stale and recent timestamps, keep only the recent ones.
+  rateLimitMap.forEach((timestamps, key) => {
+    const recent = timestamps.filter((t) => t > windowStart);
+    if (recent.length === 0) {
+      rateLimitMap.delete(key);
+    } else if (recent.length !== timestamps.length) {
+      rateLimitMap.set(key, recent);
+    }
+  });
+
+  const timestamps = rateLimitMap.get(ip) ?? [];
   const recent = timestamps.filter((t) => t > windowStart);
 
   if (recent.length >= limit) {

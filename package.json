@@ -10,7 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "seed": "tsx src/scripts/seed.ts"
+    "seed": "tsx --conditions=react-server src/scripts/seed.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",

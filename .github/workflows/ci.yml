@@ -44,6 +44,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Setup Database Schema and Seed
+        run: |
+          PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d ci -f docs/database/schema.sql
+          pnpm seed
+        env:
+          STRIPE_SECRET_KEY: sk_test_ci_placeholder
+          STRIPE_WEBHOOK_SECRET: whsec_ci_placeholder
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_ci_placeholder
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/ci
+          UPSTASH_REDIS_REST_URL: https://ci.upstash.io
+          UPSTASH_REDIS_REST_TOKEN: ci_placeholder
+
       - name: Lint
         run: pnpm lint
 

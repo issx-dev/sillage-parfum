@@ -12,6 +12,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,13 +51,10 @@ jobs:
       - name: Type-check (via build)
         run: pnpm build
         env:
-          # Required by env.ts schema during build's static analysis.
-          # Real values are never used in CI — we only verify the schema
-          # parses and the build succeeds.
           STRIPE_SECRET_KEY: sk_test_ci_placeholder
           STRIPE_WEBHOOK_SECRET: whsec_ci_placeholder
           NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_ci_placeholder
-          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ci
           UPSTASH_REDIS_REST_URL: https://ci.upstash.io
           UPSTASH_REDIS_REST_TOKEN: ci_placeholder
 
@@ -52,6 +64,6 @@ jobs:
           STRIPE_SECRET_KEY: sk_test_ci_placeholder
           STRIPE_WEBHOOK_SECRET: whsec_ci_placeholder
           NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_ci_placeholder
-          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ci
           UPSTASH_REDIS_REST_URL: https://ci.upstash.io
           UPSTASH_REDIS_REST_TOKEN: ci_placeholder

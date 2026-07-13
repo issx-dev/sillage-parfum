@@ -13,10 +13,10 @@ export const metadata: Metadata = {
 };
 
 
-export default function HomePage() {
-  const featured = getFeaturedProducts(6);
-  const newArrivals = getNewArrivals();
-  const discover = getDiscoverProducts(8);
+export default async function HomePage() {
+  const featured = await getFeaturedProducts(6);
+  const newArrivals = await getNewArrivals();
+  const discover = await getDiscoverProducts(8);
   // Merge featured + new arrivals for main carousel, deduplicating by slug
   const seen = new Set<string>();
   const allProducts = [...featured, ...newArrivals].filter((p) => {

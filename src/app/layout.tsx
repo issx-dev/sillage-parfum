@@ -18,10 +18,11 @@ const RECOMMENDED_SLUGS = [
   "black-orchid-edp",
 ];
 
-function getRecommendedProducts(): Product[] {
-  return RECOMMENDED_SLUGS.map((s) => getProductBySlug(s)).filter(
-    (p): p is Product => Boolean(p)
+async function getRecommendedProducts(): Promise<Product[]> {
+  const results = await Promise.all(
+    RECOMMENDED_SLUGS.map((s) => getProductBySlug(s))
   );
+  return results.filter((p): p is Product => Boolean(p));
 }
 
 const siteUrl = SITE_URL;
@@ -93,7 +94,7 @@ export default async function RootLayout({
       <body className="font-sans antialiased" suppressHydrationWarning>
         <header className="fixed top-0 left-0 right-0 z-50">
           <PromoBar />
-          <Navbar recommendedProducts={getRecommendedProducts()} />
+          <Navbar recommendedProducts={await getRecommendedProducts()} />
         </header>
         <CartDrawerWrapper />
         <main>{children}</main>

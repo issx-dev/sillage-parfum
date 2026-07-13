@@ -12,6 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: ci
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,13 +44,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Setup PostgreSQL
+      - name: Setup Database Schema and Seed
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y postgresql-16 -qq
-          sudo pg_ctlcluster 16 main start || sudo service postgresql start
-          sudo -u postgres psql -c "CREATE DATABASE ci;" 2>/dev/null || true
-          sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';" 2>/dev/null || true
+          PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d ci -f docs/database/schema.sql
+          pnpm seed
+        env:
+          STRIPE_SECRET_KEY: sk_test_ci_placeholder
+          STRIPE_WEBHOOK_SECRET: whsec_ci_placeholder
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_ci_placeholder
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/ci
+          UPSTASH_REDIS_REST_URL: https://ci.upstash.io
+          UPSTASH_REDIS_REST_TOKEN: ci_placeholder
 
       - name: Lint
         run: pnpm lint

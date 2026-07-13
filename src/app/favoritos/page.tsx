@@ -13,8 +13,8 @@ export const metadata: Metadata = {
  * The Client Component (WishlistView) filters by the user's wishlist store.
  * This approach respects the server-only data layer while supporting client-side state.
  */
-export default function FavoritosPage() {
-  const allProducts = getProducts();
+export default async function FavoritosPage() {
+  const allProducts = await getProducts();
 
   return (
     <section className="bg-cream pt-28 sm:pt-32 min-h-screen">

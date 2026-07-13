@@ -44,8 +44,8 @@ export function generateMetadata({ searchParams }: ProductosPageProps): Metadata
   };
 }
 
-export default function ProductosPage({ searchParams }: ProductosPageProps) {
-  let products = getProducts();
+export default async function ProductosPage({ searchParams }: ProductosPageProps) {
+  let products = await getProducts();
   const { family, badge, gender } = searchParams;
   const activeFiltersCount = [family, badge, gender].filter(Boolean).length;
 

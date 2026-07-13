@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       quantity: number;
     }> = [];
     for (const item of items) {
-      const found = getVariant(item.productId, item.variantId);
+      const found = await getVariant(item.productId, item.variantId);
       if (!found) {
         return NextResponse.json(
           { error: "One or more variants were not found" },

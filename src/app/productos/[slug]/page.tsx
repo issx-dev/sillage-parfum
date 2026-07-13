@@ -13,12 +13,12 @@ interface ProductPageProps {
 }
 
 export async function generateStaticParams() {
-  const products = getProducts();
+  const products = await getProducts();
   return products.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  const product = getProductBySlug(params.slug);
+  const product = await getProductBySlug(params.slug);
   if (!product) return { title: "Producto no encontrado" };
 
   if (!product.variants || product.variants.length === 0) {
@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const product = getProductBySlug(params.slug);
+  const product = await getProductBySlug(params.slug);
   const nonce = (await headers()).get("x-nonce") ?? "";
 
   if (!product) {

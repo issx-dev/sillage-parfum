@@ -24,19 +24,21 @@ vi.mock("next/font/google", () => ({
   }),
 }));
 
-// Mock lib/data
+// Mock lib/data — getProductBySlug is now async
 vi.mock("@/lib/data", () => ({
-  getProductBySlug: vi.fn().mockImplementation((slug: string) => ({
+  getProductBySlug: vi.fn().mockImplementation(async (slug: string) => ({
     id: slug,
     slug,
     name: `Product ${slug}`,
-    description: `Description ${slug}`,
-    price: 120,
+    shortDescription: `Description ${slug}`,
+    brand: "TestBrand",
+    family: "Floral",
+    gender: "unisex",
+    badge: null,
     images: ["/image.jpg"],
-    category: "perfume",
-    rating: 4.5,
-    reviewsCount: 10,
-    tags: ["luxury"],
+    variants: [],
+    discount_percent: 0,
+    notes: { top: [], heart: [], base: [] },
   })),
 }));
 

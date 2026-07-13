@@ -1,5 +1,5 @@
 import "server-only";
-import { query } from "@/lib/db";
+import { db } from "@/lib/db";
 import type { Product, Variant, Gender, BadgeType, Brand } from "@/types";
 import brandsData from "./data/brands.json";
 
@@ -76,10 +76,12 @@ async function hydrateProductsWithVariants(
 
   const productIds = productRows.map((r) => r.product_id);
 
-  const variantRows = (await query(
-    `SELECT variant_id, product_id, size_ml, price, stock, sku FROM variants WHERE product_id = ANY($1) ORDER BY size_ml`,
-    [productIds]
-  )) as unknown as VariantRow[];
+  const variantRows = (await db`
+    SELECT variant_id, product_id, size_ml, price, stock, sku 
+    FROM variants 
+    WHERE product_id = ANY(${productIds}) 
+    ORDER BY size_ml
+  `) as unknown as VariantRow[];
 
   const variantsByProduct = new Map<string, Variant[]>();
   for (const vRow of variantRows) {
@@ -104,12 +106,14 @@ export async function getProducts(family?: string): Promise<Product[]> {
   let productRows: ProductRow[];
 
   if (family && family !== "Todos") {
-    productRows = (await query(
-      `SELECT * FROM products WHERE family ILIKE '%' || $1 || '%'`,
-      [family]
-    )) as unknown as ProductRow[];
+    productRows = (await db`
+      SELECT * FROM products 
+      WHERE family ILIKE ${'%' + family + '%'}
+    `) as unknown as ProductRow[];
   } else {
-    productRows = (await query(`SELECT * FROM products`, [])) as unknown as ProductRow[];
+    productRows = (await db`
+      SELECT * FROM products
+    `) as unknown as ProductRow[];
   }
 
   return hydrateProductsWithVariants(productRows);
@@ -126,10 +130,10 @@ export async function getProductsByGender(
     return getProducts();
   }
 
-  const productRows = (await query(
-    `SELECT * FROM products WHERE gender = $1`,
-    [gender]
-  )) as unknown as ProductRow[];
+  const productRows = (await db`
+    SELECT * FROM products 
+    WHERE gender = ${gender}
+  `) as unknown as ProductRow[];
 
   return hydrateProductsWithVariants(productRows);
 }
@@ -140,10 +144,10 @@ export async function getProductsByGender(
 export async function getProductBySlug(
   slug: string
 ): Promise<Product | undefined> {
-  const productRows = (await query(
-    `SELECT * FROM products WHERE slug = $1`,
-    [slug]
-  )) as unknown as ProductRow[];
+  const productRows = (await db`
+    SELECT * FROM products 
+    WHERE slug = ${slug}
+  `) as unknown as ProductRow[];
 
   if (productRows.length === 0) return undefined;
 
@@ -158,10 +162,10 @@ export async function getProductBySlug(
 export async function getProductById(
   id: string
 ): Promise<Product | undefined> {
-  const productRows = (await query(
-    `SELECT * FROM products WHERE product_id = $1`,
-    [id]
-  )) as unknown as ProductRow[];
+  const productRows = (await db`
+    SELECT * FROM products 
+    WHERE product_id = ${id}
+  `) as unknown as ProductRow[];
 
   if (productRows.length === 0) return undefined;
 
@@ -190,40 +194,28 @@ export async function getVariant(
  * Fetch featured products (badge = 'top_ventas').
  * If fewer than `count` featured products exist, fills remaining slots
  * with other products.
+ * Consolidated into a single database query.
  */
 export async function getFeaturedProducts(
   count = 8
 ): Promise<Product[]> {
-  const featuredRows = (await query(
-    `SELECT * FROM products WHERE badge = $1 LIMIT $2`,
-    ["top_ventas", count]
-  )) as unknown as ProductRow[];
+  const featuredRows = (await db`
+    SELECT * FROM products 
+    ORDER BY CASE WHEN badge = 'top_ventas' THEN 0 ELSE 1 END, product_id 
+    LIMIT ${count}
+  `) as unknown as ProductRow[];
 
-  const featured = await hydrateProductsWithVariants(featuredRows);
-
-  if (featured.length >= count) return featured;
-
-  // Fallback: fill remaining slots with non-featured products
-  const remaining = count - featured.length;
-  const excludeIds = featuredRows.map((r) => r.product_id);
-
-  const fallbackRows = (await query(
-    `SELECT * FROM products WHERE product_id <> ALL($1) LIMIT $2`,
-    [excludeIds, remaining]
-  )) as unknown as ProductRow[];
-
-  const fallback = await hydrateProductsWithVariants(fallbackRows);
-  return [...featured, ...fallback].slice(0, count);
+  return hydrateProductsWithVariants(featuredRows);
 }
 
 /**
  * Fetch new arrival products (badge = 'nuevo').
  */
 export async function getNewArrivals(): Promise<Product[]> {
-  const productRows = (await query(
-    `SELECT * FROM products WHERE badge = $1`,
-    ["nuevo"]
-  )) as unknown as ProductRow[];
+  const productRows = (await db`
+    SELECT * FROM products 
+    WHERE badge = ${"nuevo"}
+  `) as unknown as ProductRow[];
 
   return hydrateProductsWithVariants(productRows);
 }
@@ -232,28 +224,18 @@ export async function getNewArrivals(): Promise<Product[]> {
  * Returns products that are NOT featured (badge !== 'top_ventas'),
  * so the "Descubre mas" carousel always shows a distinct set.
  * If not enough non-featured products exist, fills with featured ones.
+ * Consolidated into a single database query.
  */
 export async function getDiscoverProducts(
   count = 8
 ): Promise<Product[]> {
-  const nonFeaturedRows = (await query(
-    `SELECT * FROM products WHERE badge != $1 OR badge IS NULL LIMIT $2`,
-    ["top_ventas", count]
-  )) as unknown as ProductRow[];
+  const rows = (await db`
+    SELECT * FROM products 
+    ORDER BY CASE WHEN badge = 'top_ventas' THEN 1 ELSE 0 END, product_id 
+    LIMIT ${count}
+  `) as unknown as ProductRow[];
 
-  const nonFeatured = await hydrateProductsWithVariants(nonFeaturedRows);
-
-  if (nonFeatured.length >= count) return nonFeatured;
-
-  // Fallback: fill with featured products
-  const remaining = count - nonFeatured.length;
-  const featuredRows = (await query(
-    `SELECT * FROM products WHERE badge = $1 LIMIT $2`,
-    ["top_ventas", remaining]
-  )) as unknown as ProductRow[];
-
-  const featured = await hydrateProductsWithVariants(featuredRows);
-  return [...nonFeatured, ...featured].slice(0, count);
+  return hydrateProductsWithVariants(rows);
 }
 
 /**
@@ -279,7 +261,7 @@ function normalize(s: string): string {
 
 /**
  * Search products by name, brand, family, description, or any note
- * (top/heart/base). Accent-insensitive via query normalization + PostgreSQL ILIKE.
+ * (top/heart/base). Accent-insensitive via query normalization + PostgreSQL ILIKE + unaccent.
  */
 export async function searchProducts(
   searchQuery: string,
@@ -288,18 +270,17 @@ export async function searchProducts(
   const q = normalize(searchQuery.trim());
   if (q.length < 2) return [];
 
-  const productRows = (await query(
-    `SELECT * FROM products WHERE
-       name ILIKE '%' || $1 || '%' OR
-       brand ILIKE '%' || $1 || '%' OR
-       family ILIKE '%' || $1 || '%' OR
-       short_description ILIKE '%' || $1 || '%' OR
-       array_to_string(notes_top, ' ') ILIKE '%' || $1 || '%' OR
-       array_to_string(notes_heart, ' ') ILIKE '%' || $1 || '%' OR
-       array_to_string(notes_base, ' ') ILIKE '%' || $1 || '%'
-     LIMIT $2`,
-    [q, limit]
-  )) as unknown as ProductRow[];
+  const productRows = (await db`
+    SELECT * FROM products WHERE
+      unaccent(name) ILIKE '%' || ${q} || '%' OR
+      unaccent(brand) ILIKE '%' || ${q} || '%' OR
+      unaccent(family) ILIKE '%' || ${q} || '%' OR
+      unaccent(short_description) ILIKE '%' || ${q} || '%' OR
+      unaccent(array_to_string(notes_top, ' ')) ILIKE '%' || ${q} || '%' OR
+      unaccent(array_to_string(notes_heart, ' ')) ILIKE '%' || ${q} || '%' OR
+      unaccent(array_to_string(notes_base, ' ')) ILIKE '%' || ${q} || '%'
+    LIMIT ${limit}
+  `) as unknown as ProductRow[];
 
   return hydrateProductsWithVariants(productRows);
 }

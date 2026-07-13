@@ -12,6 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: ci
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,14 +43,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Setup PostgreSQL
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y postgresql-16 -qq
-          sudo pg_ctlcluster 16 main start || sudo service postgresql start
-          sudo -u postgres psql -c "CREATE DATABASE ci;" 2>/dev/null || true
-          sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';" 2>/dev/null || true
 
       - name: Lint
         run: pnpm lint

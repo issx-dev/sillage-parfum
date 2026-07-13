@@ -4,9 +4,23 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 // data.ts imports "@/lib/db" and "server-only" at module scope.
 // We mock both so the data module can load in the test environment.
 
-vi.mock("@/lib/db", () => ({
-  query: vi.fn(),
-}));
+vi.mock("@/lib/db", () => {
+  const queryMock = vi.fn();
+  const dbMock = vi.fn().mockImplementation((strings: TemplateStringsArray, ...args: any[]) => {
+    let sql = "";
+    for (let i = 0; i < strings.length; i++) {
+      sql += strings[i];
+      if (i < args.length) {
+        sql += `$${i + 1}`;
+      }
+    }
+    return queryMock(sql, args);
+  });
+  return {
+    db: dbMock,
+    query: queryMock,
+  };
+});
 
 vi.mock("server-only", () => ({}));
 
@@ -24,6 +38,7 @@ import {
 } from "./data";
 
 const mockQuery = vi.mocked(query);
+
 
 // ── Test fixtures ───────────────────────────────────────────
 // Row shapes as they arrive from PostgreSQL (snake_case columns).
@@ -121,7 +136,7 @@ describe("getProducts", () => {
     const firstCall = mockQuery.mock.calls[0];
     expect(firstCall![0]).toContain("WHERE");
     expect(firstCall![0]).toContain("ILIKE");
-    expect(firstCall![1]).toEqual(["Floral"]);
+    expect(firstCall![1]).toEqual(["%Floral%"]);
   });
 
   it("returns [] when no products exist in DB", async () => {
@@ -269,7 +284,7 @@ describe("getProductsByGender", () => {
 describe("getFeaturedProducts", () => {
   beforeEach(() => { mockQuery.mockReset(); });
 
-  it("queries products with badge = top_ventas", async () => {
+  it("queries products ordering by badge = top_ventas first", async () => {
     const featuredProducts = Array.from({ length: 8 }, (_, i) =>
       makeProductRow({ product_id: `feat-${i}`, badge: "top_ventas" })
     );
@@ -280,9 +295,9 @@ describe("getFeaturedProducts", () => {
     await getFeaturedProducts(8);
 
     const firstCall = mockQuery.mock.calls[0];
-    expect(firstCall![0]).toContain("badge = $1");
-    expect(firstCall![1]).toEqual(["top_ventas", 8]);
-    // No fallback query since 8 products were found
+    expect(firstCall![0]).toContain("ORDER BY CASE WHEN badge = 'top_ventas'");
+    expect(firstCall![1]).toEqual([8]);
+    // No fallback query since 8 products were found in single query
     expect(mockQuery).toHaveBeenCalledTimes(2);
   });
 
@@ -326,7 +341,7 @@ describe("getNewArrivals", () => {
 describe("getDiscoverProducts", () => {
   beforeEach(() => { mockQuery.mockReset(); });
 
-  it("queries products excluding top_ventas", async () => {
+  it("queries products ordering by non-featured badge first", async () => {
     const discoverProducts = Array.from({ length: 8 }, (_, i) =>
       makeProductRow({ product_id: `disc-${i}`, badge: "nuevo" })
     );
@@ -337,9 +352,9 @@ describe("getDiscoverProducts", () => {
     await getDiscoverProducts(8);
 
     const firstCall = mockQuery.mock.calls[0];
-    expect(firstCall![0]).toContain("badge != $1");
-    expect(firstCall![1]).toEqual(["top_ventas", 8]);
-    // No fallback since 8 products were found
+    expect(firstCall![0]).toContain("ORDER BY CASE WHEN badge = 'top_ventas'");
+    expect(firstCall![1]).toEqual([8]);
+    // No fallback since 8 products were found in single query
     expect(mockQuery).toHaveBeenCalledTimes(2);
   });
 
@@ -447,7 +462,9 @@ describe("searchProducts", () => {
 
     const firstCall = mockQuery.mock.calls[0];
     // Normalized: "jazmin" (lowercase, no diacritics)
-    expect(firstCall![1]).toEqual(["jazmin", 12]);
+    expect(firstCall![1]).toEqual([
+      "jazmin", "jazmin", "jazmin", "jazmin", "jazmin", "jazmin", "jazmin", 12
+    ]);
   });
 
   it("trims whitespace from the query before matching", async () => {
@@ -456,7 +473,9 @@ describe("searchProducts", () => {
     await searchProducts("   Dior   ");
 
     const firstCall = mockQuery.mock.calls[0];
-    expect(firstCall![1]).toEqual(["dior", 12]);
+    expect(firstCall![1]).toEqual([
+      "dior", "dior", "dior", "dior", "dior", "dior", "dior", 12
+    ]);
   });
 
   it("respects the limit argument", async () => {
@@ -465,7 +484,9 @@ describe("searchProducts", () => {
     await searchProducts("chanel", 5);
 
     const firstCall = mockQuery.mock.calls[0];
-    expect(firstCall![1]).toEqual(["chanel", 5]);
+    expect(firstCall![1]).toEqual([
+      "chanel", "chanel", "chanel", "chanel", "chanel", "chanel", "chanel", 5
+    ]);
   });
 
   it("returns hydrated products from query results", async () => {

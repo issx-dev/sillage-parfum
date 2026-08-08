@@ -1,465 +1,1090 @@
 [
   {
-    "id": "chanel-5",
-    "slug": "chanel-5-edp",
-    "name": "Chanel No5 EDP",
-    "brand": "Chanel",
-    "family": "Floral Aldehído",
-    "gender": "femenino",
-    "shortDescription": "La leyenda atemporal de Chanel. Un bouquet floral aldehídico.",
+    "id": "men-sauvage",
+    "slug": "sauvage-dior-chogan-094",
+    "name": "Revenant Intense",
+    "brand": "Dior",
+    "family": "Amaderado Aromático",
+    "gender": "masculino",
+    "shortDescription": "Este perfume captura la esencia de un hombre que trasciende tendencias y tiempo. Fiel a su propia identidad, salvaje pero consciente de sí.",
     "badge": "top_ventas",
     "images": [
-      "/images/products/chanel-5-front.jpg"
-    ],
-    "variants": [
-      {
-        "id": "chn5-030",
-        "size_ml": 30,
-        "price": 65,
-        "stock": 10,
-        "sku": "CHN5-030"
-      },
-      {
-        "id": "chn5-050",
-        "size_ml": 50,
-        "price": 95,
-        "stock": 8,
-        "sku": "CHN5-050"
-      },
-      {
-        "id": "chn5-100",
-        "size_ml": 100,
-        "price": 135,
-        "stock": 5,
-        "sku": "CHN5-100"
-      }
-    ],
-    "discount_percent": 0,
-    "notes": {
-      "top": [
-        "Aldehídos",
-        "Neroli",
-        "Ylang-Ylang"
-      ],
-      "heart": [
-        "Rosa de May",
-        "Jazmín de Grasse",
-        "Iris"
-      ],
-      "base": [
-        "Sándalo",
-        "Vainilla",
-        "Almizcle"
-      ]
-    }
-  },
-  {
-    "id": "sauvage-dior",
-    "slug": "sauvage-dior-edt",
-    "name": "Sauvage Dior EDT",
-    "brand": "Dior",
-    "family": "Amaderado",
-    "gender": "masculino",
-    "shortDescription": "Una fresca sensación de libertad mediterránea. Bergamota de Calabria y pimiento de Sichuan.",
-    "badge": "oferta",
-    "images": [
-      "/images/products/sauvage-dior-front.jpg"
+      "/images/products/chogan-black-authentic-studio-4k.png"
     ],
     "variants": [
       {
         "id": "sauvage-030",
         "size_ml": 30,
-        "price": 55,
-        "stock": 12,
-        "sku": "SAUVAGE-030"
+        "price": 25.5,
+        "stock": 25,
+        "sku": "CHOGAN-094-30"
       },
       {
-        "id": "sauvage-050",
-        "size_ml": 50,
-        "price": 79,
-        "stock": 10,
-        "sku": "SAUVAGE-050"
-      },
-      {
-        "id": "sauvage-100",
-        "size_ml": 100,
-        "price": 119,
-        "stock": 6,
-        "sku": "SAUVAGE-100"
+        "id": "sauvage-070",
+        "size_ml": 70,
+        "price": 48,
+        "stock": 40,
+        "sku": "CHOGAN-094-70"
       }
     ],
-    "discount_percent": 20,
+    "discount_percent": 0,
     "notes": {
       "top": [
-        "Bergamota de Calabria",
-        "Elemi"
+        "Bergamota",
+        "Pimienta"
       ],
       "heart": [
-        "Lavanda de Provenza",
-        "Pimiento de Sichuan",
+        "Geranio",
+        "Lavanda",
+        "Pachulí",
+        "Pimienta de Sichuan",
+        "Pimienta Rosa",
+        "Resina de Elemi",
         "Vetiver"
       ],
       "base": [
-        "Patchouli",
+        "Ambroxan",
         "Cedro",
-        "Ambrox"
+        "Ládano"
       ]
-    }
+    },
+    "officialCode": "094M",
+    "inspiration": "Sauvage de Dior"
   },
   {
-    "id": "black-orchid",
-    "slug": "black-orchid-edp",
-    "name": "Black Orchid EDP",
-    "brand": "Tom Ford",
-    "family": "Oriental",
-    "gender": "unisex",
-    "shortDescription": "La orquídea negra mas oscura y sensual. Un oriental intenso.",
-    "badge": null,
+    "id": "men-one-million",
+    "slug": "one-million-paco-rabanne-chogan-001",
+    "name": "Prestige for Him",
+    "brand": "Paco Rabanne",
+    "family": "Amaderado Especiado",
+    "gender": "masculino",
+    "shortDescription": "Humor, sensualidad y espíritu de caballero dan vida a una fragancia singular, capaz de mezclar notas frescas, aromáticas y especiadas con toques de cuero dulce.",
+    "badge": "top_ventas",
     "images": [
-      "/images/products/black-orchid-front.jpg"
+      "/images/products/chogan-black-authentic-studio-4k.png"
     ],
     "variants": [
       {
-        "id": "orchid-030",
+        "id": "one-million-030",
         "size_ml": 30,
-        "price": 85,
-        "stock": 8,
-        "sku": "BKORCHID-030"
+        "price": 18,
+        "stock": 30,
+        "sku": "CHOGAN-001-30"
       },
       {
-        "id": "orchid-050",
-        "size_ml": 50,
-        "price": 145,
-        "stock": 5,
-        "sku": "BKORCHID-050"
-      },
-      {
-        "id": "orchid-100",
-        "size_ml": 100,
-        "price": 215,
-        "stock": 3,
-        "sku": "BKORCHID-100"
+        "id": "one-million-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 50,
+        "sku": "CHOGAN-001-70"
       }
     ],
     "discount_percent": 0,
     "notes": {
       "top": [
-        "Bergamota Negra",
-        "Grosella Negra",
-        "Yam"
+        "Mandarina",
+        "Menta",
+        "Pomelo Rosa"
       ],
       "heart": [
-        "Orquídea Negra",
-        "Lotus",
-        "Chocolate Obsidian"
+        "Canela",
+        "Especias",
+        "Rosa"
       ],
       "base": [
-        "Patchouli de Malasia",
-        "Incienso",
-        "Sándalo"
+        "Ámbar",
+        "Cuero",
+        "Notas Amaderadas",
+        "Pachulí"
       ]
-    }
+    },
+    "officialCode": "001M",
+    "inspiration": "One Million de Paco Rabanne"
   },
   {
-    "id": "acqua-di-gio",
-    "slug": "acqua-di-gio-edt",
-    "name": "Acqua di Gio EDT",
-    "brand": "Armani",
-    "family": "Acuático",
+    "id": "men-acqua-di-gio",
+    "slug": "acqua-di-gio-armani-chogan-002",
+    "name": "Deep Blue for Him",
+    "brand": "Giorgio Armani",
+    "family": "Cítrico Acuático",
     "gender": "masculino",
-    "shortDescription": "Notas salinas del Mediterráneo, vetiver y un acorde mineral que evoca la brisa marina.",
-    "badge": null,
+    "shortDescription": "Una fragancia inspirada en la isla de Pantelleria: fresca, transparente, intensa y sofisticada. Un aroma intensamente masculino que simboliza el encuentro del mar con la roca.",
+    "badge": "top_ventas",
     "images": [
-      "/images/products/acqua-di-gio-front.jpg"
+      "/images/products/chogan-blue-authentic-studio-4k.png"
     ],
     "variants": [
       {
-        "id": "adgj-030",
+        "id": "acqua-gio-030",
         "size_ml": 30,
-        "price": 48,
-        "stock": 15,
-        "sku": "ADGJ-030"
+        "price": 18,
+        "stock": 20,
+        "sku": "CHOGAN-002-30"
       },
       {
-        "id": "adgj-050",
-        "size_ml": 50,
-        "price": 68,
-        "stock": 12,
-        "sku": "ADGJ-050"
-      },
-      {
-        "id": "adgj-100",
-        "size_ml": 100,
-        "price": 89,
-        "stock": 8,
-        "sku": "ADGJ-100"
+        "id": "acqua-gio-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 35,
+        "sku": "CHOGAN-002-70"
       }
     ],
     "discount_percent": 0,
     "notes": {
       "top": [
-        "Bergamota de Sicilia",
+        "Bergamota",
+        "Jazmín",
         "Lima",
+        "Limón",
+        "Mandarina",
+        "Naranja",
         "Neroli"
       ],
       "heart": [
-        "Jazmín Sambac",
-        "Rojo Picante",
-        "Nectarine"
+        "Calone",
+        "Ciclamen",
+        "Cilantro",
+        "Fresia",
+        "Jacinto",
+        "Jazmín",
+        "Melocotón",
+        "Notas Marinas",
+        "Nuez Moscada",
+        "Romero",
+        "Rosa",
+        "Violeta"
       ],
       "base": [
-        "Musgo de roble",
-        "Madera de Gaiac",
-        "Almizcle"
+        "Almizcle",
+        "Ámbar",
+        "Cedro",
+        "Musgo de Roble",
+        "Pachulí"
       ]
-    }
+    },
+    "officialCode": "002M",
+    "inspiration": "Acqua Di Giò de Giorgio Armani"
   },
   {
-    "id": "libre-ysl",
-    "slug": "libre-edp",
-    "name": "Libre YSL EDP",
-    "brand": "YSL",
-    "family": "Floral",
-    "gender": "femenino",
-    "shortDescription": "La libertad encapsulada en un frasco. Nerolí de Marruecos.",
-    "badge": "nuevo",
-    "images": [
-      "/images/products/libre-ysl-front.jpg"
-    ],
-    "variants": [
-      {
-        "id": "libre-030",
-        "size_ml": 30,
-        "price": 58,
-        "stock": 10,
-        "sku": "LIBRE-030"
-      },
-      {
-        "id": "libre-050",
-        "size_ml": 50,
-        "price": 82,
-        "stock": 7,
-        "sku": "LIBRE-050"
-      },
-      {
-        "id": "libre-090",
-        "size_ml": 90,
-        "price": 109,
-        "stock": 4,
-        "sku": "LIBRE-090"
-      }
-    ],
-    "discount_percent": 0,
-    "notes": {
-      "top": [
-        "Nerolí de Marruecos",
-        "Bergamota",
-        "Mint"
-      ],
-      "heart": [
-        "Lavanda de Castilla",
-        "Jasmin de India",
-        "Naranja"
-      ],
-      "base": [
-        "Musk de Cashmere",
-        "Madera de Cedro",
-        "Ambar"
-      ]
-    }
-  },
-  {
-    "id": "flowerbomb",
-    "slug": "flowerbomb-edp",
-    "name": "Flowerbomb Viktor&Rolf EDP",
-    "brand": "Viktor&Rolf",
-    "family": "Floral Gourmand",
-    "gender": "femenino",
-    "shortDescription": "Una explosion floral envolvente. El Jazmín indio se mezcla con notas de patchouli.",
-    "badge": null,
-    "images": [
-      "/images/products/flowerbomb-front.jpg"
-    ],
-    "variants": [
-      {
-        "id": "flower-030",
-        "size_ml": 30,
-        "price": 55,
-        "stock": 10,
-        "sku": "FLOWERBOMB-030"
-      },
-      {
-        "id": "flower-050",
-        "size_ml": 50,
-        "price": 99,
-        "stock": 8,
-        "sku": "FLOWERBOMB-050"
-      },
-      {
-        "id": "flower-100",
-        "size_ml": 100,
-        "price": 145,
-        "stock": 4,
-        "sku": "FLOWERBOMB-100"
-      }
-    ],
-    "discount_percent": 0,
-    "notes": {
-      "top": [
-        "Bergamota",
-        "Green Tea"
-      ],
-      "heart": [
-        "Jazmín Sambac",
-        "Rosa de May",
-        "Peonia"
-      ],
-      "base": [
-        "Patchouli",
-        "Musk",
-        "Cocoa"
-      ]
-    }
-  },
-  {
-    "id": "bleu-de-chanel",
-    "slug": "bleu-de-chanel-edp",
-    "name": "Bleu de Chanel EDP",
+    "id": "men-bleu-de-chanel",
+    "slug": "bleu-de-chanel-chogan-038",
+    "name": "Abyss",
     "brand": "Chanel",
-    "family": "Amaderado",
+    "family": "Amaderado Aromático",
     "gender": "masculino",
-    "shortDescription": "El espiritu libre de un hombre. Una madera aromatica intensa.",
+    "shortDescription": "El perfume de un hombre que se niega a conformarse con los modelos preestablecidos. Su composición revela un espíritu masculino libre con independencia y determinación.",
+    "badge": "oferta",
+    "images": [
+      "/images/products/chogan-black-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "bleu-chanel-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 25,
+        "sku": "CHOGAN-038-30"
+      },
+      {
+        "id": "bleu-chanel-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 40,
+        "sku": "CHOGAN-038-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Limón",
+        "Menta",
+        "Pimienta Rosa",
+        "Pomelo Rosa"
+      ],
+      "heart": [
+        "Flor de Jengibre",
+        "Iso E Super",
+        "Jazmín",
+        "Nuez Moscada"
+      ],
+      "base": [
+        "Almizcle",
+        "Cedro",
+        "Incienso",
+        "Ládano",
+        "Pachulí",
+        "Sándalo",
+        "Vetiver"
+      ]
+    },
+    "officialCode": "038M",
+    "inspiration": "Bleu de Chanel de Chanel"
+  },
+  {
+    "id": "men-invictus",
+    "slug": "invictus-paco-rabanne-chogan-061",
+    "name": "Triumph",
+    "brand": "Paco Rabanne",
+    "family": "Amaderado Acuático",
+    "gender": "masculino",
+    "shortDescription": "Una fragancia fresca, sensual y deportiva que encarna una visión moderna de la virilidad. La emocionante frescura marina se contrapone a la sensualidad amaderada.",
     "badge": "top_ventas",
     "images": [
-      "/images/products/bleu-de-chanel-front.jpg"
+      "/images/products/chogan-blue-authentic-studio-4k.png"
     ],
     "variants": [
       {
-        "id": "bleu-030",
+        "id": "invictus-030",
         "size_ml": 30,
-        "price": 62,
-        "stock": 10,
-        "sku": "BLEU-030"
+        "price": 18,
+        "stock": 20,
+        "sku": "CHOGAN-061-30"
       },
       {
-        "id": "bleu-050",
-        "size_ml": 50,
-        "price": 92,
-        "stock": 7,
-        "sku": "BLEU-050"
-      },
-      {
-        "id": "bleu-100",
-        "size_ml": 100,
-        "price": 125,
-        "stock": 5,
-        "sku": "BLEU-100"
+        "id": "invictus-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 35,
+        "sku": "CHOGAN-061-70"
       }
     ],
     "discount_percent": 0,
     "notes": {
       "top": [
-        "Lima de Citrica",
-        "Toronja",
+        "Mandarina",
+        "Notas Marinas",
+        "Pomelo Rosa"
+      ],
+      "heart": [
+        "Hoja de Laurel",
+        "Jazmín"
+      ],
+      "base": [
+        "Ámbar Gris",
+        "Madera de Guayaco",
+        "Musgo de Roble",
+        "Pachulí"
+      ]
+    },
+    "officialCode": "061M",
+    "inspiration": "Invictus de Paco Rabanne"
+  },
+  {
+    "id": "men-boss-bottled-absolu",
+    "slug": "boss-bottled-absolu-chogan-147m",
+    "name": "Dark Nectar",
+    "brand": "Hugo Boss",
+    "family": "Amaderado Intenso",
+    "gender": "masculino",
+    "shortDescription": "Un perfume masculino de tonos intensos y magnéticos. Su apertura ahumada y cálida da paso a un corazón rico y resinoso sobre un fondo preciado.",
+    "badge": null,
+    "images": [
+      "/images/products/chogan-black-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "boss-absolu-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 15,
+        "sku": "CHOGAN-147M-30"
+      },
+      {
+        "id": "boss-absolu-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 25,
+        "sku": "CHOGAN-147M-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Cuero",
+        "Incienso"
+      ],
+      "heart": [
+        "Mirra",
+        "Pachulí"
+      ],
+      "base": [
+        "Davana",
+        "Madera de Cedro"
+      ]
+    },
+    "officialCode": "147M",
+    "inspiration": "Boss Bottled Absolu de Hugo Boss"
+  },
+  {
+    "id": "men-myslf",
+    "slug": "myslf-ysl-chogan-079",
+    "name": "So True",
+    "brand": "Yves Saint Laurent",
+    "family": "Floral Amaderado",
+    "gender": "masculino",
+    "shortDescription": "Un perfume fresco, aromático y vibrante que encarna la esencia de la masculinidad contemporánea. Deja una estela de fascinación inolvidable.",
+    "badge": "nuevo",
+    "images": [
+      "/images/products/chogan-black-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "myslf-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 20,
+        "sku": "CHOGAN-079-30"
+      },
+      {
+        "id": "myslf-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 30,
+        "sku": "CHOGAN-079-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Bergamota"
+      ],
+      "heart": [
+        "Flor de Azahar"
+      ],
+      "base": [
+        "Ambrofix",
+        "Pachulí"
+      ]
+    },
+    "officialCode": "079M",
+    "inspiration": "MYSLF de Yves Saint Laurent"
+  },
+  {
+    "id": "men-le-male",
+    "slug": "le-male-jpg-chogan-016",
+    "name": "Sailor",
+    "brand": "Jean Paul Gaultier",
+    "family": "Oriental Fougère",
+    "gender": "masculino",
+    "shortDescription": "El compromiso perfecto entre virilidad y sensualidad. Lavanda combinada con notas de vainilla en una fragancia magnética, dulce y seductora.",
+    "badge": "oferta",
+    "images": [
+      "/images/products/chogan-black-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "lemale-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 25,
+        "sku": "CHOGAN-016-30"
+      },
+      {
+        "id": "lemale-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 40,
+        "sku": "CHOGAN-016-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Artemisia",
+        "Bergamota",
+        "Cardamomo",
+        "Lavanda",
         "Menta"
       ],
       "heart": [
-        "Bayas de Enebro",
-        "Rosa de Sichuan",
-        "Vetiver"
+        "Alcaravea",
+        "Canela",
+        "Flor de Azahar"
       ],
       "base": [
-        "Cedro de Alaska",
-        "Sandalwood",
-        "Labdanum"
+        "Ámbar",
+        "Cedro",
+        "Haba Tonka",
+        "Sándalo",
+        "Vainilla"
       ]
-    }
+    },
+    "officialCode": "016M",
+    "inspiration": "Le Male de Jean Paul Gaultier"
   },
   {
-    "id": "alien",
-    "slug": "alien-edp",
-    "name": "Alien Thierry Mugler EDP",
-    "brand": "Thierry Mugler",
-    "family": "Oriental",
-    "gender": "femenino",
-    "shortDescription": "El perfume que redefine lo imposible. Una asociacion perfecta.",
+    "id": "men-eros",
+    "slug": "eros-versace-chogan-140",
+    "name": "Cupid",
+    "brand": "Versace",
+    "family": "Oriental Amaderado",
+    "gender": "masculino",
+    "shortDescription": "Un perfume que brinda una frescura firme, capaz de expresar fuerza y pasión con sus notas aromáticas de menta, manzana verde y haba tonka.",
     "badge": "oferta",
     "images": [
-      "/images/products/alien-front.jpg"
+      "/images/products/chogan-black-authentic-studio-4k.png"
     ],
     "variants": [
       {
-        "id": "alien-030",
+        "id": "eros-030",
         "size_ml": 30,
-        "price": 48,
-        "stock": 12,
-        "sku": "ALIEN-030"
+        "price": 18,
+        "stock": 20,
+        "sku": "CHOGAN-140-30"
       },
       {
-        "id": "alien-060",
-        "size_ml": 60,
-        "price": 79,
-        "stock": 8,
-        "sku": "ALIEN-060"
-      },
-      {
-        "id": "alien-100",
-        "size_ml": 100,
-        "price": 112,
-        "stock": 3,
-        "sku": "ALIEN-100"
+        "id": "eros-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 35,
+        "sku": "CHOGAN-140-70"
       }
     ],
-    "discount_percent": 15,
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Limón",
+        "Manzana Verde",
+        "Menta"
+      ],
+      "heart": [
+        "Ambroxan",
+        "Geranio",
+        "Haba Tonka"
+      ],
+      "base": [
+        "Cedro",
+        "Musgo de Roble",
+        "Vainilla",
+        "Vetiver"
+      ]
+    },
+    "officialCode": "140M",
+    "inspiration": "Eros de Versace"
+  },
+  {
+    "id": "men-terre-d-hermes",
+    "slug": "terre-d-hermes-chogan-022",
+    "name": "Elemental",
+    "brand": "Hermès",
+    "family": "Amaderado Especiado",
+    "gender": "masculino",
+    "shortDescription": "Cuenta la historia de los elementos míticos del mundo antiguo y natural, un cruce armónico entre Tierra, Aire y Agua.",
+    "badge": null,
+    "images": [
+      "/images/products/chogan-black-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "terre-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 15,
+        "sku": "CHOGAN-022-30"
+      },
+      {
+        "id": "terre-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 25,
+        "sku": "CHOGAN-022-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Naranja",
+        "Pomelo Rosa"
+      ],
+      "heart": [
+        "Pelargonio",
+        "Pimienta",
+        "Sílex"
+      ],
+      "base": [
+        "Benjuí",
+        "Cedro",
+        "Pachulí",
+        "Vetiver"
+      ]
+    },
+    "officialCode": "022M",
+    "inspiration": "Terre d'Hermès de Hermès"
+  },
+  {
+    "id": "men-the-one",
+    "slug": "the-one-dg-chogan-070",
+    "name": "The One",
+    "brand": "Dolce & Gabbana",
+    "family": "Oriental Especiado",
+    "gender": "masculino",
+    "shortDescription": "Elegancia magnética y refinada. Carácter oriental especiado de gran sofisticación.",
+    "badge": "oferta",
+    "images": [
+      "/images/products/chogan-black-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "theone-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 20,
+        "sku": "CHOGAN-070-30"
+      },
+      {
+        "id": "theone-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 30,
+        "sku": "CHOGAN-070-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Albahaca",
+        "Cilantro",
+        "Pomelo"
+      ],
+      "heart": [
+        "Cardamomo",
+        "Jengibre",
+        "Flor de Azahar"
+      ],
+      "base": [
+        "Ámbar",
+        "Cedro",
+        "Tabaco"
+      ]
+    },
+    "officialCode": "070M",
+    "inspiration": "The One de Dolce & Gabbana"
+  },
+  {
+    "id": "men-the-scent",
+    "slug": "the-scent-hugo-boss-chogan-157",
+    "name": "Aftertouch",
+    "brand": "Hugo Boss",
+    "family": "Aromático Especiado",
+    "gender": "masculino",
+    "shortDescription": "Una declaración distintiva de elegancia y seducción diseñada para un hombre que celebra sus logros personales.",
+    "badge": null,
+    "images": [
+      "/images/products/chogan-black-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "scent-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 15,
+        "sku": "CHOGAN-157-30"
+      },
+      {
+        "id": "scent-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 25,
+        "sku": "CHOGAN-157-70"
+      }
+    ],
+    "discount_percent": 0,
     "notes": {
       "top": [
         "Bergamota",
-        "Aldehídos"
+        "Flor de Jengibre",
+        "Mandarina"
       ],
       "heart": [
-        "Jazmín Ting",
-        "Cashmere Wood"
+        "Lavanda",
+        "Maninka"
+      ],
+      "base": [
+        "Cuero",
+        "Notas Amaderadas"
+      ]
+    },
+    "officialCode": "157M",
+    "inspiration": "The Scent de Hugo Boss"
+  },
+  {
+    "id": "men-man-in-black",
+    "slug": "man-in-black-bvlgari-chogan-088",
+    "name": "Man in Black",
+    "brand": "Bvlgari",
+    "family": "Oriental Amaderado",
+    "gender": "masculino",
+    "shortDescription": "Sensualidad neo-oriental inspirada en el fuego. Notas de ron aromático, especias y cuero ahumado.",
+    "badge": null,
+    "images": [
+      "/images/products/chogan-black-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "mib-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 15,
+        "sku": "CHOGAN-088-30"
+      },
+      {
+        "id": "mib-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 20,
+        "sku": "CHOGAN-088-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Especias",
+        "Ron"
+      ],
+      "heart": [
+        "Cuero",
+        "Iris",
+        "Tuberosa"
+      ],
+      "base": [
+        "Haba Tonka",
+        "Madera de Guayaco",
+        "Resina de Benjuí"
+      ]
+    },
+    "officialCode": "088M",
+    "inspiration": "Man in Black de Bvlgari"
+  },
+  {
+    "id": "men-wanted",
+    "slug": "wanted-azzaro-chogan-087",
+    "name": "Wildman",
+    "brand": "Azzaro",
+    "family": "Amaderado Especiado",
+    "gender": "masculino",
+    "shortDescription": "Dedicada a un hombre audaz, generoso y seductor. Notas de madera y jengibre creadas para seducir y expresar deseo.",
+    "badge": null,
+    "images": [
+      "/images/products/chogan-black-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "wanted-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 15,
+        "sku": "CHOGAN-087-30"
+      },
+      {
+        "id": "wanted-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 25,
+        "sku": "CHOGAN-087-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Flor de Jengibre",
+        "Lavanda",
+        "Limón",
+        "Menta"
+      ],
+      "heart": [
+        "Cardamomo",
+        "Enebro",
+        "Geranio",
+        "Manzana"
       ],
       "base": [
         "Amberwood",
-        "Sándalo",
-        "Vainilla Blanca"
+        "Haba Tonka",
+        "Vetiver"
       ]
-    }
+    },
+    "officialCode": "087M",
+    "inspiration": "Wanted de Azzaro"
   },
   {
-    "id": "la-vie-est-belle",
-    "slug": "la-vie-est-belle-edp",
-    "name": "La Vie Est Belle Lancome EDP",
-    "brand": "Lancome",
-    "family": "Gourmand",
-    "gender": "femenino",
-    "shortDescription": "La vida es bella, aqui y ahora. Un iris gourmand envuelto en praline.",
-    "badge": null,
+    "id": "men-dior-homme-intense",
+    "slug": "dior-homme-intense-chogan-136",
+    "name": "Modern Man",
+    "brand": "Dior",
+    "family": "Amaderado Floral",
+    "gender": "masculino",
+    "shortDescription": "Un perfume refinado y voluptuoso. La intensidad del Iris se percibe junto a la lavanda, pera dulce y fondo amaderado.",
+    "badge": "top_ventas",
     "images": [
-      "/images/products/la-vie-est-belle-front.jpg"
+      "/images/products/chogan-black-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "dhi-030",
+        "size_ml": 30,
+        "price": 23.5,
+        "stock": 20,
+        "sku": "CHOGAN-136-30"
+      },
+      {
+        "id": "dhi-070",
+        "size_ml": 70,
+        "price": 45,
+        "stock": 30,
+        "sku": "CHOGAN-136-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Lavanda"
+      ],
+      "heart": [
+        "Iris",
+        "Pera",
+        "Semillas de Ambreta"
+      ],
+      "base": [
+        "Madera de Cedro",
+        "Vetiver"
+      ]
+    },
+    "officialCode": "136M",
+    "inspiration": "Dior Homme Intense de Dior"
+  },
+  {
+    "id": "women-la-vie-est-belle",
+    "slug": "la-vie-est-belle-lancome-chogan-042",
+    "name": "Bonheur Supreme",
+    "brand": "Lancôme",
+    "family": "Floral Gourmand",
+    "gender": "femenino",
+    "shortDescription": "Una esencia que evoca gracia, luz y libertad. Destella como una chispa de vida creada para mujeres sofisticadas.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
     ],
     "variants": [
       {
         "id": "lveb-030",
         "size_ml": 30,
-        "price": 52,
-        "stock": 10,
-        "sku": "LVEB-030"
+        "price": 18,
+        "stock": 30,
+        "sku": "CHOGAN-042-30"
       },
       {
-        "id": "lveb-050",
-        "size_ml": 50,
-        "price": 78,
-        "stock": 8,
-        "sku": "LVEB-050"
+        "id": "lveb-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 50,
+        "sku": "CHOGAN-042-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Grosella Negra",
+        "Pera"
+      ],
+      "heart": [
+        "Flor de Azahar",
+        "Iris",
+        "Jazmín"
+      ],
+      "base": [
+        "Haba Tonka",
+        "Pachulí",
+        "Praliné",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "042W",
+    "inspiration": "La Vie Est Belle de Lancôme"
+  },
+  {
+    "id": "women-libre",
+    "slug": "libre-ysl-chogan-122",
+    "name": "Volare",
+    "brand": "Yves Saint Laurent",
+    "family": "Floral Oriental",
+    "gender": "femenino",
+    "shortDescription": "Una fragancia única e irresistible que representa a mujeres rebeldes que viven y juegan según sus propias reglas.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "libre-030",
+        "size_ml": 30,
+        "price": 25.5,
+        "stock": 20,
+        "sku": "CHOGAN-122-30"
       },
       {
-        "id": "lveb-100",
-        "size_ml": 100,
-        "price": 105,
-        "stock": 5,
-        "sku": "LVEB-100"
+        "id": "libre-070",
+        "size_ml": 70,
+        "price": 48,
+        "stock": 30,
+        "sku": "CHOGAN-122-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Grosella Negra",
+        "Lavanda",
+        "Mandarina",
+        "Petitgrain"
+      ],
+      "heart": [
+        "Flor de Azahar",
+        "Jazmín",
+        "Lavanda"
+      ],
+      "base": [
+        "Almizcle",
+        "Ámbar Gris",
+        "Cedro",
+        "Vainilla de Madagascar"
+      ]
+    },
+    "officialCode": "122W",
+    "inspiration": "Libre de Yves Saint Laurent"
+  },
+  {
+    "id": "women-good-girl",
+    "slug": "good-girl-carolina-herrera-chogan-131",
+    "name": "Chica Mala",
+    "brand": "Carolina Herrera",
+    "family": "Oriental Floral",
+    "gender": "femenino",
+    "shortDescription": "Sensual, sofisticada y audaz. Un juego de contrastes entre la luminosidad del jazmín y la oscuridad del cacao y haba tonka.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "good-girl-030",
+        "size_ml": 30,
+        "price": 25.5,
+        "stock": 25,
+        "sku": "CHOGAN-131-30"
+      },
+      {
+        "id": "good-girl-070",
+        "size_ml": 70,
+        "price": 48,
+        "stock": 40,
+        "sku": "CHOGAN-131-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Almendra",
+        "Bergamota",
+        "Café",
+        "Limón"
+      ],
+      "heart": [
+        "Bulgarian Rose",
+        "Flor de Azahar",
+        "Jazmín",
+        "Orris",
+        "Tuberosas"
+      ],
+      "base": [
+        "Ámbar",
+        "Cacao",
+        "Canela",
+        "Haba Tonka",
+        "Sándalo",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "131W",
+    "inspiration": "Good Girl de Carolina Herrera"
+  },
+  {
+    "id": "women-black-opium",
+    "slug": "black-opium-ysl-chogan-055",
+    "name": "Black Addiction",
+    "brand": "Yves Saint Laurent",
+    "family": "Oriental Gourmand",
+    "gender": "femenino",
+    "shortDescription": "Adictiva y llena de energía. Contraste magnético entre las notas florales blancas y el carácter intenso del café negro.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "black-opium-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 20,
+        "sku": "CHOGAN-055-30"
+      },
+      {
+        "id": "black-opium-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 35,
+        "sku": "CHOGAN-055-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Flor de Azahar",
+        "Pimienta Rosa",
+        "Pera"
+      ],
+      "heart": [
+        "Almendra Amarga",
+        "Café",
+        "Jazmín",
+        "Regaliz"
+      ],
+      "base": [
+        "Cedro",
+        "Pachulí",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "055W",
+    "inspiration": "Black Opium de Yves Saint Laurent"
+  },
+  {
+    "id": "women-coco-mademoiselle",
+    "slug": "coco-mademoiselle-chanel-chogan-051",
+    "name": "Miss Bijou",
+    "brand": "Chanel",
+    "family": "Oriental Fresco",
+    "gender": "femenino",
+    "shortDescription": "Un perfume elegante, fresco y de carácter afirmado. Notas orientales de bergamota, rosa, jazmín y pachulí de la India.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-blue-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "coco-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 25,
+        "sku": "CHOGAN-051-30"
+      },
+      {
+        "id": "coco-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 40,
+        "sku": "CHOGAN-051-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Bergamota",
+        "Mandarina",
+        "Naranja"
+      ],
+      "heart": [
+        "Jazmín",
+        "Mimosa",
+        "Rosa",
+        "Ylang Ylang"
+      ],
+      "base": [
+        "Almizcle Blanco",
+        "Haba Tonka",
+        "Pachulí",
+        "Vainilla",
+        "Vetiver"
+      ]
+    },
+    "officialCode": "051W",
+    "inspiration": "Coco Mademoiselle de Chanel"
+  },
+  {
+    "id": "women-prada-paradoxe",
+    "slug": "prada-paradoxe-chogan-133",
+    "name": "Enigma",
+    "brand": "Prada",
+    "family": "Floral Ámbar",
+    "gender": "femenino",
+    "shortDescription": "Explora la complejidad atemporal de la feminidad. Notas florales de neroli y jazmín potenciadas por moléculas de ambrofix y serenolide.",
+    "badge": "oferta",
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "paradoxe-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 20,
+        "sku": "CHOGAN-133-30"
+      },
+      {
+        "id": "paradoxe-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 30,
+        "sku": "CHOGAN-133-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Bergamota",
+        "Neroli",
+        "Pera"
+      ],
+      "heart": [
+        "Esencia de Neroli",
+        "Jazmín",
+        "Musgo Vegetal"
+      ],
+      "base": [
+        "Ambrofix",
+        "Ámbar",
+        "Serenolide",
+        "Vainilla Bourbon"
+      ]
+    },
+    "officialCode": "133W",
+    "inspiration": "Prada Paradoxe de Prada"
+  },
+  {
+    "id": "women-idole",
+    "slug": "idole-lancome-chogan-115",
+    "name": "Icon",
+    "brand": "Lancôme",
+    "family": "Chipre Floral",
+    "gender": "femenino",
+    "shortDescription": "Para las mujeres que sueñan en grande. Una fragancia de rosas limpias, jazmín y un acorde de chipre blanco radiante.",
+    "badge": "oferta",
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "idole-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 15,
+        "sku": "CHOGAN-115-30"
+      },
+      {
+        "id": "idole-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 25,
+        "sku": "CHOGAN-115-70"
       }
     ],
     "discount_percent": 0,
@@ -467,179 +1092,1064 @@
       "top": [
         "Bergamota",
         "Pera",
-        "Rojo"
+        "Pimienta Rosa"
+      ],
+      "heart": [
+        "Jazmín",
+        "Rosa"
+      ],
+      "base": [
+        "Almizcle",
+        "Cedro",
+        "Pachulí",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "115W",
+    "inspiration": "Idôle de Lancôme"
+  },
+  {
+    "id": "women-jadore",
+    "slug": "jadore-dior-chogan-007",
+    "name": "Pure Gold",
+    "brand": "Dior",
+    "family": "Floral Frutal",
+    "gender": "femenino",
+    "shortDescription": "El gran floral femenino. Un ramo de flores exquisito y sensual donde se unen el ylang-ylang, la rosa damascena y el jazmín grandiflorum.",
+    "badge": null,
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "jadore-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 20,
+        "sku": "CHOGAN-007-30"
+      },
+      {
+        "id": "jadore-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 35,
+        "sku": "CHOGAN-007-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Bergamota",
+        "Magnolia",
+        "Mandarina",
+        "Melón",
+        "Pera"
+      ],
+      "heart": [
+        "Ciruela",
+        "Fresia",
+        "Jazmín",
+        "Lirio de los Valles",
+        "Rosa",
+        "Violeta"
+      ],
+      "base": [
+        "Almizcle",
+        "Cedro",
+        "Mora",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "007W",
+    "inspiration": "J'Adore de Dior"
+  },
+  {
+    "id": "women-alien",
+    "slug": "alien-thierry-mugler-chogan-010",
+    "name": "Stranger",
+    "brand": "Thierry Mugler",
+    "family": "Amaderado Oriental",
+    "gender": "femenino",
+    "shortDescription": "Una fragancia solar y misteriosa que libera una energía magnética con jazmín Sambac y ámbar blanco.",
+    "badge": "oferta",
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "alien-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 20,
+        "sku": "CHOGAN-010-30"
+      },
+      {
+        "id": "alien-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 30,
+        "sku": "CHOGAN-010-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Jazmín Sambac"
+      ],
+      "heart": [
+        "Notas Amaderadas",
+        "Madera de Cashmeran"
+      ],
+      "base": [
+        "Ámbar Blanco"
+      ]
+    },
+    "officialCode": "010W",
+    "inspiration": "Alien de Mugler"
+  },
+  {
+    "id": "women-linterdit",
+    "slug": "linterdit-givenchy-chogan-121",
+    "name": "Secret Desire",
+    "brand": "Givenchy",
+    "family": "Floral Amaderado",
+    "gender": "femenino",
+    "shortDescription": "Un tributo a la feminidad audaz. Flores blancas cruzadas con acordes oscuros de vetiver y pachulí.",
+    "badge": "oferta",
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "interdit-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 15,
+        "sku": "CHOGAN-121-30"
+      },
+      {
+        "id": "interdit-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 25,
+        "sku": "CHOGAN-121-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Aldehídos",
+        "Bergamota",
+        "Especias",
+        "Fresa Silvestre",
+        "Mandarina"
       ],
       "heart": [
         "Iris",
-        "Nardo",
+        "Jazmín",
+        "Lirio de los Valles",
+        "Narciso",
+        "Rosa",
+        "Violeta"
+      ],
+      "base": [
+        "Almizcle",
+        "Ámbar",
+        "Benjuí",
+        "Haba Tonka",
+        "Sándalo",
+        "Vetiver"
+      ]
+    },
+    "officialCode": "121W",
+    "inspiration": "L'Interdit de Givenchy"
+  },
+  {
+    "id": "women-my-way",
+    "slug": "my-way-armani-chogan-132",
+    "name": "My Rules",
+    "brand": "Giorgio Armani",
+    "family": "Floral Luminoso",
+    "gender": "femenino",
+    "shortDescription": "Un ramo de flores blancas de bergamota de Calabria, flor de azahar de Egipto, tuberosa y jazmín de la India.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "myway-030",
+        "size_ml": 30,
+        "price": 23.5,
+        "stock": 20,
+        "sku": "CHOGAN-132-30"
+      },
+      {
+        "id": "myway-070",
+        "size_ml": 70,
+        "price": 45,
+        "stock": 30,
+        "sku": "CHOGAN-132-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Bergamota",
+        "Flor de Azahar"
+      ],
+      "heart": [
+        "Jazmín",
+        "Tuberosas"
+      ],
+      "base": [
+        "Almizcle",
+        "Cedro",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "132W",
+    "inspiration": "My Way de Giorgio Armani"
+  },
+  {
+    "id": "women-lady-million",
+    "slug": "lady-million-paco-rabanne-chogan-019",
+    "name": "Prestige for Her",
+    "brand": "Paco Rabanne",
+    "family": "Floral Amaderado",
+    "gender": "femenino",
+    "shortDescription": "Fresca, floral y carnal. Notas de naranja amarga, frambuesa, flor de azahar, jazmín y miel dulce.",
+    "badge": "oferta",
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "ladym-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 20,
+        "sku": "CHOGAN-019-30"
+      },
+      {
+        "id": "ladym-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 30,
+        "sku": "CHOGAN-019-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Frambuesa",
+        "Limón",
+        "Neroli"
+      ],
+      "heart": [
+        "Flor de Azahar",
+        "Gardenia",
         "Jazmín"
       ],
       "base": [
-        "Praline",
-        "Patchouli",
-        "Musk"
+        "Ámbar",
+        "Miel",
+        "Pachulí"
       ]
-    }
+    },
+    "officialCode": "019W",
+    "inspiration": "Lady Million de Paco Rabanne"
   },
   {
-    "id": "baccarat-rouge",
-    "slug": "baccarat-rouge-540",
-    "name": "Baccarat Rouge 540 EDP",
-    "brand": "M.arial K.",
-    "family": "Amaderado",
-    "gender": "unisex",
-    "shortDescription": "La molécula de lujo. Un Ámbar luminoso con Jazmín y cedro.",
-    "badge": "nuevo",
+    "id": "women-olympea",
+    "slug": "olympea-paco-rabanne-chogan-067",
+    "name": "Victoria",
+    "brand": "Paco Rabanne",
+    "family": "Oriental Salado",
+    "gender": "femenino",
+    "shortDescription": "Una aventura olfativa inédita. Encuentro divino entre la frescura de la vainilla salada y la sensualidad de las maderas de ámbar.",
+    "badge": "oferta",
     "images": [
-      "/images/products/baccarat-rouge-front.jpg"
+      "/images/products/chogan-white-authentic-studio-4k.png"
     ],
     "variants": [
       {
-        "id": "br540-030",
+        "id": "olympea-030",
         "size_ml": 30,
-        "price": 118,
-        "stock": 6,
-        "sku": "BR540-030"
+        "price": 18,
+        "stock": 20,
+        "sku": "CHOGAN-067-30"
       },
       {
-        "id": "br540-070",
+        "id": "olympea-070",
         "size_ml": 70,
-        "price": 185,
-        "stock": 4,
-        "sku": "BR540-070"
-      },
-      {
-        "id": "br540-100",
-        "size_ml": 100,
-        "price": 245,
-        "stock": 2,
-        "sku": "BR540-100"
+        "price": 35,
+        "stock": 35,
+        "sku": "CHOGAN-067-70"
       }
     ],
     "discount_percent": 0,
     "notes": {
       "top": [
-        "Azafran",
-        "Bergamota"
+        "Flor de Jengibre",
+        "Jazmín",
+        "Mandarina"
       ],
       "heart": [
-        "Jazmín de Egipto",
-        "Madera de Cedro"
+        "Sal Marina",
+        "Vainilla Salada"
+      ],
+      "base": [
+        "Ámbar Gris",
+        "Madera de Cashmera",
+        "Sándalo"
+      ]
+    },
+    "officialCode": "067W",
+    "inspiration": "Olympea de Paco Rabanne"
+  },
+  {
+    "id": "women-chloe",
+    "slug": "chloe-chogan-153",
+    "name": "Rose Dust",
+    "brand": "Chloé",
+    "family": "Floral Polvoso",
+    "gender": "femenino",
+    "shortDescription": "Fresca y romántica. La rosa clásica se reinventa en un perfume moderno con litchi, peonía y magnolia.",
+    "badge": null,
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "chloe-030",
+        "size_ml": 30,
+        "price": 18,
+        "stock": 15,
+        "sku": "CHOGAN-153-30"
+      },
+      {
+        "id": "chloe-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 25,
+        "sku": "CHOGAN-153-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Fresia",
+        "Litchi",
+        "Peonía"
+      ],
+      "heart": [
+        "Lirio de los Valles",
+        "Magnolia",
+        "Rosa"
       ],
       "base": [
         "Ámbar",
-        "Sandalwood",
-        "Musk"
+        "Madera de Cedro"
       ]
-    }
+    },
+    "officialCode": "153W",
+    "inspiration": "Chloé Eau de Parfum de Chloé"
   },
   {
-    "id": "aventus-creed",
-    "slug": "aventus-creed-edt",
-    "name": "Aventus Creed EDT",
-    "brand": "Creed",
-    "family": "Chipre",
-    "gender": "masculino",
-    "shortDescription": "La fragancia del conquistador. Piña corsa, abedul y almizcle.",
-    "badge": null,
-    "images": [
-      "/images/products/aventus-creed-front.jpg"
-    ],
-    "variants": [
-      {
-        "id": "aventus-030",
-        "size_ml": 30,
-        "price": 125,
-        "stock": 5,
-        "sku": "AVENTUS-030"
-      },
-      {
-        "id": "aventus-050",
-        "size_ml": 50,
-        "price": 178,
-        "stock": 4,
-        "sku": "AVENTUS-050"
-      },
-      {
-        "id": "aventus-100",
-        "size_ml": 100,
-        "price": 249,
-        "stock": 2,
-        "sku": "AVENTUS-100"
-      }
-    ],
-    "discount_percent": 0,
-    "notes": {
-      "top": [
-        "Piña corsa",
-        "Bergamota de Sicilia",
-        "Manzana",
-        "Lavanda"
-      ],
-      "heart": [
-        "Petit Grain",
-        "Te Matcha",
-        "Rosa de Bulgaria",
-        "Abedul"
-      ],
-      "base": [
-        "Musk de Cashmere",
-        "Cedro de Atlas",
-        "Ambrox",
-        "Benzoe"
-      ]
-    }
-  },
-  {
-    "id": "light-blue-dg",
-    "slug": "light-blue-edt",
-    "name": "Light Blue EDT",
-    "brand": "Dolce&Gabbana",
-    "family": "Fresco",
+    "id": "women-goddess",
+    "slug": "goddess-burberry-chogan-148w",
+    "name": "Divine Aura",
+    "brand": "Burberry",
+    "family": "Aromático Gourmand",
     "gender": "femenino",
-    "shortDescription": "La Mediterráneo en un frasco. Bergamota siciliana y flor de cedro.",
-    "badge": null,
+    "shortDescription": "Un trío gourmet de vainillas enriquecido con lavanda luminosa, cacao e infusiones florales.",
+    "badge": "nuevo",
     "images": [
-      "/images/products/light-blue-dg-front.jpg"
+      "/images/products/chogan-white-authentic-studio-4k.png"
     ],
     "variants": [
       {
-        "id": "lb-030",
+        "id": "goddess-030",
         "size_ml": 30,
-        "price": 42,
-        "stock": 15,
-        "sku": "LB-030"
+        "price": 18,
+        "stock": 20,
+        "sku": "CHOGAN-148W-30"
       },
       {
-        "id": "lb-050",
-        "size_ml": 50,
-        "price": 62,
-        "stock": 12,
-        "sku": "LB-050"
-      },
-      {
-        "id": "lb-100",
-        "size_ml": 100,
-        "price": 82,
-        "stock": 8,
-        "sku": "LB-100"
+        "id": "goddess-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 30,
+        "sku": "CHOGAN-148W-70"
       }
     ],
     "discount_percent": 0,
     "notes": {
       "top": [
-        "Bergamota de Sicilia",
-        "Cedar Flower"
+        "Cacao",
+        "Jengibre",
+        "Lavanda",
+        "Vainilla"
       ],
       "heart": [
-        "Jazmín de Grasse",
-        "Te Matcha"
+        "Caviar de Vainilla"
       ],
       "base": [
-        "Musk de Texas",
-        "Cedro de Virginia",
-        "Oak Moss"
+        "Absoluto de Vainilla"
       ]
-    }
+    },
+    "officialCode": "148W",
+    "inspiration": "Goddess de Burberry"
+  },
+  {
+    "id": "unisex-baccarat-rouge",
+    "slug": "baccarat-rouge-540-chogan-118",
+    "name": "Scarlet Fire",
+    "brand": "Maison Francis Kurkdjian",
+    "family": "Amaderado Ámbar",
+    "gender": "unisex",
+    "shortDescription": "Una firma olfativa densa y luminosa. Azafrán, jazmín, amberwood y cedro en una alquimia poética sublime.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-gold-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "baccarat-030",
+        "size_ml": 30,
+        "price": 15.5,
+        "stock": 25,
+        "sku": "CHOGAN-118-30"
+      },
+      {
+        "id": "baccarat-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 40,
+        "sku": "CHOGAN-118-70"
+      },
+      {
+        "id": "baccarat-100",
+        "size_ml": 100,
+        "price": 52,
+        "stock": 20,
+        "sku": "CHOGAN-118-100"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Azafrán",
+        "Jazmín"
+      ],
+      "heart": [
+        "Amberwood",
+        "Ámbar Gris"
+      ],
+      "base": [
+        "Abeto Balsámico",
+        "Ambroxan",
+        "Madera de Cedro",
+        "Musgo de Roble"
+      ]
+    },
+    "officialCode": "118U",
+    "inspiration": "Baccarat Rouge 540 de Maison Francis Kurkdjian"
+  },
+  {
+    "id": "unisex-aventus",
+    "slug": "aventus-creed-chogan-068",
+    "name": "Glory for Him",
+    "brand": "Creed",
+    "family": "Chipre Frutal",
+    "gender": "unisex",
+    "shortDescription": "Icono de fuerza y éxito. Notas vibrantes de piña, bergamota, grosella negra y abedul ahumado.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "aventus-070",
+        "size_ml": 70,
+        "price": 57,
+        "stock": 20,
+        "sku": "CHOGAN-068-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Bergamota",
+        "Grosella Negra",
+        "Manzana",
+        "Piña"
+      ],
+      "heart": [
+        "Abedul",
+        "Jazmín",
+        "Pachulí",
+        "Rosa"
+      ],
+      "base": [
+        "Almizcle",
+        "Ámbar Gris",
+        "Musgo de Roble",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "068M",
+    "inspiration": "Aventus de Creed"
+  },
+  {
+    "id": "unisex-erba-pura",
+    "slug": "erba-pura-xerjoff-chogan-129",
+    "name": "Chlorophyll",
+    "brand": "Xerjoff",
+    "family": "Ámbar Frutal",
+    "gender": "unisex",
+    "shortDescription": "Cesta de cítricos de Sicilia y frutas del Mediterráneo sobre un lecho cáustico de almizcle y ámbar cálido.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-gold-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "erbapura-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 15,
+        "sku": "CHOGAN-129-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Bergamota",
+        "Limón",
+        "Naranja"
+      ],
+      "heart": [
+        "Notas Frutales Mediterráneas"
+      ],
+      "base": [
+        "Almizcle",
+        "Ámbar",
+        "Vainilla de Madagascar"
+      ]
+    },
+    "officialCode": "129U",
+    "inspiration": "Erba Pura de Xerjoff"
+  },
+  {
+    "id": "unisex-ombre-nomade",
+    "slug": "ombre-nomade-lv-chogan-114",
+    "name": "Desert Whisper",
+    "brand": "Louis Vuitton",
+    "family": "Oriental Amaderado",
+    "gender": "unisex",
+    "shortDescription": "Diseñado para los amantes de las esencias raras. Concentración de madera de Agar (Oud), azafrán, rosa e incienso.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-red-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "ombrenomade-070",
+        "size_ml": 70,
+        "price": 48,
+        "stock": 15,
+        "sku": "CHOGAN-114-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Bergamota",
+        "Frambuesa",
+        "Limón"
+      ],
+      "heart": [
+        "Azafrán",
+        "Canela",
+        "Geranio",
+        "Jazmín",
+        "Rosa"
+      ],
+      "base": [
+        "Aceite de Cipriol",
+        "Almizcle",
+        "Ámbar",
+        "Madera de Agar (Oud)",
+        "Piel",
+        "Sándalo",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "114U",
+    "inspiration": "Ombre Nomade de Louis Vuitton"
+  },
+  {
+    "id": "unisex-black-orchid",
+    "slug": "black-orchid-tom-ford-chogan-054",
+    "name": "Night Flower",
+    "brand": "Tom Ford",
+    "family": "Oriental Floral",
+    "gender": "unisex",
+    "shortDescription": "Lujoso y sensual. Orquídeas negras, especias ricas, trufa negra e incienso envueltos en chocolate negro.",
+    "badge": "oferta",
+    "images": [
+      "/images/products/chogan-red-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "blackorchid-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 25,
+        "sku": "CHOGAN-054-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Bergamota",
+        "Gardenia",
+        "Grosella Negra",
+        "Jazmín",
+        "Limón",
+        "Trufa",
+        "Ylang Ylang"
+      ],
+      "heart": [
+        "Especias",
+        "Gardenia",
+        "Jazmín",
+        "Loto",
+        "Notas Frutales",
+        "Orquídea Negra"
+      ],
+      "base": [
+        "Almizcle",
+        "Ámbar",
+        "Chocolate Negro",
+        "Incienso",
+        "Pachulí",
+        "Sándalo",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "054U",
+    "inspiration": "Black Orchid de Tom Ford"
+  },
+  {
+    "id": "luxury-naxos",
+    "slug": "naxos-xerjoff-chogan-137",
+    "name": "Sicilian Garden",
+    "brand": "Xerjoff",
+    "family": "Aromático Especiado Nicho",
+    "gender": "unisex",
+    "shortDescription": "Un homenaje al corazón de Sicilia. Miel dorada, cítricos frescos, lavanda y hojas de tabaco ricas.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-gold-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "naxos-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 10,
+        "sku": "CHOGAN-137-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Bergamota",
+        "Lavanda",
+        "Limón"
+      ],
+      "heart": [
+        "Canela",
+        "Cashmeran",
+        "Jazmín",
+        "Miel"
+      ],
+      "base": [
+        "Flor de Tabaco",
+        "Haba Tonka",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "137U",
+    "inspiration": "Naxos de Xerjoff"
+  },
+  {
+    "id": "luxury-lost-cherry",
+    "slug": "lost-cherry-tom-ford-chogan-111",
+    "name": "Ruby Love",
+    "brand": "Tom Ford",
+    "family": "Oriental Frutal Nicho",
+    "gender": "unisex",
+    "shortDescription": "Un viaje prohibido al fruto maduro. Cereza negra picada con licor de almendras y rosa turca.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-red-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "lostcherry-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 10,
+        "sku": "CHOGAN-111-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Almendra",
+        "Cereza Negra",
+        "Licor de Cereza"
+      ],
+      "heart": [
+        "Ciruela",
+        "Guinda",
+        "Jazmín Sambac",
+        "Rosa Turca"
+      ],
+      "base": [
+        "Benjuí",
+        "Canela",
+        "Clavos de Olor",
+        "Haba Tonka",
+        "Sándalo",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "111U",
+    "inspiration": "Lost Cherry de Tom Ford"
+  },
+  {
+    "id": "luxury-tobacco-vanille",
+    "slug": "tobacco-vanille-tom-ford-chogan-117",
+    "name": "Velvet Smoke",
+    "brand": "Tom Ford",
+    "family": "Oriental Especiado Nicho",
+    "gender": "unisex",
+    "shortDescription": "Opulento y cálido. Recrea la atmósfera de un club de caballeros inglés con flor de tabaco, haba tonka y frutos secos.",
+    "badge": "top_ventas",
+    "images": [
+      "/images/products/chogan-red-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "tobaccovanille-070",
+        "size_ml": 70,
+        "price": 35,
+        "stock": 10,
+        "sku": "CHOGAN-117-70"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Especias",
+        "Flor de Tabaco"
+      ],
+      "heart": [
+        "Haba Tonka",
+        "Vaina de Cacao",
+        "Vainilla"
+      ],
+      "base": [
+        "Frutas Secas",
+        "Notas Amaderadas"
+      ]
+    },
+    "officialCode": "117U",
+    "inspiration": "Tobacco Vanille de Tom Ford"
+  },
+  {
+    "id": "mist-tropical-breeze",
+    "slug": "tropical-breeze-body-mist-sbm001",
+    "name": "Tropical Breeze",
+    "brand": "Lush Cloud Scented",
+    "family": "Fresco Frutal",
+    "gender": "femenino",
+    "shortDescription": "Bruma perfumada ligera para cuerpo y cabello. Notas gourmet de almendra, pistacho, heliotropo y vainilla.",
+    "badge": "nuevo",
+    "images": [
+      "/images/products/chogan-mist-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "mist-001",
+        "size_ml": 100,
+        "price": 19.9,
+        "stock": 30,
+        "sku": "SBM001-100"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Almendra",
+        "Pistacho"
+      ],
+      "heart": [
+        "Heliotropo",
+        "Jazmín"
+      ],
+      "base": [
+        "Caramelo",
+        "Sándalo",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "SBM001",
+    "inspiration": "LUSH CLOUD Body & Hair Mist"
+  },
+  {
+    "id": "mist-pacific-aura",
+    "slug": "pacific-aura-body-mist-sbm002",
+    "name": "Pacific Aura",
+    "brand": "Lush Cloud Scented",
+    "family": "Acuático Frutal",
+    "gender": "femenino",
+    "shortDescription": "Bruma refrescante con fruta de la pasión, guayaba, limón, coco tropical y algodón de azúcar.",
+    "badge": "oferta",
+    "images": [
+      "/images/products/chogan-mist-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "mist-002",
+        "size_ml": 100,
+        "price": 19.9,
+        "stock": 25,
+        "sku": "SBM002-100"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Fruta de la Pasión",
+        "Guayaba",
+        "Limón"
+      ],
+      "heart": [
+        "Coco",
+        "Jazmín",
+        "Melocotón",
+        "Rosa"
+      ],
+      "base": [
+        "Algodón de Azúcar",
+        "Almizcle",
+        "Frambuesa",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "SBM002",
+    "inspiration": "LUSH CLOUD Body & Hair Mist"
+  },
+  {
+    "id": "mist-golden-hour",
+    "slug": "golden-hour-body-mist-sbm003",
+    "name": "Golden Hour",
+    "brand": "Lush Cloud Scented",
+    "family": "Cálido Ámbar",
+    "gender": "femenino",
+    "shortDescription": "Bruma inspirada en la hora dorada. Champán, grosella negra, tarta de coco y chocolate negro dulce.",
+    "badge": "oferta",
+    "images": [
+      "/images/products/chogan-mist-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "mist-003",
+        "size_ml": 100,
+        "price": 19.9,
+        "stock": 20,
+        "sku": "SBM003-100"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Champán",
+        "Grosella Negra",
+        "Mandarina"
+      ],
+      "heart": [
+        "Coco",
+        "Notas Solares",
+        "Tarta de Coco"
+      ],
+      "base": [
+        "Chocolate Negro",
+        "Leche",
+        "Vainilla"
+      ]
+    },
+    "officialCode": "SBM003",
+    "inspiration": "LUSH CLOUD Body & Hair Mist"
+  },
+  {
+    "id": "mist-summer-dream",
+    "slug": "summer-dream-body-mist-sbm004",
+    "name": "Summer Dream",
+    "brand": "Lush Cloud Scented",
+    "family": "Floral Dulce",
+    "gender": "femenino",
+    "shortDescription": "Bruma veraniega exótica con mango jugoso, coco, melocotón, frangipani y caramelo cremoso.",
+    "badge": "nuevo",
+    "images": [
+      "/images/products/chogan-mist-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "mist-004",
+        "size_ml": 100,
+        "price": 19.9,
+        "stock": 25,
+        "sku": "SBM004-100"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Coco",
+        "Mango",
+        "Melocotón"
+      ],
+      "heart": [
+        "Frangipani"
+      ],
+      "base": [
+        "Almizcle",
+        "Caramelo",
+        "Sándalo"
+      ]
+    },
+    "officialCode": "SBM004",
+    "inspiration": "LUSH CLOUD Body & Hair Mist"
+  },
+  {
+    "id": "kids-meisjes-perfum",
+    "slug": "meisjes-perfum-chogan-058",
+    "name": "Baby Girl",
+    "brand": "Chogan Kids",
+    "family": "Floral Frutal Suave",
+    "gender": "femenino",
+    "shortDescription": "Perfume suave e hipoalergénico formulado especialmente para niñas con notas dulces y delicadas.",
+    "badge": null,
+    "images": [
+      "/images/products/chogan-white-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "kids-058-30",
+        "size_ml": 30,
+        "price": 29,
+        "stock": 15,
+        "sku": "CHOGAN-058-30"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Notas Cítricas Suaves",
+        "Manzanilla"
+      ],
+      "heart": [
+        "Flor de Azahar",
+        "Talco"
+      ],
+      "base": [
+        "Almizcle Blanco Suave"
+      ]
+    },
+    "officialCode": "058B",
+    "inspiration": "Línea Infantil Chogan"
+  },
+  {
+    "id": "kids-babys-parfum",
+    "slug": "babys-parfum-chogan-059",
+    "name": "Baby Joy",
+    "brand": "Chogan Kids",
+    "family": "Floral Frutal Suave",
+    "gender": "unisex",
+    "shortDescription": "Perfume hipoalergénico extra suave sin alcohol para la piel sensible del bebé.",
+    "badge": null,
+    "images": [
+      "/images/products/chogan-baby-blue-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "kids-059-30",
+        "size_ml": 30,
+        "price": 29,
+        "stock": 15,
+        "sku": "CHOGAN-059-30"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Bergamota Suave",
+        "Lavanda Relajante"
+      ],
+      "heart": [
+        "Flor de Algodón",
+        "Lirio"
+      ],
+      "base": [
+        "Vainilla Blanca"
+      ]
+    },
+    "officialCode": "059B",
+    "inspiration": "Línea Bebé Chogan"
+  },
+  {
+    "id": "kids-jongens-parfum",
+    "slug": "jongens-parfum-chogan-045",
+    "name": "Baby Boy",
+    "brand": "Chogan Kids",
+    "family": "Cítrico Fresco Infantil",
+    "gender": "masculino",
+    "shortDescription": "Perfume fresco e hipoalergénico para niños con sutiles acordes herbales y cítricos.",
+    "badge": null,
+    "images": [
+      "/images/products/chogan-baby-blue-authentic-studio-4k.png"
+    ],
+    "variants": [
+      {
+        "id": "kids-045-30",
+        "size_ml": 30,
+        "price": 29,
+        "stock": 15,
+        "sku": "CHOGAN-045-30"
+      }
+    ],
+    "discount_percent": 0,
+    "notes": {
+      "top": [
+        "Mandarina Dulce",
+        "Limón Suave"
+      ],
+      "heart": [
+        "Manzana Verde",
+        "Flor de Naranjo"
+      ],
+      "base": [
+        "Cedro Ligero"
+      ]
+    },
+    "officialCode": "045B",
+    "inspiration": "Línea Infantil Chogan"
   }
 ]

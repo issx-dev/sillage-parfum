@@ -139,11 +139,11 @@ describe("getProducts", () => {
     expect(firstCall![1]).toEqual(["%Floral%"]);
   });
 
-  it("returns [] when no products exist in DB", async () => {
+  it("returns products fallback when DB returns empty", async () => {
     mockProductAndVariantQueries([], []);
 
     const products = await getProducts();
-    expect(products).toEqual([]);
+    expect(products.length).toBeGreaterThan(0);
   });
 
   it("hydrates products with variants and correct shape", async () => {

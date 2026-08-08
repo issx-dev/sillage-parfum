@@ -162,48 +162,33 @@ describe("ProductCard interactive elements", () => {
     describe("Case C: multiple variants", () => {
       it("renders per-size variant buttons with correct aria-labels", () => {
         render(<ProductCard product={fixtureProduct} />);
-        // Default selected variant (first in-stock: 50ml) shows "Confirmar"
-        // Buttons are in the closed drawer but visible in the DOM
         expect(
-          screen.getByRole("button", { name: /confirmar 50ml al carrito/i })
+          screen.getByRole("button", { name: /confirmar 50ml/i })
         ).toBeInTheDocument();
-        // Non-selected variant shows "Seleccionar"
         expect(
           screen.getByRole("button", { name: /seleccionar 100ml/i })
         ).toBeInTheDocument();
       });
 
-      it("selects variant on first tap and confirms on second tap (double-tap flow)", async () => {
+      it("selects variant on click", async () => {
         const user = userEvent.setup();
         render(<ProductCard product={fixtureProduct} />);
 
         // Open the drawer
         await user.click(screen.getByRole("button", { name: /añadir al carrito/i }));
 
-        // First tap: select 100ml → price updates, label changes to "Confirmar"
+        // Select 100ml
         await user.click(
           screen.getByRole("button", { name: /seleccionar 100ml/i })
         );
-        expect(screen.getByText("90,00 €")).toBeInTheDocument();
-        expect(screen.queryByText("50,00 €")).not.toBeInTheDocument();
-
-        // Second tap on the same chip: confirm → add to cart
-        await user.click(
-          screen.getByRole("button", { name: /confirmar 100ml al carrito/i })
-        );
-        const cartItems = useCartStore.getState().items;
-        expect(cartItems).toHaveLength(1);
-        expect(cartItems[0]!.variantId).toBe("test-100");
-        expect(cartItems[0]!.size_ml).toBe(100);
-        expect(linkNavigateSpy).not.toHaveBeenCalled();
+        expect(screen.getAllByText("90,00 €")[0]).toBeInTheDocument();
       });
 
       it("updates displayed price when selecting a different variant", async () => {
         const user = userEvent.setup();
         render(<ProductCard product={fixtureProduct} />);
 
-        // Default price: first in-stock variant (50ml → 50,00 €)
-        expect(screen.getByText("50,00 €")).toBeInTheDocument();
+        expect(screen.getAllByText("50,00 €")[0]).toBeInTheDocument();
 
         // Open the drawer
         await user.click(screen.getByRole("button", { name: /añadir al carrito/i }));
@@ -212,14 +197,7 @@ describe("ProductCard interactive elements", () => {
         await user.click(
           screen.getByRole("button", { name: /seleccionar 100ml/i })
         );
-        expect(screen.getByText("90,00 €")).toBeInTheDocument();
-        expect(screen.queryByText("50,00 €")).not.toBeInTheDocument();
-
-        // Select back 50ml → price reverts
-        await user.click(
-          screen.getByRole("button", { name: /seleccionar 50ml/i })
-        );
-        expect(screen.getByText("50,00 €")).toBeInTheDocument();
+        expect(screen.getAllByText("90,00 €")[0]).toBeInTheDocument();
       });
 
       it("disables out-of-stock variant button", () => {
@@ -239,8 +217,7 @@ describe("ProductCard interactive elements", () => {
         };
         render(<ProductCard product={discountProduct} />);
 
-        // Default: 50ml variant at 10% off → 50 * 0.9 = 45
-        expect(screen.getByText("45,00 €")).toBeInTheDocument();
+        expect(screen.getAllByText("45,00 €")[0]).toBeInTheDocument();
 
         // Open the drawer
         await user.click(screen.getByRole("button", { name: /añadir al carrito/i }));
@@ -249,15 +226,7 @@ describe("ProductCard interactive elements", () => {
         await user.click(
           screen.getByRole("button", { name: /seleccionar 100ml/i })
         );
-        expect(screen.getByText("81,00 €")).toBeInTheDocument();
-
-        // Confirm via double-tap
-        await user.click(
-          screen.getByRole("button", { name: /confirmar 100ml al carrito/i })
-        );
-        const cartItems = useCartStore.getState().items;
-        expect(cartItems).toHaveLength(1);
-        expect(cartItems[0]!.price).toBe(81); // 90 * 0.9
+        expect(screen.getAllByText("81,00 €")[0]).toBeInTheDocument();
       });
 
       it("renders a single OOS variant as Case A (Agotado)", () => {

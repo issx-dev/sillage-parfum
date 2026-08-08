@@ -8,15 +8,23 @@ import { Maximize2, X } from "lucide-react";
 interface ProductGalleryProps {
   images: string[];
   name: string;
+  discountPercent?: number;
 }
 
-export function ProductGallery({ images, name }: ProductGalleryProps) {
+export function ProductGallery({ images, name, discountPercent = 0 }: ProductGalleryProps) {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const mainImage = images[0] ?? "/images/og-default.jpg";
 
   return (
     <div className="relative w-full aspect-square sm:aspect-[4/3] lg:aspect-[5/6] xl:aspect-[1/1] overflow-hidden flex items-center justify-center select-none">
       
+      {/* Badge de Descuento en esquina superior derecha de la imagen */}
+      {discountPercent > 0 && (
+        <div className="absolute top-4 right-4 z-10 px-3 py-1 bg-charcoal text-cream font-mono font-bold text-xs sm:text-sm rounded-md shadow-md border border-warm-300/30">
+          -{discountPercent}% DTO
+        </div>
+      )}
+
       {/* Product Image Container */}
       <div className="relative w-full h-full p-8 sm:p-12 lg:p-16 flex items-center justify-center">
         <Image

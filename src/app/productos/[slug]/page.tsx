@@ -7,6 +7,7 @@ import { SITE_URL } from "@/lib/site-config";
 import { Wind, Heart, Layers } from "lucide-react";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { AddToCartWrapper } from "@/components/product/AddToCartWrapper";
+import { ProductCard } from "@/components/product/ProductCard";
 
 interface ProductPageProps {
   params: { slug: string };
@@ -68,6 +69,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
+  const allProducts = await getProducts();
+  const relatedProducts = allProducts
+    .filter((p) => p.id !== product.id)
+    .sort((a, b) => (a.gender === product.gender ? -1 : 1))
+    .slice(0, 4);
+
   const firstVariant = product.variants.find((v) => v.stock > 0) ?? product.variants[0]!;
   const hasDiscount = product.discount_percent > 0;
   const finalPrice = applyDiscount(firstVariant.price, product.discount_percent);
@@ -114,17 +121,30 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
           {/* Image Gallery */}
           <div className="lg:col-span-6 w-full border-b lg:border-b-0 lg:border-r border-warm-200/50 flex flex-col justify-between">
-            <ProductGallery images={product.images} name={product.name} />
+            <ProductGallery images={product.images} name={product.name} discountPercent={product.discount_percent} />
           </div>
 
           {/* Quick Purchase Info */}
           <div className="lg:col-span-6 flex flex-col justify-center p-4 sm:p-6 lg:p-12 lg:py-12">
-            <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark block mb-2">
-              {product.family}
-            </span>
-            <h1 className="font-serif text-3xl sm:text-4xl text-charcoal leading-tight">{product.name}</h1>
-            <p className="text-xs uppercase tracking-wider text-gray-mid mt-1">
-              {product.brand}
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-gold-dark">
+                {product.family}
+              </span>
+            </div>
+
+            {/* Inspiration Legal Tag */}
+            {product.inspiration && (
+              <div className="mb-3 inline-flex items-center gap-2 px-3 py-1 bg-gold/5 border border-gold/30 rounded-full w-fit">
+                <span className="w-1.5 h-1.5 rounded-full bg-gold shrink-0 animate-pulse" />
+                <span className="text-xs font-sans text-gold-dark font-medium tracking-tight">
+                  Inspiración olfativa: <strong className="font-semibold text-charcoal">{product.inspiration}</strong>
+                </span>
+              </div>
+            )}
+
+            <h1 className="font-serif text-3xl sm:text-4xl text-charcoal leading-tight font-medium">{product.name}</h1>
+            <p className="text-xs uppercase tracking-widest text-gray-mid mt-1 font-sans">
+              Alta Concentración 30% Extrait de Parfum
             </p>
 
             {/* Add to cart (client component) */}
@@ -188,6 +208,28 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
           </div>
         </div>
+
+        {/* Recommendations Section: Productos que podrían interesarte */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-20 lg:mt-32 pt-16 border-t border-warm-200/40">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h2 className="font-serif text-2xl sm:text-3xl text-charcoal font-normal">
+                  Productos que podrían interesarte
+                </h2>
+                <p className="text-xs uppercase tracking-widest text-gold-dark mt-1">
+                  Fragancias afines y selecciones curadas
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedProducts.map((relProduct) => (
+                <ProductCard key={relProduct.id} product={relProduct} variant="recommendation" />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

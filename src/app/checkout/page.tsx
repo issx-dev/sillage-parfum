@@ -27,7 +27,7 @@ export default function CheckoutPage() {
   const [country, setCountry] = useState("España");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [company, setCompany] = useState("");
+  const [company] = useState("");
   const [address, setAddress] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [postalCode, setPostalCode] = useState("");

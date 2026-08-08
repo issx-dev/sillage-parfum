@@ -72,7 +72,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const allProducts = await getProducts();
   const relatedProducts = allProducts
     .filter((p) => p.id !== product.id)
-    .sort((a, b) => (a.gender === product.gender ? -1 : 1))
+    .sort((a, _b) => (a.gender === product.gender ? -1 : 1))
     .slice(0, 4);
 
   const firstVariant = product.variants.find((v) => v.stock > 0) ?? product.variants[0]!;

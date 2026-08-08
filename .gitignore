@@ -51,6 +51,10 @@ dev-tools/
 coverage/
 *.lcov
 
+# Catalog source binaries (only the markdown catalogs in resources/ are tracked)
+resources/*.pdf
+resources/chogan-parfums/
+
 # Runtime data (orders JSON written by webhook handler — not source)
 /data/
 # Local AI runtime state

@@ -5,7 +5,15 @@ import { env } from "@/lib/env";
 // Cached postgres pool on globalThis for HMR in development.
 const globalForDb = globalThis as unknown as { __db: postgres.Sql | undefined };
 
-export const db = globalForDb.__db ?? postgres(env.DATABASE_URL);
+// Serverless-safe connection options:
+// - max: 1          one connection per lambda instance; each Vercel function
+//                   keeps its own pool, so a large per-instance pool would
+//                   exhaust the Supabase pooler under concurrent traffic.
+// - prepare: false  required for the Supabase transaction pooler (pgBouncer
+//                   transaction mode discards prepared statements between
+//                   transactions). Queries stay parameterized via unsafe().
+export const db =
+  globalForDb.__db ?? postgres(env.DATABASE_URL, { max: 1, prepare: false });
 
 if (process.env.NODE_ENV !== "production") {
   globalForDb.__db = db;

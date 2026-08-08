@@ -14,14 +14,14 @@ import { formatPrice, cn } from "@/lib/utils";
 // ---------------------------------------------------------------------------
 
 const PLACEHOLDER_CYCLE = [
-  "Sauvage · Dior",
+  "Volare · Chogan 122",
   "notas de ámbar",
   "familia amaderada",
-  "Tom Ford",
+  "30% Extrait de Parfum",
   "bergamota & vetiver",
 ];
 
-const SUGGESTED_TERMS = ["Floral", "Amaderado", "Chanel", "Tom Ford", "Fresco", "Aldehídos"];
+const SUGGESTED_TERMS = ["Floral", "Amaderado", "Fresco", "Oriental", "Extrait de Parfum"];
 
 // Recommended products are shipped as initial props from the server (Navbar)
 // to avoid an extra round-trip on first open.
@@ -337,23 +337,24 @@ export function SearchOverlay({
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={`Buscar ${placeholder}...`}
                 className={cn(
-                  "w-full bg-transparent py-3 pr-10 text-xl sm:text-2xl md:text-4xl",
+                  "w-full bg-transparent py-3 pr-14 text-xl sm:text-2xl md:text-4xl",
                   "text-charcoal placeholder-warm-400 font-serif font-light",
                   "border-b border-warm-300 focus:border-gold",
                   "focus-visible:ring-1 focus-visible:ring-gold focus:outline-none transition-colors duration-500",
                   "tracking-wide leading-tight"
                 )}
               />
-              <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-warm-400 group-focus-within/input:text-gold transition-colors duration-300" />
 
-              {query && (
+              {query ? (
                 <button
                   onClick={() => setQuery("")}
-                  className="absolute right-7 top-1/2 -translate-y-1/2 text-[10px] uppercase tracking-[0.15em] text-warm-400 hover:text-warm-600 transition-colors duration-200"
-                  aria-label="Limpiar"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 p-1.5 text-warm-400 hover:text-gold transition-colors duration-200 cursor-pointer"
+                  aria-label="Limpiar búsqueda"
                 >
-                  ×
+                  <X className="w-5 h-5 stroke-[1.5]" />
                 </button>
+              ) : (
+                <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-warm-400 group-focus-within/input:text-gold transition-colors duration-300 pointer-events-none" />
               )}
 
               <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-gold group-focus-within/input:w-full transition-[width] duration-700 ease-out" />

@@ -12,6 +12,8 @@ export interface CartStore {
   updateQuantity: (variantId: string, quantity: number) => void;
   clearCart: () => void;
   getTotal: () => number;
+  getDiscountedTotal: () => number;
+  getSavings: () => number;
   getItemCount: () => number;
   getFreeShippingRemaining: () => number;
   setHasHydrated: (state: boolean) => void;
@@ -80,6 +82,40 @@ export const useCartStore = create<CartStore>()(
           (sum, item) => sum + item.price * item.quantity,
           0
         );
+      },
+
+      /**
+       * Multi-buy offer logic for Chogan 70ml perfumes:
+       * 1 unit = 35€
+       * 2 units = 63€ (save 7€)
+       * 3 units = 84€ (save 21€)
+       */
+      getDiscountedTotal: () => {
+        const items = get().items;
+
+        // Group 70ml standard perfumes (35€ base price)
+        const standard70mlItems = items.filter((i) => i.size_ml === 70 && i.price === 35);
+        const otherItems = items.filter((i) => !(i.size_ml === 70 && i.price === 35));
+
+        // Count total quantity of 70ml 35€ perfumes
+        const total70mlQty = standard70mlItems.reduce((acc, item) => acc + item.quantity, 0);
+
+        // Apply bundles of 3 (84€ per pack of 3)
+        const packsOf3 = Math.floor(total70mlQty / 3);
+        const remainderAfter3 = total70mlQty % 3;
+
+        // Apply bundles of 2 (63€ per pack of 2)
+        const packsOf2 = Math.floor(remainderAfter3 / 2);
+        const singles = remainderAfter3 % 2;
+
+        const bundle70mlTotal = (packsOf3 * 84) + (packsOf2 * 63) + (singles * 35);
+        const otherTotal = otherItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+        return bundle70mlTotal + otherTotal;
+      },
+
+      getSavings: () => {
+        return get().getTotal() - get().getDiscountedTotal();
       },
 
       getItemCount: () => {

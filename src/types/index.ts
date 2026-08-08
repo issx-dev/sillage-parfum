@@ -29,6 +29,8 @@ export interface Product {
   variants: Variant[];
   discount_percent: number;
   notes: OlfactoryNotes;
+  inspiration?: string;
+  officialCode?: string;
 }
 
 export interface CartItem {
@@ -41,6 +43,8 @@ export interface CartItem {
   size_ml: number;
   price: number;
   quantity: number;
+  inspiration?: string;
+  officialCode?: string;
 }
 
 export interface Brand {

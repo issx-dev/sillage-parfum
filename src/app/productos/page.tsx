@@ -60,7 +60,11 @@ export default async function ProductosPage({ searchParams }: ProductosPageProps
   }
 
   if (gender) {
-    products = products.filter((p) => p.gender === gender);
+    if (gender === "masculino" || gender === "femenino") {
+      products = products.filter((p) => p.gender === gender || p.gender === "unisex");
+    } else {
+      products = products.filter((p) => p.gender === gender);
+    }
   }
 
   return (

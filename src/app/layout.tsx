@@ -12,10 +12,10 @@ import { SITE_URL } from "@/lib/site-config";
 import type { Product } from "@/types";
 
 const RECOMMENDED_SLUGS = [
-  "sauvage-dior-edt",
-  "chanel-5-edp",
-  "bleu-de-chanel-edp",
-  "black-orchid-edp",
+  "sauvage-dior-chogan-094",        // ⬛ Revenant Intense
+  "libre-ysl-chogan-122",           // ⚪ Volare
+  "baccarat-rouge-540-chogan-118",  // 🟨 Scarlet Fire
+  "acqua-di-gio-armani-chogan-002",  // 🟦 Deep Blue for Him
 ];
 
 async function getRecommendedProducts(): Promise<Product[]> {

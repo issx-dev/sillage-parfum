@@ -72,52 +72,67 @@ export default function CarritoPage() {
             {items.map((item) => (
               <div
                 key={item.variantId}
-                className="flex gap-4 p-4 bg-white rounded-card shadow-card"
+                className="flex gap-4 p-4 sm:p-5 bg-white border border-warm-200/80 rounded-card shadow-xs relative"
               >
-                <div className="w-24 h-24 bg-gray-light rounded relative overflow-hidden flex-shrink-0">
-                      {item.image ? (
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          fill
-                          sizes="96px"
-                          className="object-contain"
-                        />
-                      ) : (
-                        <div className="w-full h-full" />
-                      )}
+                {/* Thumbnail image */}
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-cream/30 rounded-md border border-warm-200 relative overflow-hidden flex-shrink-0 flex items-center justify-center">
+                  {item.image ? (
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      fill
+                      sizes="96px"
+                      className="object-contain p-1.5"
+                    />
+                  ) : (
+                    <div className="w-full h-full" />
+                  )}
+                </div>
+
+                {/* Info & Controls */}
+                <div className="flex-1 min-w-0 flex flex-col justify-between">
+                  {/* Top info */}
+                  <div className="flex items-start justify-between gap-2 pr-6">
+                    <div>
+                      <h3 className="font-serif text-base sm:text-lg font-semibold text-charcoal truncate">{item.name}</h3>
+                      <p className="text-xs text-gray-mid font-sans">{item.brand}</p>
+                      <p className="text-xs text-gray-mid font-sans">{item.size_ml} ml</p>
                     </div>
-                <div className="flex-1">
-                  <h3 className="font-serif text-lg">{item.name}</h3>
-                  <p className="text-sm text-gray-mid">{item.brand}</p>
-                  <p className="text-sm text-gray-mid">{item.size_ml}ml</p>
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center gap-2">
+                  </div>
+
+                  {/* Quantity & Price row */}
+                  <div className="flex items-center justify-between gap-4 mt-3 pt-2 border-t border-warm-100">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
                       <button
                         onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
-                        className="p-2 border border-gray-light rounded hover:bg-gray-light active:scale-95 transition-transform duration-150 min-w-[44px] min-h-[44px]"
+                        className="w-8 h-8 sm:w-9 sm:h-9 border border-warm-200 rounded flex items-center justify-center hover:bg-warm-100 text-charcoal active:scale-95 transition-all cursor-pointer"
                         aria-label="Disminuir cantidad"
                       >
-                        <Minus className="w-4 h-4" />
+                        <Minus className="w-3.5 h-3.5" />
                       </button>
-                      <span className="w-8 text-center">{item.quantity}</span>
+                      <span className="w-7 text-center font-semibold text-sm text-charcoal">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-                        className="p-2 border border-gray-light rounded hover:bg-gray-light active:scale-95 transition-transform duration-150 min-w-[44px] min-h-[44px]"
+                        className="w-8 h-8 sm:w-9 sm:h-9 border border-warm-200 rounded flex items-center justify-center hover:bg-warm-100 text-charcoal active:scale-95 transition-all cursor-pointer"
                         aria-label="Aumentar cantidad"
                       >
-                        <Plus className="w-4 h-4" />
+                        <Plus className="w-3.5 h-3.5" />
                       </button>
                     </div>
-                    <p className="font-medium">{formatPrice(item.price * item.quantity)}</p>
+
+                    <p className="font-mono text-sm sm:text-base font-bold text-charcoal text-right whitespace-nowrap flex-shrink-0">
+                      {formatPrice(item.price * item.quantity)}
+                    </p>
                   </div>
                 </div>
+
+                {/* Absolute Delete Button top-right */}
                 <button
                   onClick={() => removeItem(item.variantId)}
-                  className="p-2 text-gray-mid hover:text-gold-dark active:scale-95 transition-transform duration-150 min-w-[44px] min-h-[44px]"
+                  className="absolute top-3 right-3 p-1.5 text-gray-mid hover:text-terracotta active:scale-95 transition-colors cursor-pointer"
                   aria-label="Eliminar producto"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             ))}

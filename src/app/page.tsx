@@ -3,6 +3,9 @@ import { ProductCarousel } from "@/components/home/ProductCarousel";
 import { EditorialSplitSingle } from "@/components/home/EditorialSplitSingle";
 import { CategoriesGrid } from "@/components/home/CategoriesGrid";
 import { Newsletter } from "@/components/home/Newsletter";
+import { ChoganInfoBanner } from "@/components/chogan/ChoganInfoBanner";
+import { ChoganFAQ } from "@/components/chogan/ChoganFAQ";
+import { EmailLeadModal } from "@/components/marketing/EmailLeadModal";
 import { getFeaturedProducts, getNewArrivals, getDiscoverProducts } from "@/lib/data";
 import type { Metadata } from "next";
 
@@ -70,6 +73,12 @@ export default async function HomePage() {
       {/* 4. CategoriesGrid — cream/warm background, clean grid of fragrance families */}
       <CategoriesGrid />
 
+      {/* Chogan Value Banner & FAQ */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <ChoganInfoBanner />
+        <ChoganFAQ />
+      </div>
+
       {/* 5. ProductCarousel (dark) — distinct products from featured */}
       <ProductCarousel
         variant="dark"
@@ -82,6 +91,9 @@ export default async function HomePage() {
 
       {/* 6. Newsletter — cream/warm background, Member's Club framing */}
       <Newsletter />
+
+      {/* Email Lead Capture Modal */}
+      <EmailLeadModal />
     </>
   );
 }

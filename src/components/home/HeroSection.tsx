@@ -48,7 +48,7 @@ export function HeroSection() {
           {/* Left: Text content */}
           <div className="text-left lg:col-span-7 xl:col-span-8 flex flex-col justify-center">
             <span className="text-xs font-sans tracking-[0.25em] uppercase text-gold block mb-6">
-              Alta Perfumería de Autor
+              30% Extrait de Parfum · Italia
             </span>
 
             <h1 className="font-serif text-[2.6rem] sm:text-5xl md:text-7xl font-normal leading-[1.08] tracking-tight">
@@ -57,7 +57,7 @@ export function HeroSection() {
             </h1>
 
             <p className="mt-6 text-lg sm:text-xl text-cream/70 max-w-xl font-sans tracking-wide leading-relaxed font-light">
-              Descubra fragancias icónicas elaboradas por los maestros perfumistas más prestigiosos del mundo. Diseñadas para perdurar en la memoria.
+              Descubra extractos de perfume de alta concentración elaborados en Italia con alcohol orgánico. Diseñados para perdurar más de 8 horas en piel.
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row items-start gap-6 sm:gap-10">

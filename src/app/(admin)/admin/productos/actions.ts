@@ -81,21 +81,19 @@ async function productInputFrom(formData: FormData, exceptProductId?: string): P
   if (parsed.badge !== "" && !(BADGES as readonly string[]).includes(parsed.badge)) {
     throw new Error("Insignia no válida.");
   }
-  // Slug automático desde el nombre; unicidad con sufijo (-2, -3, …).
-  // En edición, si el nombre no cambia el slug se conserva (URLs estables).
-  const base = slugify(parsed.name);
-  if (!base) throw new Error("No se pudo generar un slug desde el nombre.");
-  let slug = base;
+  // Slug automático SOLO al crear. En edición el slug existente es sagrado:
+  // regenerarlo rompía URLs y hacía desaparecer productos del buscador
+  // (el código Chogan vive en el slug/SKU, no en el nombre).
+  let slug: string;
   if (exceptProductId) {
     const current = (await query(`SELECT slug FROM products WHERE product_id=$1`, [
       exceptProductId,
     ])) as unknown as { slug: string }[];
-    if (current[0]?.slug === base) {
-      slug = current[0].slug;
-    } else {
-      slug = await resolveUniqueSlug(base, (s) => slugExists(s, exceptProductId));
-    }
+    if (!current[0]?.slug) throw new Error("Producto no encontrado.");
+    slug = current[0].slug;
   } else {
+    const base = slugify(parsed.name);
+    if (!base) throw new Error("No se pudo generar un slug desde el nombre.");
     slug = await resolveUniqueSlug(base, (s) => slugExists(s));
   }
   return {

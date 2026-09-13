@@ -240,6 +240,7 @@ export async function readProductsPage(opts?: {
           COALESCE(SUM(v.stock), 0)::int AS total_stock,
           MIN(v.price) AS min_price
          ${base} WHERE p.name ILIKE $1 OR p.brand ILIKE $1 OR p.slug ILIKE $1 OR p.inspiration ILIKE $1
+         OR EXISTS (SELECT 1 FROM variants v2 WHERE v2.product_id = p.product_id AND v2.sku ILIKE $1)
          GROUP BY ${PRODUCT_COLUMNS.split(",").map((c) => `p.${c.trim()}`).join(", ")}
          ORDER BY p.created_at DESC, p.name ASC LIMIT $2 OFFSET $3`,
         [`%${q}%`, limit, offset]
@@ -262,7 +263,7 @@ export async function countProducts(search?: string): Promise<number> {
   const q = search?.trim();
   const rows = q
     ? ((await query(
-        `SELECT COUNT(*)::int AS n FROM products p WHERE p.name ILIKE $1 OR p.brand ILIKE $1 OR p.slug ILIKE $1 OR p.inspiration ILIKE $1`,
+        `SELECT COUNT(*)::int AS n FROM products p WHERE p.name ILIKE $1 OR p.brand ILIKE $1 OR p.slug ILIKE $1 OR p.inspiration ILIKE $1 OR EXISTS (SELECT 1 FROM variants v2 WHERE v2.product_id = p.product_id AND v2.sku ILIKE $1)`,
         [`%${q}%`]
       )) as unknown as { n: number }[])
     : ((await query(`SELECT COUNT(*)::int AS n FROM products`)) as unknown as {

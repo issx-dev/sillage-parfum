@@ -437,13 +437,16 @@ export async function searchProducts(
     const descMatch = normalize(p.shortDescription).includes(q);
     const inspMatch = p.inspiration ? normalize(p.inspiration).includes(q) : false;
     const codeMatch = p.officialCode ? normalize(p.officialCode).includes(q) : false;
+    const skuMatch =
+      Array.isArray(p.variants) &&
+      p.variants.some((v) => normalize(v.sku).includes(q));
     const notesMatch = [
       ...p.notes.top,
       ...p.notes.heart,
       ...p.notes.base,
     ].some((n) => normalize(n).includes(q));
 
-    return nameMatch || brandMatch || familyMatch || descMatch || inspMatch || codeMatch || notesMatch;
+    return nameMatch || brandMatch || familyMatch || descMatch || inspMatch || codeMatch || skuMatch || notesMatch;
   };
 
   try {

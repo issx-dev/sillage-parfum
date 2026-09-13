@@ -292,6 +292,9 @@ export function AdminSidebar({ email }: { email: string }) {
           <DialogPrimitive.Title className="sr-only">
             Secciones de administración
           </DialogPrimitive.Title>
+          <DialogPrimitive.Description className="sr-only">
+            Navegación del panel de administración SILLAGE.
+          </DialogPrimitive.Description>
           <SidebarBrand collapsed={false} />
           <nav
             aria-label="Secciones de administración"

@@ -39,6 +39,12 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
         className="w-full sm:w-[420px] p-0 pb-[env(safe-area-inset-bottom)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] bg-white border-l border-warm-200/80 shadow-2xl"
       >
         <div className="flex flex-col h-full text-charcoal">
+          <DialogPrimitive.Title className="sr-only">
+            Carrito de la compra
+          </DialogPrimitive.Title>
+          <DialogPrimitive.Description className="sr-only">
+            Productos añadidos al carrito y acceso al pago.
+          </DialogPrimitive.Description>
           {/* Header */}
           <div className="flex items-center justify-between p-5 border-b border-warm-200/60 bg-cream/30">
             <div className="flex items-center gap-2">

@@ -7,7 +7,7 @@ import { Heart, ShoppingBag, X, Eye } from "lucide-react";
 import type { Product, Variant } from "@/types";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { cn, formatPrice, applyDiscount } from "@/lib/utils";
 
 export type ProductCardVariant = "default" | "carousel" | "recommendation";

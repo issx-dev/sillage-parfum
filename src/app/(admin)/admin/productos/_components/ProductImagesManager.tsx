@@ -171,21 +171,9 @@ export function ProductImagesManager({ defaults }: { defaults?: string[] }) {
           {error}
         </p>
       ) : null}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="f-imagenes" className="text-sm font-medium text-warm-700">
-          URLs crudas
-        </label>
-        <textarea
-          id="f-imagenes"
-          name="images"
-          rows={3}
-          readOnly
-          value={images.join("\n")}
-          placeholder="/images/products/mi-perfume.jpg"
-          className="rounded-card border border-warm-300 bg-warm-100 px-3 py-2 font-mono text-xs text-warm-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-        />
-        <p className="text-xs text-warm-500">Una URL por línea. La primera es la portada.</p>
-      </div>
+      {/* Contrato con la action de guardar: una URL por línea, la primera
+          es la portada. Oculto: el grid de arriba es la única UI. */}
+      <input type="hidden" name="images" value={images.join("\n")} />
     </div>
   );
 }

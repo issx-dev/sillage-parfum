@@ -128,3 +128,18 @@ CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Service role can manage users"
   ON users FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+-- Newsletter subscribers (captación EmailLeadModal → POST /api/newsletter).
+-- email se guarda normalizado (lower(trim())) desde la ruta API; el UNIQUE
+-- garantiza un solo registro por email y la ruta responde 409 elegante.
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  source TEXT NOT NULL DEFAULT 'lead_modal',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_email ON newsletter_subscribers (email);
+ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Service role can manage newsletter_subscribers" ON newsletter_subscribers;
+CREATE POLICY "Service role can manage newsletter_subscribers"
+  ON newsletter_subscribers FOR ALL TO service_role USING (true) WITH CHECK (true);

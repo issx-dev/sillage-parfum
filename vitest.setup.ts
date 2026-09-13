@@ -18,3 +18,20 @@ if (typeof window !== "undefined") {
 }
 
 // Note: tests that exercise persisted stores use beforeEach to wipe state.
+
+// localStorage: jsdom no siempre lo expone (origen opaco según versión),
+// y 39+ tests lo usan directa o indirectamente (stores persistidos).
+// Mock en memoria determinista para toda la suite.
+if (typeof window !== "undefined" && !window.localStorage) {
+  const store = new Map<string, string>();
+  window.localStorage = {
+    get length() {
+      return store.size;
+    },
+    clear: () => store.clear(),
+    getItem: (key: string) => (store.has(key) ? store.get(key)! : null),
+    key: (index: number) => Array.from(store.keys())[index] ?? null,
+    removeItem: (key: string) => void store.delete(key),
+    setItem: (key: string, value: string) => void store.set(String(key), String(value)),
+  } as unknown as Storage;
+}

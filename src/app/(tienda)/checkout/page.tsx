@@ -52,7 +52,11 @@ export default function CheckoutPage() {
     setCouponLoading(true);
     setCouponError("");
     try {
-      const res = await fetch(`/api/coupons/validate?code=${encodeURIComponent(couponCode.trim())}`);
+      // Se envía el email si se conoce: BIENVENIDA10 exige primer pedido
+      // (el servidor re-valida de todos modos al cobrar).
+      const params = new URLSearchParams({ code: couponCode.trim() });
+      if (email.trim()) params.set("email", email.trim());
+      const res = await fetch(`/api/coupons/validate?${params.toString()}`);
       const data = await res.json();
       if (!res.ok || !data.valid) throw new Error(data.error || "Código no válido");
       setAppliedCoupon(data.code);

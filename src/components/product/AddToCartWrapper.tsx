@@ -7,7 +7,7 @@ import { useCartStore } from "@/store/cartStore";
 import { SizeSelector } from "./SizeSelector";
 import { WishlistButton } from "@/components/product/WishlistButton";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { ShoppingBag, Zap, Truck, RotateCcw, ShieldCheck } from "lucide-react";
 
 interface Props {

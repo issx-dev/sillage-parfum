@@ -38,4 +38,14 @@ describe("SafeImage", () => {
     );
     expect(container.querySelector("img")!.hasAttribute("data-nimg")).toBe(true);
   });
+
+  it("sustituye la imagen rota por el fallback (hotlink caído)", () => {
+    const { container } = render(
+      <SafeImage src="https://cdn.tienda-ejemplo.com/muerta.jpg" alt="rota" width={100} height={100} />
+    );
+    const img = container.querySelector("img")!;
+    expect(img.getAttribute("src")).toContain("cdn.tienda-ejemplo.com");
+    img.dispatchEvent(new Event("error"));
+    expect(img.getAttribute("src")).toBe("/images/og-default.jpg");
+  });
 });

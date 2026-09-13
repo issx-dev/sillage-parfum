@@ -4,7 +4,8 @@ import { z } from "zod";
 import { getVariant } from "@/lib/data";
 import { saveOrder } from "@/lib/data/orders";
 import { applyDiscount } from "@/lib/utils";
-import { getCoupon, normalizeCoupon } from "@/lib/coupons";
+import { normalizeCoupon } from "@/lib/coupons";
+import { isCouponEligibleForEmail } from "@/lib/coupon-eligibility";
 import { expectedTotalCents, type PricingLine } from "@/lib/pricing";
 import type { CartItem } from "@/types";
 
@@ -50,12 +51,14 @@ export async function POST(req: Request) {
     const { customer, items, total, couponCode: rawCoupon } = result.data;
 
     // Cupón server-side: se valida aquí, nunca en el cliente.
+    // BIENVENIDA10 (firstOrderOnly) exige además que customer.email no tenga
+    // pedidos previos (src/lib/coupon-eligibility.ts).
     const couponCode = rawCoupon ? normalizeCoupon(rawCoupon) : null;
-    if (couponCode && !getCoupon(couponCode)) {
-      return NextResponse.json(
-        { error: "Código de descuento no válido" },
-        { status: 400 }
-      );
+    if (couponCode) {
+      const eligibility = await isCouponEligibleForEmail(couponCode, customer.email);
+      if (!eligibility.eligible) {
+        return NextResponse.json({ error: eligibility.reason }, { status: 400 });
+      }
     }
 
     // ─── Verificación server-side de precios (igual que el webhook) ───

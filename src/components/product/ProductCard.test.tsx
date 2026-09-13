@@ -38,8 +38,9 @@ vi.mock("next/image", () => ({
   },
 }));
 
-vi.mock("sonner", () => ({
-  toast: { success: vi.fn(), error: vi.fn() },
+vi.mock("react-hot-toast", () => ({
+  __esModule: true,
+  default: { success: vi.fn(), error: vi.fn() },
 }));
 
 import { ProductCard } from "./ProductCard";

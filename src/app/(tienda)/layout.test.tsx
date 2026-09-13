@@ -45,8 +45,8 @@ vi.mock("@/components/layout/CartDrawerWrapper", () => ({
 vi.mock("@/components/layout/Footer", () => ({
   Footer: () => <div data-testid="footer" />,
 }));
-vi.mock("sonner", () => ({
-  Toaster: () => <div data-testid="toaster" />,
+vi.mock("@/components/ui/SillageToaster", () => ({
+  SillageToaster: () => <div data-testid="toaster" />,
 }));
 
 describe("TiendaLayout store shell", () => {

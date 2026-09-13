@@ -20,6 +20,12 @@ vi.mock("next/link", () => ({
   }) => <a href={href}>{children}</a>,
 }));
 
+vi.mock("react-hot-toast", () => ({
+  __esModule: true,
+  default: { success: vi.fn(), error: vi.fn() },
+}));
+
+import toast from "react-hot-toast";
 import RegisterPage from "./page";
 
 describe("RegisterPage", () => {
@@ -44,7 +50,7 @@ describe("RegisterPage", () => {
     expect(pwd.type).toBe("text");
   });
 
-  it("POSTs to /api/auth/register and routes to /cuenta on success", async () => {
+  it("POSTs to /api/auth/register, toasts a welcome and routes to /productos on success", async () => {
     const fetchMock = vi.fn(async () => ({
       ok: true,
       json: async () => ({}),
@@ -61,7 +67,8 @@ describe("RegisterPage", () => {
         "/api/auth/register",
         expect.objectContaining({ method: "POST" })
       );
-      expect(pushSpy).toHaveBeenCalledWith("/cuenta");
+      expect(vi.mocked(toast.success)).toHaveBeenCalledWith(expect.stringMatching(/bienvenid/i));
+      expect(pushSpy).toHaveBeenCalledWith("/productos");
     });
   });
 

@@ -66,9 +66,8 @@ export default async function EditarProductoPage({ params }: EditarPageProps) {
         <h2 className="mt-2 font-serif text-3xl font-bold text-warm-900">{product.name}</h2>
         <p className="mt-1 text-sm tabular-nums text-warm-500">
           <Link href={`/productos/${product.slug}`} className="underline-offset-4 hover:underline">
-            Ver en la tienda
+            Ver en la tienda →
           </Link>
-          {" · "}/productos/{product.slug}
         </p>
       </div>
 

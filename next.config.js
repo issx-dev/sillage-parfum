@@ -25,6 +25,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "media.sephora.eu",
       },
+      // Subidas del equipo a Supabase Storage (ver SafeImage).
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+      },
     ],
   },
   async headers() {

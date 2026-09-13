@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getVariant } from "@/lib/data";
 import { applyDiscount } from "@/lib/utils";
-import { getCoupon, normalizeCoupon } from "@/lib/coupons";
+import { normalizeCoupon } from "@/lib/coupons";
+import { isCouponEligibleForEmail } from "@/lib/coupon-eligibility";
 import { priceLines, type PricingLine } from "@/lib/pricing";
 import type { CartItem } from "@/types";
 
@@ -28,11 +29,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Too many items" }, { status: 413 });
     }
 
-    // Cupón server-side (SILLAGE2): se valida aquí, nunca en el cliente.
+    // Cupón server-side: se valida aquí, nunca en el cliente.
     // Un código desconocido es 400 para que la UI muestre el error.
+    // BIENVENIDA10 (firstOrderOnly) exige además primer pedido del email,
+    // cuando el email se conoce (ver src/lib/coupon-eligibility.ts).
     const couponCode = rawCoupon ? normalizeCoupon(String(rawCoupon)) : null;
-    if (couponCode && !getCoupon(couponCode)) {
-      return NextResponse.json({ error: "Código de descuento no válido" }, { status: 400 });
+    if (couponCode) {
+      const eligibility = await isCouponEligibleForEmail(couponCode, body.customerEmail);
+      if (!eligibility.eligible) {
+        return NextResponse.json({ error: eligibility.reason }, { status: 400 });
+      }
     }
 
     // Server-side price resolution: never trust client-supplied prices.

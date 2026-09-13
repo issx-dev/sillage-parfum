@@ -17,6 +17,19 @@ describe("getCoupon", () => {
     expect(getCoupon("sillage2")).toEqual({ code: "SILLAGE2", percentOff: 10 });
   });
 
+  it("resolves BIENVENIDA10 (case-insensitive) to a first-order-only 10% coupon", () => {
+    expect(getCoupon("BIENVENIDA10")).toEqual({
+      code: "BIENVENIDA10",
+      percentOff: 10,
+      firstOrderOnly: true,
+    });
+    expect(getCoupon("  bienvenida10 ")).toEqual({
+      code: "BIENVENIDA10",
+      percentOff: 10,
+      firstOrderOnly: true,
+    });
+  });
+
   it("returns null for unknown or empty codes", () => {
     expect(getCoupon("NOPE")).toBeNull();
     expect(getCoupon("")).toBeNull();
@@ -26,6 +39,11 @@ describe("getCoupon", () => {
 describe("applyCouponToTotal", () => {
   it("applies 10% off for SILLAGE2", () => {
     expect(applyCouponToTotal(100, "SILLAGE2")).toBe(90);
+  });
+
+  it("applies 10% off for BIENVENIDA10", () => {
+    expect(applyCouponToTotal(100, "BIENVENIDA10")).toBe(90);
+    expect(applyCouponToTotal(63, "bienvenida10")).toBe(56.7);
   });
 
   it("rounds to 2 decimals", () => {

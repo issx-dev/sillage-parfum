@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
 import { Lock, Mail, User, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 import { registerSchema, type RegisterInput } from "@/lib/auth-schemas";
 
 function RegisterForm() {
@@ -35,7 +36,8 @@ function RegisterForm() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "Error al crear la cuenta");
-      router.push("/cuenta");
+      toast.success(`¡Bienvenido/a, ${values.name.split(" ")[0]}! Descubre el catálogo.`);
+      router.push("/productos");
       router.refresh();
     } catch (err) {
       setServerError(err instanceof Error ? err.message : "Error inesperado");

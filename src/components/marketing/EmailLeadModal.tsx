@@ -9,6 +9,7 @@ export function EmailLeadModal() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     // Check if user already dismissed or submitted lead modal
@@ -28,16 +29,32 @@ export function EmailLeadModal() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || loading) return;
 
     setLoading(true);
-    // Simulate lead capture save (can be connected to email service later)
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
+    setError("");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), source: "lead_modal" }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 409 || data.alreadySubscribed) {
+        // Ya suscrito: también es éxito — el cupón sigue valiendo.
+        setSubmitted(true);
+      } else if (!res.ok) {
+        throw new Error(data.error || "No pudimos completar la suscripción");
+      } else {
+        setSubmitted(true);
+      }
       localStorage.setItem("chogan_lead_dismissed", "true");
       localStorage.setItem("chogan_discount_code", "BIENVENIDA10");
-    }, 800);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error inesperado");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -81,6 +98,12 @@ export function EmailLeadModal() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold"
                 />
+
+                {error && (
+                  <p role="alert" className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                    {error}
+                  </p>
+                )}
 
                 <Button
                   type="submit"

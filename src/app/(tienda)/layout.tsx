@@ -3,7 +3,7 @@ import { PromoBar } from "@/components/layout/PromoBar";
 import { Navbar } from "@/components/layout/Navbar";
 import { CartDrawerWrapper } from "@/components/layout/CartDrawerWrapper";
 import { Footer } from "@/components/layout/Footer";
-import { Toaster } from "sonner";
+import { SillageToaster } from "@/components/ui/SillageToaster";
 import { getProductBySlug } from "@/lib/data";
 import { SITE_URL } from "@/lib/site-config";
 import type { Product } from "@/types";
@@ -39,17 +39,7 @@ export default async function TiendaLayout({ children }: { children: React.React
       <CartDrawerWrapper />
       <main>{children}</main>
       <Footer />
-      <Toaster
-        position="bottom-right"
-        style={{ bottom: "calc(1rem + env(safe-area-inset-bottom))" }}
-        toastOptions={{
-          style: {
-            background: "var(--color-cream)",
-            color: "var(--color-black)",
-            borderRadius: "12px",
-          },
-        }}
-      />
+      <SillageToaster />
       <script
         type="application/ld+json"
         nonce={nonce}

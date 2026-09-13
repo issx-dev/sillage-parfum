@@ -94,7 +94,19 @@ export function ProductImagesManager({ defaults }: { defaults?: string[] }) {
                 <span className="absolute left-1 top-1 rounded-full bg-black/70 px-2 py-0.5 text-[11px] font-semibold text-white">
                   Portada
                 </span>
-              ) : null}
+              ) : (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setImages((prev) => [prev[index]!, ...prev.filter((_, i) => i !== index)])
+                  }
+                  aria-label={`Hacer portada la imagen ${index + 1}`}
+                  title="Hacer portada"
+                  className="absolute bottom-1 left-1 rounded-full bg-black/70 px-2 py-0.5 text-[11px] font-semibold text-white transition-all duration-150 ease-out hover:bg-gold-dark active:scale-95"
+                >
+                  Hacer portada
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => setImages((prev) => prev.filter((_, i) => i !== index))}

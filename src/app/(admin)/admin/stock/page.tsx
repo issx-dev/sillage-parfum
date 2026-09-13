@@ -20,6 +20,7 @@ import {
 import { countVariantStock, readVariantStock } from "../_lib/queries";
 import { getAdminUser } from "../_lib/admin-auth";
 import { updateVariantStock } from "./actions";
+import { ActionForm } from "../_components/ActionForm";
 import { Pagination } from "../_components/Pagination";
 
 export const metadata: Metadata = {
@@ -209,8 +210,9 @@ async function StockResultados({ search, page }: { search: string; page: number 
                   )}
                 </TableCell>
                 <TableCell className="text-right">
-                  <form
+                  <ActionForm
                     action={updateVariantStock}
+                    successMessage="Stock actualizado."
                     className="inline-flex items-center justify-end gap-2"
                   >
                     <input type="hidden" name="variantId" value={row.variant_id} />
@@ -231,7 +233,7 @@ async function StockResultados({ search, page }: { search: string; page: number 
                     <Button type="submit" size="sm" variant="outline">
                       Guardar
                     </Button>
-                  </form>
+                    </ActionForm>
                 </TableCell>
               </TableRow>
             );

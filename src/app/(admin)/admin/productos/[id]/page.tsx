@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getAdminUser } from "../../_lib/admin-auth";
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/table";
 import { ProductFormFields, SubmitButton, VariantFields } from "../_components/ProductForm";
 import { ActionForm } from "../../_components/ActionForm";
+import { ToastOnParam } from "../../_components/ToastOnParam";
 import {
   createVariantAction,
   deleteProductAction,
@@ -56,6 +58,9 @@ export default async function EditarProductoPage({ params }: EditarPageProps) {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
+      <Suspense>
+        <ToastOnParam />
+      </Suspense>
       <div>
         <Link
           href="/admin/productos"
@@ -71,7 +76,7 @@ export default async function EditarProductoPage({ params }: EditarPageProps) {
         </p>
       </div>
 
-      <ActionForm action={updateProductAction} className="space-y-4">
+      <ActionForm action={updateProductAction} successMessage="Ficha guardada." className="space-y-4">
         <input type="hidden" name="productId" value={product.product_id} />
         <Card>
           <CardHeader>
@@ -123,6 +128,7 @@ export default async function EditarProductoPage({ params }: EditarPageProps) {
                     <div className="flex flex-wrap items-center gap-2 px-3 py-2">
                       <ActionForm
                         action={updateVariantAction}
+                        successMessage="Variante actualizada."
                         className="flex flex-wrap items-center gap-2"
                       >
                       <input type="hidden" name="variantId" value={v.variant_id} />
@@ -183,7 +189,7 @@ export default async function EditarProductoPage({ params }: EditarPageProps) {
                         Guardar
                       </Button>
                       </ActionForm>
-                      <ActionForm action={deleteVariantAction}>
+                      <ActionForm action={deleteVariantAction} successMessage="Variante eliminada.">
                         <input type="hidden" name="variantId" value={v.variant_id} />
                         <button
                           type="submit"
@@ -205,7 +211,7 @@ export default async function EditarProductoPage({ params }: EditarPageProps) {
             <summary className="cursor-pointer text-sm font-medium text-warm-800">
               Añadir variante
             </summary>
-            <ActionForm action={createVariantAction} className="mt-4 space-y-4">
+            <ActionForm action={createVariantAction} successMessage="Variante creada." className="mt-4 space-y-4">
               <input type="hidden" name="productId" value={product.product_id} />
               <VariantFields prefix="add" />
               <SubmitButton>Añadir variante</SubmitButton>

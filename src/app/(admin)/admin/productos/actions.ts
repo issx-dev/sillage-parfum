@@ -132,7 +132,7 @@ export async function createProductAction(formData: FormData): Promise<void> {
   revalidatePath("/admin/stock");
   // El catálogo y la home cacheados deben incluir el producto nuevo.
   revalidateStorefront(data.slug);
-  redirect(`/admin/productos/${productId}`);
+  redirect(`/admin/productos/${productId}?toast=creado`);
 }
 
 /** Ficha para edición rápida en modal (solo admin). Devuelve null si no existe. */
@@ -172,7 +172,7 @@ export async function deleteProductAction(formData: FormData): Promise<void> {
   revalidatePath("/admin/productos");
   revalidatePath("/admin/stock");
   revalidateStorefront(slug);
-  redirect("/admin/productos");
+  redirect("/admin/productos?toast=eliminado");
 }
 
 /** Slug del producto de una variante, para revalidar su ficha en la tienda. */

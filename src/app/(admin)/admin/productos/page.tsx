@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { AutoSubmitForm } from "../_components/AutoSubmitForm";
 import { ProductQuickEdit } from "./_components/ProductQuickEdit";
+import { ToastOnParam } from "../_components/ToastOnParam";
 import {
   Table,
   TableBody,
@@ -55,6 +56,9 @@ export default async function ProductosPage({ searchParams }: ProductosPageProps
 
   return (
     <div className="space-y-6">
+      <Suspense>
+        <ToastOnParam />
+      </Suspense>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="font-serif text-3xl font-bold text-warm-900">Productos</h2>

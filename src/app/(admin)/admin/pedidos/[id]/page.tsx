@@ -152,7 +152,7 @@ export default async function PedidoDetailPage({ params }: PedidoDetailPageProps
           <CardTitle>Cambiar estado del pago</CardTitle>
         </CardHeader>
         <CardContent>
-          <ActionForm action={updateOrderStatus} className="flex flex-col gap-3 sm:flex-row sm:items-end">
+          <ActionForm action={updateOrderStatus} successMessage="Estado del pago actualizado." className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <input type="hidden" name="orderId" value={order.id} />
             <div className="flex flex-col gap-1">
               <label htmlFor="nuevo-estado" className="text-sm font-medium text-warm-700">
@@ -185,6 +185,7 @@ export default async function PedidoDetailPage({ params }: PedidoDetailPageProps
         <CardContent>
           <ActionForm
             action={updateFulfillmentStatus}
+            successMessage="Estado del envío actualizado."
             className="flex flex-col gap-3 sm:flex-row sm:items-end"
           >
             <input type="hidden" name="orderId" value={order.id} />

@@ -12,6 +12,7 @@
  * action de guardar y el fallback sin JS.
  */
 import { useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { SafeImage } from "@/components/ui/SafeImage";
 import {
   MAX_PRODUCT_IMAGE_BYTES,
@@ -55,11 +56,18 @@ export function ProductImagesManager({ defaults }: { defaults?: string[] }) {
         const result = await uploadProductImage(formData);
         if (!result.ok) {
           setError(result.error);
+          toast.error(result.error);
           break;
         }
         uploaded.push(result.url);
       }
-      if (uploaded.length > 0) setImages((prev) => [...prev, ...uploaded]);
+      if (uploaded.length > 0) {
+        setImages((prev) => [...prev, ...uploaded]);
+        setError(null);
+        toast.success(
+          uploaded.length === 1 ? "Imagen subida." : `${uploaded.length} imágenes subidas.`
+        );
+      }
     } finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";

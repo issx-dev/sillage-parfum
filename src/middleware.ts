@@ -34,6 +34,14 @@ async function authGate(request: NextRequest): Promise<NextResponse | null> {
     return NextResponse.redirect(deniedUrl);
   }
 
+  // El admin no tiene panel de usuario: /cuenta redirige a su backoffice.
+  if (isAccountPath(pathname) && user.role === "admin") {
+    const adminUrl = request.nextUrl.clone();
+    adminUrl.pathname = "/admin/resumen";
+    adminUrl.search = "";
+    return NextResponse.redirect(adminUrl);
+  }
+
   return null;
 }
 

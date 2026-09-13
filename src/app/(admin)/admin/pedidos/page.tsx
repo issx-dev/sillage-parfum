@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { AutoSubmitForm } from "../_components/AutoSubmitForm";
 import {
   Table,
   TableBody,
@@ -110,7 +111,7 @@ export default async function PedidosPage({ searchParams }: PedidosPageProps) {
       <Card>
         <CardHeader>
           <CardTitle>Listado</CardTitle>
-          <form method="get" className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+          <AutoSubmitForm className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
             <label htmlFor="filtro-estado" className="sr-only">
               Filtrar por estado
             </label>
@@ -152,10 +153,10 @@ export default async function PedidosPage({ searchParams }: PedidosPageProps) {
               defaultValue={searchParams.q ?? ""}
               className="sm:max-w-xs"
             />
-            <Button type="submit" size="sm">
+            <Button type="submit" size="sm" className="sm:hidden">
               Filtrar
             </Button>
-          </form>
+          </AutoSubmitForm>
         </CardHeader>
         <CardContent>
           {loadError ? (

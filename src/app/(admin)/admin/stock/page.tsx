@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { AutoSubmitForm } from "../_components/AutoSubmitForm";
 import {
   Table,
   TableBody,
@@ -93,7 +94,7 @@ export default async function StockPage({ searchParams }: StockPageProps) {
       <Card>
         <CardHeader>
           <CardTitle>Variantes</CardTitle>
-          <form method="get" className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+          <AutoSubmitForm className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
             <label htmlFor="busqueda-stock" className="sr-only">
               Buscar por producto o SKU
             </label>
@@ -105,10 +106,7 @@ export default async function StockPage({ searchParams }: StockPageProps) {
               defaultValue={search}
               className="sm:max-w-xs"
             />
-            <Button type="submit" size="sm">
-              Buscar
-            </Button>
-          </form>
+          </AutoSubmitForm>
         </CardHeader>
         <CardContent>
           {loadError ? (

@@ -17,9 +17,11 @@ import {
   createVariant,
   deleteProduct,
   deleteVariant,
+  readProductAdmin,
   slugExists,
   updateProduct,
   updateVariantFull,
+  type AdminProductDetail,
   type ProductInput,
   type VariantInput,
 } from "../_lib/queries";
@@ -133,6 +135,12 @@ export async function createProductAction(formData: FormData): Promise<void> {
   // El catálogo y la home cacheados deben incluir el producto nuevo.
   revalidateStorefront(data.slug);
   redirect(`/admin/productos/${productId}`);
+}
+
+/** Ficha para edición rápida en modal (solo admin). Devuelve null si no existe. */
+export async function getProductForEdit(productId: string): Promise<AdminProductDetail | null> {
+  await requireAdminUser();
+  return readProductAdmin(productId);
 }
 
 /** Guarda los cambios de la ficha del producto. */

@@ -16,7 +16,7 @@ const SheetOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     className={cn(
-      "fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      "fixed inset-0 z-50 bg-black/50 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 motion-reduce:transition-none",
       className
     )}
     {...props}
@@ -38,7 +38,9 @@ const SheetContent = React.forwardRef<
       aria-modal="true"
       ref={ref}
       className={cn(
-        "fixed z-50 gap-4 bg-cream shadow-lg transition-[transform,opacity] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",
+        // Curva drawer iOS (Emil: cubic-bezier(0.32, 0.72, 0, 1)): apertura
+        // con presencia (300ms), cierre más rápido para sentirse ágil (200ms).
+        "fixed z-50 gap-4 bg-cream shadow-lg duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] transition-[transform,opacity] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 motion-reduce:transition-none",
         side === "right" && "inset-y-0 right-0 h-full w-72 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
         side === "left" && "inset-y-0 left-0 h-full w-72 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
         side === "top" && "inset-x-0 top-0 w-full border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",

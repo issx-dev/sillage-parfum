@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { AutoSubmitForm } from "../_components/AutoSubmitForm";
+import { ProductQuickEdit } from "./_components/ProductQuickEdit";
 import {
   Table,
   TableBody,
@@ -173,7 +174,7 @@ async function CatalogoResultados({ search, page }: { search: string; page: numb
                     </span>
                   )}
                   <span>
-                    <span className="block font-medium text-warm-900">{p.name}</span>
+                    <ProductQuickEdit productId={p.product_id} productName={p.name} />
                     <span className="block text-xs tabular-nums text-warm-500">
                       {p.variant_count} {p.variant_count === 1 ? "variante" : "variantes"}
                       {p.badge ? ` · ${p.badge.replace("_", " ")}` : ""}

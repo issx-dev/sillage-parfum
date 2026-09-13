@@ -15,8 +15,13 @@ import {
 } from "@/components/ui/table";
 import { readOrderDetail, type OrderStatus } from "../../_lib/queries";
 import { STATUS_LABELS } from "../../_lib/estado";
+import {
+  FULFILLMENT_LABELS,
+  FULFILLMENT_STATUSES,
+  fulfillmentBadgeVariant,
+} from "@/lib/data/fulfillment";
 import { getAdminUser } from "../../_lib/admin-auth";
-import { updateOrderStatus } from "../actions";
+import { updateFulfillmentStatus, updateOrderStatus } from "../actions";
 import { ActionForm } from "../../_components/ActionForm";
 
 export const metadata: Metadata = {
@@ -70,7 +75,12 @@ export default async function PedidoDetailPage({ params }: PedidoDetailPageProps
         <CardHeader>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <CardTitle>Pedido</CardTitle>
-            <Badge variant={statusBadgeVariant(order.status)}>{STATUS_LABELS[order.status]}</Badge>
+            <span className="flex flex-wrap items-center gap-2">
+              <Badge variant={statusBadgeVariant(order.status)}>{STATUS_LABELS[order.status]}</Badge>
+              <Badge variant={fulfillmentBadgeVariant(order.fulfillment)}>
+                {FULFILLMENT_LABELS[order.fulfillment]}
+              </Badge>
+            </span>
           </div>
         </CardHeader>
         <CardContent>
@@ -139,7 +149,7 @@ export default async function PedidoDetailPage({ params }: PedidoDetailPageProps
 
       <Card>
         <CardHeader>
-          <CardTitle>Cambiar estado</CardTitle>
+          <CardTitle>Cambiar estado del pago</CardTitle>
         </CardHeader>
         <CardContent>
           <ActionForm action={updateOrderStatus} className="flex flex-col gap-3 sm:flex-row sm:items-end">
@@ -163,6 +173,40 @@ export default async function PedidoDetailPage({ params }: PedidoDetailPageProps
             </div>
             <Button type="submit" size="sm">
               Guardar estado
+            </Button>
+          </ActionForm>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Cambiar estado de envío</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ActionForm
+            action={updateFulfillmentStatus}
+            className="flex flex-col gap-3 sm:flex-row sm:items-end"
+          >
+            <input type="hidden" name="orderId" value={order.id} />
+            <div className="flex flex-col gap-1">
+              <label htmlFor="nuevo-envio" className="text-sm font-medium text-warm-700">
+                Nuevo estado del envío
+              </label>
+              <select
+                id="nuevo-envio"
+                name="fulfillment"
+                defaultValue={order.fulfillment}
+                className="h-10 rounded-card border border-warm-300 bg-white px-3 py-2 text-sm text-warm-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+              >
+                {FULFILLMENT_STATUSES.map((value) => (
+                  <option key={value} value={value}>
+                    {FULFILLMENT_LABELS[value]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Button type="submit" size="sm">
+              Guardar envío
             </Button>
           </ActionForm>
         </CardContent>

@@ -82,7 +82,6 @@ export default async function EditarProductoPage({ params }: EditarPageProps) {
             <ProductFormFields
               defaults={{
                 name: product.name,
-                slug: product.slug,
                 brand: product.brand,
                 family: product.family,
                 gender: product.gender,

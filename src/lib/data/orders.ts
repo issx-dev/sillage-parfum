@@ -1,6 +1,7 @@
 import "server-only";
 import { query, transaction } from "@/lib/db";
 import type { Order } from "@/types";
+import { mapFulfillmentStatus, type FulfillmentStatus } from "./fulfillment";
 
 export type SaveOrderResult = { success: boolean; isDuplicate: boolean };
 
@@ -26,12 +27,13 @@ export async function readOrders(): Promise<Order[]> {
  */
 export interface OrdersPageFilter {
   status?: Order["status"];
+  fulfillment?: FulfillmentStatus;
   email?: string;
   limit?: number;
   offset?: number;
 }
 
-function buildOrdersWhere(filter: { status?: Order["status"]; email?: string }): {
+function buildOrdersWhere(filter: { status?: Order["status"]; fulfillment?: FulfillmentStatus; email?: string }): {
   clause: string;
   values: unknown[];
 } {
@@ -40,6 +42,10 @@ function buildOrdersWhere(filter: { status?: Order["status"]; email?: string }):
   if (filter.status) {
     conds.push(`payment_status = $${values.length + 1}`);
     values.push(filter.status);
+  }
+  if (filter.fulfillment) {
+    conds.push(`fulfillment_status = $${values.length + 1}`);
+    values.push(filter.fulfillment);
   }
   if (filter.email) {
     conds.push(`customer_email ILIKE $${values.length + 1}`);
@@ -57,7 +63,7 @@ export async function readOrdersPage(filter: OrdersPageFilter): Promise<Order[]>
   const offset = Math.max(filter.offset ?? 0, 0);
   const { clause, values } = buildOrdersWhere(filter);
   const rows = await query(
-    `SELECT id, stripe_event_id, stripe_session_id, customer_email, amount_total, currency, payment_status, order_data, created_at FROM orders ${clause} ORDER BY created_at DESC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
+    `SELECT id, stripe_event_id, stripe_session_id, customer_email, amount_total, currency, payment_status, fulfillment_status, order_data, created_at FROM orders ${clause} ORDER BY created_at DESC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
     [...values, limit, offset]
   );
 
@@ -65,7 +71,7 @@ export async function readOrdersPage(filter: OrdersPageFilter): Promise<Order[]>
 }
 
 /** Nº total de pedidos con los mismos filtros (para paginar). */
-export async function countOrders(filter: { status?: Order["status"]; email?: string }): Promise<number> {
+export async function countOrders(filter: { status?: Order["status"]; fulfillment?: FulfillmentStatus; email?: string }): Promise<number> {
   const { clause, values } = buildOrdersWhere(filter);
   const rows = (await query(
     `SELECT COUNT(*)::int AS n FROM orders ${clause}`,
@@ -97,6 +103,7 @@ function mapOrderRow(row: Record<string, unknown>): Order {
     items: data.items ?? [],
     total: (row.amount_total as number) / 100,
     status: mapped,
+    fulfillment: mapFulfillmentStatus(row.fulfillment_status),
     customerEmail: row.customer_email as string | undefined,
     createdAt: new Date(row.created_at as string).toISOString(),
     ...(data.paymentMethod ? { paymentMethod: data.paymentMethod } : {}),

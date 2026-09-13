@@ -1,129 +1,231 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
-import { Lock, Mail, User, ArrowRight } from "lucide-react";
+import { Lock, Mail, User, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import { registerSchema, type RegisterInput } from "@/lib/auth-schemas";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [serverError, setServerError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterInput>({
+    resolver: zodResolver(registerSchema),
+    mode: "onTouched",
+    defaultValues: { name: "", email: "", password: "" },
+  });
 
+  const onSubmit = async (values: RegisterInput) => {
+    setServerError("");
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify(values),
       });
-
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "Error al crear la cuenta");
-
       router.push("/cuenta");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error inesperado");
-      setLoading(false);
+      setServerError(err instanceof Error ? err.message : "Error inesperado");
     }
   };
 
+  const inputCls = (invalid: boolean) =>
+    `w-full pl-10 pr-4 py-3 border bg-warm-50/20 text-charcoal text-xs tracking-wide focus:outline-none transition-colors placeholder:text-gray-400 ${
+      invalid
+        ? "border-red-400 focus:border-red-500"
+        : "border-warm-200 focus:border-gold"
+    }`;
+
   return (
-    <div className="pt-28 sm:pt-36 pb-16 min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="max-w-md w-full mx-auto px-4">
-        <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
-          
-          <div className="text-center mb-8">
-            <h1 className="font-serif text-3xl font-bold text-gray-900 mb-2">Crear Cuenta</h1>
-            <p className="text-sm text-gray-600">Únete al club exclusivo de perfumería Chogan</p>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+      {serverError && (
+        <div
+          role="alert"
+          className="p-3 bg-red-50/60 border border-red-200/80 text-red-700 text-xs tracking-wide"
+        >
+          {serverError}
+        </div>
+      )}
+
+      <div>
+        <label
+          htmlFor="reg-name"
+          className="block text-[10px] font-medium tracking-[0.15em] text-charcoal uppercase mb-1.5"
+        >
+          Nombre completo
+        </label>
+        <div className="relative">
+          <input
+            id="reg-name"
+            type="text"
+            autoComplete="name"
+            placeholder="Tu nombre"
+            aria-invalid={!!errors.name}
+            aria-describedby={errors.name ? "reg-name-error" : undefined}
+            {...register("name")}
+            className={inputCls(!!errors.name)}
+          />
+          <User className="w-4 h-4 text-warm-400 absolute left-3.5 top-3.5 pointer-events-none" />
+        </div>
+        {errors.name && (
+          <p id="reg-name-error" role="alert" className="mt-1.5 text-xs text-red-600">
+            {errors.name.message}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label
+          htmlFor="reg-email"
+          className="block text-[10px] font-medium tracking-[0.15em] text-charcoal uppercase mb-1.5"
+        >
+          Correo electrónico
+        </label>
+        <div className="relative">
+          <input
+            id="reg-email"
+            type="email"
+            autoComplete="email"
+            placeholder="tu@email.com"
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? "reg-email-error" : undefined}
+            {...register("email")}
+            className={inputCls(!!errors.email)}
+          />
+          <Mail className="w-4 h-4 text-warm-400 absolute left-3.5 top-3.5 pointer-events-none" />
+        </div>
+        {errors.email && (
+          <p id="reg-email-error" role="alert" className="mt-1.5 text-xs text-red-600">
+            {errors.email.message}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label
+          htmlFor="reg-password"
+          className="block text-[10px] font-medium tracking-[0.15em] text-charcoal uppercase mb-1.5"
+        >
+          Contraseña
+        </label>
+        <div className="relative">
+          <input
+            id="reg-password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="new-password"
+            placeholder="Mínimo 6 caracteres"
+            aria-invalid={!!errors.password}
+            aria-describedby={errors.password ? "reg-password-error" : undefined}
+            {...register("password")}
+            className={`${inputCls(!!errors.password)} pr-11`}
+          />
+          <Lock className="w-4 h-4 text-warm-400 absolute left-3.5 top-3.5 pointer-events-none" />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+            aria-pressed={showPassword}
+            className="absolute right-3 top-3 text-warm-400 hover:text-gold-dark transition-colors"
+          >
+            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          </button>
+        </div>
+        {errors.password && (
+          <p id="reg-password-error" role="alert" className="mt-1.5 text-xs text-red-600">
+            {errors.password.message}
+          </p>
+        )}
+      </div>
+
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        aria-busy={isSubmitting}
+        className="w-full py-3.5 bg-black hover:bg-gold hover:text-black text-white font-sans text-xs uppercase tracking-[0.2em] font-semibold transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+      >
+        {isSubmitting ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
+            Creando...
+          </>
+        ) : (
+          <>
+            Registrarme <ArrowRight className="w-4 h-4" aria-hidden />
+          </>
+        )}
+      </Button>
+    </form>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <div className="pt-28 sm:pt-36 pb-24 min-h-screen bg-cream/30">
+      <div className="mx-auto max-w-5xl px-4">
+        <div className="grid overflow-hidden bg-white border border-warm-200/80 shadow-card lg:grid-cols-2">
+          {/* Split panel: desktop only */}
+          <div className="relative hidden lg:block min-h-[560px]">
+            <Image
+              src="/images/hero/hero-desktop.jpg"
+              alt="Botella de perfume Sillage sobre fondo cálido"
+              fill
+              sizes="(max-width: 1024px) 0vw, 50vw"
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+            <div className="absolute bottom-0 p-10 text-cream">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-gold mb-2">
+                Maison de Parfum
+              </p>
+              <p className="font-serif text-2xl leading-snug">
+                Únete al club exclusivo de perfumería.
+              </p>
+            </div>
           </div>
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="reg-name" className="block text-xs font-semibold text-gray-700 uppercase mb-1">
-                Nombre completo
-              </label>
-              <div className="relative">
-                <input
-                  id="reg-name"
-                  type="text"
-                  required
-                  placeholder="Tu nombre"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-1 focus:ring-gold"
-                />
-                <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
-              </div>
+          {/* Form column: centered on mobile */}
+          <div className="p-8 sm:p-10 flex flex-col justify-center">
+            <div className="text-center mb-8">
+              <span className="text-[10px] uppercase tracking-[0.25em] text-gold-dark font-medium block mb-2">
+                Maison de Parfum
+              </span>
+              <h1 className="font-serif text-3xl font-normal text-charcoal tracking-tight">
+                Crear Cuenta
+              </h1>
+              <div className="w-12 h-[1px] bg-gold mx-auto my-3" />
+              <p className="text-xs text-gray-mid tracking-wide">
+                Únete al club exclusivo de perfumería Chogan
+              </p>
             </div>
 
-            <div>
-              <label htmlFor="reg-email" className="block text-xs font-semibold text-gray-700 uppercase mb-1">
-                Correo electrónico
-              </label>
-              <div className="relative">
-                <input
-                  id="reg-email"
-                  type="email"
-                  required
-                  placeholder="tu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-1 focus:ring-gold"
-                />
-                <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
-              </div>
+            <Suspense>
+              <RegisterForm />
+            </Suspense>
+
+            <div className="mt-8 text-center text-xs text-gray-mid border-t border-warm-200/50 pt-5 tracking-wide">
+              ¿Ya tienes cuenta?{" "}
+              <Link
+                href="/login"
+                className="text-gold-dark font-medium hover:underline uppercase text-[11px] tracking-wider ml-1"
+              >
+                Iniciar sesión
+              </Link>
             </div>
-
-            <div>
-              <label htmlFor="reg-password" className="block text-xs font-semibold text-gray-700 uppercase mb-1">
-                Contraseña
-              </label>
-              <div className="relative">
-                <input
-                  id="reg-password"
-                  type="password"
-                  required
-                  placeholder="Mínimo 6 caracteres"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-1 focus:ring-gold"
-                />
-                <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
-              </div>
-            </div>
-
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-gold hover:bg-gold-dark text-black font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
-            >
-              {loading ? "Creando..." : "Registrarme"} <ArrowRight className="w-4 h-4" />
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center text-xs text-gray-600 border-t border-gray-100 pt-4">
-            ¿Ya tienes cuenta?{" "}
-            <Link href="/login" className="text-gold font-semibold hover:underline">
-              Iniciar sesión
-            </Link>
           </div>
-
         </div>
       </div>
     </div>

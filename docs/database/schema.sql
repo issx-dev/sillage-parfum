@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS orders (
   amount_total INTEGER NOT NULL,
   currency TEXT NOT NULL DEFAULT 'eur',
   payment_status TEXT NOT NULL DEFAULT 'paid',
+  fulfillment_status TEXT NOT NULL DEFAULT 'pendiente'
+    CHECK (fulfillment_status IN ('pendiente', 'en_preparacion', 'enviado', 'recibido')),
   order_data JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -26,6 +28,13 @@ CREATE INDEX IF NOT EXISTS idx_orders_stripe_session_id ON orders (stripe_sessio
 
 -- Index for sorting by creation date
 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders (created_at DESC);
+
+-- Fulfillment (circuito logístico; independiente de payment_status).
+-- En bases ya creadas, la migración idempotente es:
+--   ALTER TABLE orders ADD COLUMN IF NOT EXISTS fulfillment_status TEXT
+--     NOT NULL DEFAULT 'pendiente'
+--     CHECK (fulfillment_status IN ('pendiente','en_preparacion','enviado','recibido'));
+CREATE INDEX IF NOT EXISTS idx_orders_fulfillment_status ON orders (fulfillment_status);
 
 -- Enable Row Level Security
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;

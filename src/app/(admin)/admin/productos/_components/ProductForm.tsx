@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/input";
+import { ProductImagesManager } from "./ProductImagesManager";
 
 export interface ProductFormDefaults {
   name?: string;
-  slug?: string;
   brand?: string;
   family?: string;
   gender?: string;
@@ -52,9 +52,9 @@ export function ProductFormFields({ defaults }: { defaults?: ProductFormDefaults
       <Field id="f-nombre" label="Nombre">
         <Input id="f-nombre" name="name" required minLength={2} defaultValue={d.name ?? ""} className="" />
       </Field>
-      <Field id="f-slug" label="Slug (URL)" hint="Minúsculas, números y guiones. Único en la tienda.">
-        <Input id="f-slug" name="slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" defaultValue={d.slug ?? ""} className="font-mono" />
-      </Field>
+      <p className="text-xs text-warm-500 sm:col-span-2 -mt-2">
+        El slug de la URL se genera solo desde el nombre (único, con sufijo si hace falta).
+      </p>
       <Field id="f-marca" label="Marca">
         <Input id="f-marca" name="brand" required defaultValue={d.brand ?? ""} className="" />
       </Field>
@@ -108,16 +108,14 @@ export function ProductFormFields({ defaults }: { defaults?: ProductFormDefaults
           className="tabular-nums"
         />
       </Field>
-      <Field id="f-imagenes" label="Imágenes" hint="Una URL por línea (/images/… o https://…). La primera es la portada.">
-        <textarea
-          id="f-imagenes"
-          name="images"
-          rows={3}
-          defaultValue={(d.images ?? []).join("\n")}
-          placeholder="/images/products/mi-perfume.jpg"
-          className="rounded-card border border-warm-300 bg-white px-3 py-2 font-mono text-xs text-warm-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-        />
-      </Field>
+      <div className="sm:col-span-2">
+        <span className="text-sm font-medium text-warm-700" id="titulo-imagenes">
+          Imágenes
+        </span>
+        <div className="mt-1.5" role="group" aria-labelledby="titulo-imagenes">
+          <ProductImagesManager defaults={d.images} />
+        </div>
+      </div>
       <Field id="f-salida" label="Notas de salida" hint="Separadas por comas.">
         <Input id="f-salida" name="notes_top" defaultValue={(d.notes_top ?? []).join(", ")} className="" />
       </Field>

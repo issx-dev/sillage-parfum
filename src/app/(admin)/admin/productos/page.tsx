@@ -122,7 +122,7 @@ export default async function ProductosPage({ searchParams }: ProductosPageProps
                     <TableHead>Marca</TableHead>
                     <TableHead className="text-right">Desde</TableHead>
                     <TableHead className="text-right">Stock</TableHead>
-                    <TableHead>
+                    <TableHead className="text-right">
                       <span className="sr-only">Editar</span>
                     </TableHead>
                   </TableRow>

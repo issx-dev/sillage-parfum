@@ -69,6 +69,11 @@ export interface Order {
   total: number;
   /** Payment status derived from Stripe webhook events (`pending` = COD). */
   status: "paid" | "pending" | "refunded" | "failed";
+  /**
+   * Fulfillment: circuito logístico (`pendiente` → `en_preparacion` →
+   * `enviado` → `recibido`). Independiente del estado de pago.
+   */
+  fulfillment?: "pendiente" | "en_preparacion" | "enviado" | "recibido";
   customerEmail?: string;
   createdAt: string;
   stripe_event_id: string;

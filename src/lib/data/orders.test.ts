@@ -325,6 +325,7 @@ describe("readOrders", () => {
       items: mockOrderRow.order_data.items,
       total: 79,
       status: "paid",
+      fulfillment: "pendiente",
       customerEmail: "test@example.com",
       createdAt: "2026-06-07T12:00:00.000Z",
     });

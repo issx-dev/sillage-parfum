@@ -17,6 +17,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { STATUS_FILTERS, STATUS_LABELS, statusBadgeVariant, type StatusFilter } from "../_lib/estado";
+import { isOrderStatus } from "../_lib/queries";
+import {
+  FULFILLMENT_LABELS,
+  FULFILLMENT_STATUSES,
+  fulfillmentBadgeVariant,
+  isFulfillmentStatus,
+  type FulfillmentStatus,
+} from "@/lib/data/fulfillment";
 import { Pagination } from "../_components/Pagination";
 
 export const metadata: Metadata = {
@@ -35,12 +43,20 @@ function formatDate(iso: string): string {
 }
 
 interface PedidosPageProps {
-  searchParams: { estado?: string; q?: string; page?: string };
+  searchParams: { estado?: string; envio?: string; q?: string; page?: string };
 }
 
-function hrefFor(base: { estado: string; q: string }, page: number): string {
+type FulfillmentFilter = FulfillmentStatus | "all";
+
+const FULFILLMENT_FILTERS: { value: FulfillmentFilter; label: string }[] = [
+  { value: "all", label: "Envío: todos" },
+  ...FULFILLMENT_STATUSES.map((value) => ({ value, label: FULFILLMENT_LABELS[value] })),
+];
+
+function hrefFor(base: { estado: string; envio: string; q: string }, page: number): string {
   const params = new URLSearchParams();
   if (base.estado !== "all") params.set("estado", base.estado);
+  if (base.envio !== "all") params.set("envio", base.envio);
   if (base.q) params.set("q", base.q);
   if (page > 1) params.set("page", String(page));
   const qs = params.toString();
@@ -55,10 +71,9 @@ export default async function PedidosPage({ searchParams }: PedidosPageProps) {
     redirect("/login");
   }
   const estadoParam = searchParams.estado ?? "all";
-  const estado: StatusFilter =
-    estadoParam === "paid" || estadoParam === "refunded" || estadoParam === "failed"
-      ? estadoParam
-      : "all";
+  const estado: StatusFilter = isOrderStatus(estadoParam) ? estadoParam : "all";
+  const envioParam = searchParams.envio ?? "all";
+  const envio: FulfillmentFilter = isFulfillmentStatus(envioParam) ? envioParam : "all";
   const emailQuery = (searchParams.q ?? "").trim();
   const rawPage = Number.parseInt(searchParams.page ?? "1", 10);
   const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
@@ -69,6 +84,7 @@ export default async function PedidosPage({ searchParams }: PedidosPageProps) {
   try {
     const filter = {
       status: estado === "all" ? undefined : estado,
+      fulfillment: envio === "all" ? undefined : envio,
       email: emailQuery || undefined,
     };
     total = await countOrders(filter);
@@ -81,7 +97,7 @@ export default async function PedidosPage({ searchParams }: PedidosPageProps) {
 
   const totalPages = Math.max(1, Math.ceil((total || 0) / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
-  const base = { estado: estadoParam, q: emailQuery };
+  const base = { estado: estadoParam, envio: envioParam, q: emailQuery };
 
   return (
     <div className="space-y-6">
@@ -110,6 +126,21 @@ export default async function PedidosPage({ searchParams }: PedidosPageProps) {
                 </option>
               ))}
             </select>
+            <label htmlFor="filtro-envio" className="sr-only">
+              Filtrar por estado de envío
+            </label>
+            <select
+              id="filtro-envio"
+              name="envio"
+              defaultValue={envio}
+              className="h-10 rounded-card border border-warm-300 bg-white px-3 py-2 text-sm text-warm-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+            >
+              {FULFILLMENT_FILTERS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
             <label htmlFor="busqueda-email" className="sr-only">
               Buscar por email
             </label>
@@ -133,7 +164,7 @@ export default async function PedidosPage({ searchParams }: PedidosPageProps) {
             </p>
           ) : !orders || (orders.length === 0 && total === 0) ? (
             <p className="p-4 text-sm text-warm-500">
-              {total > 0
+              {estado !== "all" || envio !== "all" || emailQuery
                 ? "Ningún pedido coincide con los filtros aplicados."
                 : "Todavía no hay pedidos registrados."}
             </p>
@@ -145,8 +176,9 @@ export default async function PedidosPage({ searchParams }: PedidosPageProps) {
                     <TableHead>Email</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead>Estado</TableHead>
+                    <TableHead>Envío</TableHead>
                     <TableHead>Fecha</TableHead>
-                    <TableHead>
+                    <TableHead className="text-right">
                       <span className="sr-only">Detalle</span>
                     </TableHead>
                   </TableRow>
@@ -162,6 +194,11 @@ export default async function PedidosPage({ searchParams }: PedidosPageProps) {
                       </TableCell>
                       <TableCell>
                         <Badge variant={statusBadgeVariant(order.status)}>{STATUS_LABELS[order.status]}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={fulfillmentBadgeVariant(order.fulfillment ?? "pendiente")}>
+                          {FULFILLMENT_LABELS[order.fulfillment ?? "pendiente"]}
+                        </Badge>
                       </TableCell>
                       <TableCell className="whitespace-nowrap">{formatDate(order.createdAt)}</TableCell>
                       <TableCell className="text-right">

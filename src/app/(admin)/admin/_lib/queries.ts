@@ -1,6 +1,7 @@
 import "server-only";
 import { query, transaction } from "@/lib/db";
 import type { Order } from "@/types";
+import { mapFulfillmentStatus, type FulfillmentStatus } from "@/lib/data/fulfillment";
 
 export type OrderStatus = Order["status"];
 
@@ -26,6 +27,7 @@ function mapPaymentStatus(status: unknown): OrderStatus {
 export interface OrderDetail extends Order {
   stripe_session_id: string | null;
   currency: string;
+  fulfillment: FulfillmentStatus;
 }
 
 interface OrderDetailRow {
@@ -36,6 +38,7 @@ interface OrderDetailRow {
   amount_total: number;
   currency: string;
   payment_status: string;
+  fulfillment_status: string | null;
   order_data: { items?: Order["items"] } | null;
   created_at: string;
 }
@@ -47,7 +50,7 @@ interface OrderDetailRow {
  */
 export async function readOrderDetail(id: string): Promise<OrderDetail | null> {
   const rows = (await query(
-    `SELECT id, stripe_event_id, stripe_session_id, customer_email, amount_total, currency, payment_status, order_data, created_at FROM orders WHERE id = $1`,
+    `SELECT id, stripe_event_id, stripe_session_id, customer_email, amount_total, currency, payment_status, fulfillment_status, order_data, created_at FROM orders WHERE id = $1`,
     [id]
   )) as unknown as OrderDetailRow[];
 
@@ -62,6 +65,7 @@ export async function readOrderDetail(id: string): Promise<OrderDetail | null> {
     total: Number(row.amount_total) / 100,
     currency: row.currency,
     status: mapPaymentStatus(row.payment_status),
+    fulfillment: mapFulfillmentStatus(row.fulfillment_status),
     customerEmail: row.customer_email,
     createdAt: new Date(row.created_at).toISOString(),
   };

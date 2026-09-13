@@ -5,6 +5,13 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { query } from "@/lib/db";
 import { requireAdminUser } from "../_lib/admin-auth";
+import { slugify, resolveUniqueSlug } from "@/lib/slug";
+import {
+  PRODUCT_IMAGES_BUCKET,
+  buildProductImageKey,
+  isAllowedProductImageSize,
+  isAllowedProductImageType,
+} from "./_lib/image-upload";
 import {
   createProduct,
   createVariant,
@@ -22,11 +29,6 @@ const BADGES = ["nuevo", "oferta", "top_ventas"] as const;
 
 const productSchema = z.object({
   name: z.string().trim().min(2, "El nombre necesita al menos 2 caracteres."),
-  slug: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug no válido: solo minúsculas, números y guiones."),
   brand: z.string().trim().min(1, "La marca es obligatoria."),
   family: z.string().trim().min(1, "La familia olfativa es obligatoria."),
   gender: z.enum(GENDERS, { message: "Género no válido." }),
@@ -57,10 +59,9 @@ function imageLines(value: string): string[] {
     .filter((s) => s.startsWith("/") || s.startsWith("http://") || s.startsWith("https://"));
 }
 
-function productInputFrom(formData: FormData): ProductInput {
+async function productInputFrom(formData: FormData, exceptProductId?: string): Promise<ProductInput> {
   const parsed = productSchema.parse({
     name: formData.get("name"),
-    slug: formData.get("slug"),
     brand: formData.get("brand"),
     family: formData.get("family"),
     gender: formData.get("gender"),
@@ -76,9 +77,26 @@ function productInputFrom(formData: FormData): ProductInput {
   if (parsed.badge !== "" && !(BADGES as readonly string[]).includes(parsed.badge)) {
     throw new Error("Insignia no válida.");
   }
+  // Slug automático desde el nombre; unicidad con sufijo (-2, -3, …).
+  // En edición, si el nombre no cambia el slug se conserva (URLs estables).
+  const base = slugify(parsed.name);
+  if (!base) throw new Error("No se pudo generar un slug desde el nombre.");
+  let slug = base;
+  if (exceptProductId) {
+    const current = (await query(`SELECT slug FROM products WHERE product_id=$1`, [
+      exceptProductId,
+    ])) as unknown as { slug: string }[];
+    if (current[0]?.slug === base) {
+      slug = current[0].slug;
+    } else {
+      slug = await resolveUniqueSlug(base, (s) => slugExists(s, exceptProductId));
+    }
+  } else {
+    slug = await resolveUniqueSlug(base, (s) => slugExists(s));
+  }
   return {
     name: parsed.name,
-    slug: parsed.slug,
+    slug,
     brand: parsed.brand,
     family: parsed.family,
     gender: parsed.gender,
@@ -104,11 +122,8 @@ function variantInputFrom(formData: FormData): VariantInput {
 /** Crea producto + primera variante y redirige a su edición. */
 export async function createProductAction(formData: FormData): Promise<void> {
   await requireAdminUser();
-  const data = productInputFrom(formData);
+  const data = await productInputFrom(formData);
   const variant = variantInputFrom(formData);
-  if (await slugExists(data.slug)) {
-    throw new Error(`El slug «${data.slug}» ya existe: elige otro.`);
-  }
   const productId = await createProduct(data, variant);
   revalidatePath("/admin/productos");
   revalidatePath("/admin/stock");
@@ -122,10 +137,7 @@ export async function updateProductAction(formData: FormData): Promise<void> {
   await requireAdminUser();
   const productId = formData.get("productId");
   if (typeof productId !== "string" || !productId) throw new Error("Producto no válido.");
-  const data = productInputFrom(formData);
-  if (await slugExists(data.slug, productId)) {
-    throw new Error(`El slug «${data.slug}» ya lo usa otro producto.`);
-  }
+  const data = await productInputFrom(formData, productId);
   await updateProduct(productId, data);
   revalidatePath("/admin/productos");
   revalidatePath("/admin/stock");
@@ -203,4 +215,62 @@ export async function deleteVariantAction(formData: FormData): Promise<void> {
   revalidatePath("/admin/productos");
   revalidatePath("/admin/stock");
   revalidateStorefront(await slugForVariant(variantId));
+}
+
+export type UploadProductImageResult = { ok: true; url: string } | { ok: false; error: string };
+
+/**
+ * Sube una imagen al bucket `product-images` de Supabase Storage y devuelve
+ * su URL pública. Solo admin. Límites (bucket público, 5 MB, solo imágenes)
+ * validados aquí antes de llamar a la API.
+ *
+ * Requiere `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` en el entorno del
+ * servidor (nunca expuestas al cliente): la policy del bucket solo permite
+ * gestionar objetos al `service_role`.
+ */
+export async function uploadProductImage(formData: FormData): Promise<UploadProductImageResult> {
+  await requireAdminUser();
+
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceKey) {
+    return {
+      ok: false,
+      error: "Subida no configurada: faltan SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY en el servidor.",
+    };
+  }
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { ok: false, error: "Elige un archivo de imagen." };
+  }
+  if (!isAllowedProductImageType(file.type)) {
+    return { ok: false, error: `«${file.name}» no es una imagen.` };
+  }
+  if (!isAllowedProductImageSize(file.size)) {
+    return { ok: false, error: `«${file.name}» supera los 5 MB.` };
+  }
+
+  const key = buildProductImageKey("admin-upload", file.name);
+  const putUrl = `${supabaseUrl.replace(/\/$/, "")}/storage/v1/object/${PRODUCT_IMAGES_BUCKET}/${key}`;
+  let putRes: Response;
+  try {
+    putRes = await fetch(putUrl, {
+      method: "POST",
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        "Content-Type": file.type || "application/octet-stream",
+        "x-upsert": "false",
+      },
+      body: Buffer.from(await file.arrayBuffer()),
+    });
+  } catch {
+    return { ok: false, error: "No se pudo contactar con el almacenamiento." };
+  }
+  if (!putRes.ok) {
+    return { ok: false, error: `La subida falló (${putRes.status}).` };
+  }
+  const publicUrl = `${supabaseUrl.replace(/\/$/, "")}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${key}`;
+  return { ok: true, url: publicUrl };
 }

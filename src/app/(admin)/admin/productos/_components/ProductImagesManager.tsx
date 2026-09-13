@@ -13,13 +13,10 @@
  */
 import { useRef, useState } from "react";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/input";
 import {
   MAX_PRODUCT_IMAGE_BYTES,
   isAllowedProductImageSize,
   isAllowedProductImageType,
-  parseImageLines,
 } from "../_lib/image-upload";
 import { uploadProductImage } from "../actions";
 
@@ -29,7 +26,6 @@ function formatMB(bytes: number): string {
 
 export function ProductImagesManager({ defaults }: { defaults?: string[] }) {
   const [images, setImages] = useState<string[]>(defaults ?? []);
-  const [urlInput, setUrlInput] = useState("");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -68,17 +64,6 @@ export function ProductImagesManager({ defaults }: { defaults?: string[] }) {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";
     }
-  }
-
-  function addUrl(): void {
-    const parsed = parseImageLines(urlInput);
-    if (parsed.length === 0) {
-      setError("Pega una URL válida (/images/… o https://…).");
-      return;
-    }
-    setError(null);
-    setImages((prev) => [...prev, ...parsed]);
-    setUrlInput("");
   }
 
   return (
@@ -153,19 +138,6 @@ export function ProductImagesManager({ defaults }: { defaults?: string[] }) {
           void handleFiles(event.target.files);
         }}
       />
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <Input
-          type="url"
-          value={urlInput}
-          onChange={(event) => setUrlInput(event.target.value)}
-          placeholder="…o pega una URL (/images/… o https://…)"
-          aria-label="Añadir imagen por URL"
-          className="sm:max-w-xs"
-        />
-        <Button type="button" size="sm" variant="outline" onClick={addUrl}>
-          Añadir URL
-        </Button>
-      </div>
       {error ? (
         <p role="alert" className="text-sm font-medium text-red-700">
           {error}

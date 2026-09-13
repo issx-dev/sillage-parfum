@@ -118,14 +118,17 @@ async function hydrateProductsWithVariants(
     const variants = variantsByProduct.get(pRow.product_id) ?? [];
 
     if (local) {
+      // La BD es la fuente de la verdad (la edita el admin): manda sobre
+      // el JSON local, que solo rellena huecos. Al revés, ningún cambio
+      // del panel (portada, nombre, notas) llegaba a la tienda.
       return {
         ...base,
-        name: local.name || base.name,
-        officialCode: local.officialCode || base.officialCode,
-        inspiration: local.inspiration || base.inspiration,
-        shortDescription: local.shortDescription || base.shortDescription,
-        images: local.images?.length ? local.images : base.images,
-        notes: local.notes || base.notes,
+        name: base.name || local.name,
+        officialCode: base.officialCode || local.officialCode,
+        inspiration: base.inspiration || local.inspiration,
+        shortDescription: base.shortDescription || local.shortDescription,
+        images: base.images?.length ? base.images : local.images,
+        notes: base.notes?.top?.length || base.notes?.heart?.length || base.notes?.base?.length ? base.notes : local.notes,
         variants: variants.length > 0 ? variants : local.variants,
       };
     }

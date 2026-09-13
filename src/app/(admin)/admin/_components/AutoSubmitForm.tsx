@@ -1,14 +1,17 @@
 "use client";
 
 import { useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 /**
- * AutoSubmitForm — filtros admin que filtran solos, con debounce.
+ * AutoSubmitForm — filtros admin que filtran solos, con debounce,
+ * SIN recargar la página: actualiza solo los searchParams por navegación
+ * de cliente (router.replace). El layout y el sidebar ni se inmutan;
+ * únicamente la región <Suspense> del listado se re-renderiza.
  *
- * Envuelve el <form method="get"> de filtros: los <select> disparan al
- * instante y el texto espera `debounceMs` tras la última tecla para no
- * acribillar al servidor en cada pulsación. Al cambiar filtros la página
- * vuelve a 1 (el form no incluye `page`, el servidor lo asume).
+ * Los <select> disparan al instante, el texto espera `debounceMs` tras
+ * la última tecla y Enter aplica de inmediato. Al cambiar filtros la
+ * página vuelve a 1. Los valores vacíos se omiten (URLs limpias).
  */
 export function AutoSubmitForm({
   children,
@@ -19,34 +22,54 @@ export function AutoSubmitForm({
   className?: string;
   debounceMs?: number;
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const zoneRef = useRef<HTMLDivElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  function scheduleSubmit(form: HTMLFormElement): void {
+  function collect(): URLSearchParams {
+    const params = new URLSearchParams();
+    zoneRef.current
+      ?.querySelectorAll<HTMLInputElement | HTMLSelectElement>("input[name], select[name]")
+      .forEach((el) => {
+        if (el.value.trim() !== "") params.set(el.name, el.value.trim());
+      });
+    return params;
+  }
+
+  function apply(): void {
+    const query = collect().toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }
+
+  function scheduleApply(): void {
     if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => {
-      form.requestSubmit();
-    }, debounceMs);
+    timer.current = setTimeout(apply, debounceMs);
   }
 
   return (
-    <form
-      method="get"
+    <div
+      ref={zoneRef}
+      role="search"
       className={className}
       onChange={(event) => {
-        const target = event.target as HTMLElement;
-        if (target instanceof HTMLSelectElement) {
+        if (event.target instanceof HTMLSelectElement) {
           if (timer.current) clearTimeout(timer.current);
-          event.currentTarget.requestSubmit();
+          apply();
         }
       }}
       onInput={(event) => {
-        const target = event.target as HTMLElement;
-        if (target instanceof HTMLInputElement) {
-          scheduleSubmit(event.currentTarget);
+        if (event.target instanceof HTMLInputElement) scheduleApply();
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" && event.target instanceof HTMLInputElement) {
+          event.preventDefault();
+          if (timer.current) clearTimeout(timer.current);
+          apply();
         }
       }}
     >
       {children}
-    </form>
+    </div>
   );
 }

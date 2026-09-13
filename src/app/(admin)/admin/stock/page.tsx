@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { SafeImage } from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -54,6 +55,53 @@ export default async function StockPage({ searchParams }: StockPageProps) {
   const rawPage = Number.parseInt(searchParams.page ?? "1", 10);
   const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="font-serif text-3xl font-bold text-warm-900">Stock</h2>
+        <p className="mt-1 text-sm tabular-nums text-warm-500">
+          Busca por producto, SKU o perfume inspirado
+        </p>
+      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Variantes</CardTitle>
+          <AutoSubmitForm className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+            <label htmlFor="busqueda-stock" className="sr-only">
+              Buscar por producto, SKU o inspiración
+            </label>
+            <Input
+              id="busqueda-stock"
+              name="q"
+              type="search"
+              placeholder="Buscar por producto, SKU, inspiración…"
+              defaultValue={search}
+              className="sm:max-w-xs"
+            />
+          </AutoSubmitForm>
+        </CardHeader>
+        <CardContent>
+          {/* Solo esta región se refresca al filtrar; cabecera y filtros ni se inmutan. */}
+          <Suspense key={`${search}::${page}`} fallback={<ResultadosSkeleton />}>
+            <StockResultados search={search} page={page} />
+          </Suspense>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function ResultadosSkeleton() {
+  return (
+    <div className="space-y-2" aria-busy="true" aria-label="Filtrando variantes">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="h-16 animate-pulse rounded-lg bg-warm-100" />
+      ))}
+    </div>
+  );
+}
+
+async function StockResultados({ search, page }: { search: string; page: number }) {
   let rows: Awaited<ReturnType<typeof readVariantStock>> | null = null;
   let total = 0;
   let lowCount = 0;
@@ -74,153 +122,128 @@ export default async function StockPage({ searchParams }: StockPageProps) {
   const totalPages = Math.max(1, Math.ceil((total || 0) / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
 
+  if (loadError) {
+    return (
+      <p role="alert" className="rounded-card bg-red-50 p-4 text-sm text-red-800">
+        No se pudo cargar el stock: {loadError}
+      </p>
+    );
+  }
+  if (!rows || (rows.length === 0 && total === 0)) {
+    return (
+      <p className="p-4 text-sm text-warm-500">
+        {search
+          ? "Ninguna variante coincide con la búsqueda."
+          : "No hay variantes registradas en la base de datos."}
+      </p>
+    );
+  }
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h2 className="font-serif text-3xl font-bold text-warm-900">Stock</h2>
-          <p className="mt-1 text-sm tabular-nums text-warm-500">
-            {loadError ? "Error al cargar" : `${total} variantes en total`}
-          </p>
-        </div>
-        {rows && rows.length > 0 ? (
-          <Badge variant={lowCount > 0 ? "warning" : "success"}>
-            {lowCount > 0
-              ? `${lowCount} con stock bajo (≤ ${LOW_STOCK_THRESHOLD}) en esta página`
-              : "Stock en niveles normales"}
-          </Badge>
-        ) : null}
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-sm tabular-nums text-warm-500">{total} variantes en total</p>
+        <Badge variant={lowCount > 0 ? "warning" : "success"}>
+          {lowCount > 0
+            ? `${lowCount} con stock bajo (≤ ${LOW_STOCK_THRESHOLD}) en esta página`
+            : "Stock en niveles normales"}
+        </Badge>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Variantes</CardTitle>
-          <AutoSubmitForm className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-            <label htmlFor="busqueda-stock" className="sr-only">
-              Buscar por producto o SKU
-            </label>
-            <Input
-              id="busqueda-stock"
-              name="q"
-              type="search"
-              placeholder="Buscar por producto o SKU…"
-              defaultValue={search}
-              className="sm:max-w-xs"
-            />
-          </AutoSubmitForm>
-        </CardHeader>
-        <CardContent>
-          {loadError ? (
-            <p role="alert" className="rounded-card bg-red-50 p-4 text-sm text-red-800">
-              No se pudo cargar el stock: {loadError}
-            </p>
-          ) : !rows || (rows.length === 0 && total === 0) ? (
-            <p className="p-4 text-sm text-warm-500">
-              {search
-                ? "Ninguna variante coincide con la búsqueda."
-                : "No hay variantes registradas en la base de datos."}
-            </p>
-          ) : (
-            <div className="space-y-4">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Producto</TableHead>
-                    <TableHead>SKU</TableHead>
-                    <TableHead className="text-right">Precio</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Stock</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {rows.map((row) => {
-                    const out = row.stock === 0;
-                    const low = !out && row.stock <= LOW_STOCK_THRESHOLD;
-                    return (
-                      <TableRow key={row.variant_id}>
-                        <TableCell>
-                          <span className="flex items-center gap-3">
-                            {row.product_image ? (
-                              <SafeImage
-                                src={row.product_image}
-                                alt=""
-                                width={48}
-                                height={48}
-                                className="h-12 w-12 shrink-0 rounded-lg border border-warm-200 object-cover"
-                              />
-                            ) : (
-                              <span
-                                aria-hidden
-                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-warm-200 bg-warm-100 font-serif text-lg font-bold text-warm-400"
-                              >
-                                {row.product_name.charAt(0)}
-                              </span>
-                            )}
-                            <span>
-                              <Link
-                                href={`/admin/productos/${row.product_id}`}
-                                className="block font-medium text-warm-900 underline-offset-4 hover:underline"
-                              >
-                                {row.product_name}
-                              </Link>
-                              <span className="block text-[13px] font-normal tabular-nums text-warm-500">
-                                {row.size_ml} ml
-                              </span>
-                            </span>
-                          </span>
-                        </TableCell>
-                        <TableCell className="font-mono text-xs">{row.sku}</TableCell>
-                        <TableCell className="text-right tabular-nums">
-                          {formatPrice(row.price)}
-                        </TableCell>
-                        <TableCell>
-                          {out ? (
-                            <Badge variant="danger">Agotado</Badge>
-                          ) : low ? (
-                            <Badge variant="warning">Stock bajo</Badge>
-                          ) : (
-                            <Badge variant="success">Disponible</Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <form
-                            action={updateVariantStock}
-                            className="inline-flex items-center justify-end gap-2"
-                          >
-                            <input type="hidden" name="variantId" value={row.variant_id} />
-                            <label htmlFor={`stock-${row.variant_id}`} className="sr-only">
-                              Stock de {row.product_name} {row.size_ml} ml
-                            </label>
-                            <input
-                              id={`stock-${row.variant_id}`}
-                              name="stock"
-                              type="number"
-                              min={0}
-                              max={999999}
-                              step={1}
-                              defaultValue={row.stock}
-                              required
-                              className="h-9 w-20 rounded-card border border-warm-300 bg-white px-2 py-1 text-right text-sm tabular-nums text-warm-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-                            />
-                            <Button type="submit" size="sm" variant="outline">
-                              Guardar
-                            </Button>
-                          </form>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-              <Pagination
-                page={safePage}
-                totalPages={totalPages}
-                hrefFor={(p) => hrefFor(search, p)}
-                totalLabel={`${total} variantes`}
-              />
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Producto</TableHead>
+            <TableHead>SKU</TableHead>
+            <TableHead className="text-right">Precio</TableHead>
+            <TableHead>Estado</TableHead>
+            <TableHead className="text-right">Stock</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rows.map((row) => {
+            const out = row.stock === 0;
+            const low = !out && row.stock <= LOW_STOCK_THRESHOLD;
+            return (
+              <TableRow key={row.variant_id}>
+                <TableCell>
+                  <span className="flex items-center gap-3">
+                    {row.product_image ? (
+                      <SafeImage
+                        src={row.product_image}
+                        alt=""
+                        width={48}
+                        height={48}
+                        className="h-12 w-12 shrink-0 rounded-lg border border-warm-200 object-cover"
+                      />
+                    ) : (
+                      <span
+                        aria-hidden
+                        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-warm-200 bg-warm-100 font-serif text-lg font-bold text-warm-400"
+                      >
+                        {row.product_name.charAt(0)}
+                      </span>
+                    )}
+                    <span>
+                      <Link
+                        href={`/admin/productos/${row.product_id}`}
+                        className="block font-medium text-warm-900 underline-offset-4 hover:underline"
+                      >
+                        {row.product_name}
+                      </Link>
+                      <span className="block text-[13px] font-normal tabular-nums text-warm-500">
+                        {row.size_ml} ml
+                      </span>
+                    </span>
+                  </span>
+                </TableCell>
+                <TableCell className="font-mono text-xs">{row.sku}</TableCell>
+                <TableCell className="text-right tabular-nums">
+                  {formatPrice(row.price)}
+                </TableCell>
+                <TableCell>
+                  {out ? (
+                    <Badge variant="danger">Agotado</Badge>
+                  ) : low ? (
+                    <Badge variant="warning">Stock bajo</Badge>
+                  ) : (
+                    <Badge variant="success">Disponible</Badge>
+                  )}
+                </TableCell>
+                <TableCell className="text-right">
+                  <form
+                    action={updateVariantStock}
+                    className="inline-flex items-center justify-end gap-2"
+                  >
+                    <input type="hidden" name="variantId" value={row.variant_id} />
+                    <label htmlFor={`stock-${row.variant_id}`} className="sr-only">
+                      Stock de {row.product_name} {row.size_ml} ml
+                    </label>
+                    <input
+                      id={`stock-${row.variant_id}`}
+                      name="stock"
+                      type="number"
+                      min={0}
+                      max={999999}
+                      step={1}
+                      defaultValue={row.stock}
+                      required
+                      className="h-9 w-20 rounded-card border border-warm-300 bg-white px-2 py-1 text-right text-sm tabular-nums text-warm-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    />
+                    <Button type="submit" size="sm" variant="outline">
+                      Guardar
+                    </Button>
+                  </form>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+      <Pagination
+        page={safePage}
+        totalPages={totalPages}
+        hrefFor={(p) => hrefFor(search, p)}
+        totalLabel={`${total} variantes`}
+      />
     </div>
   );
 }

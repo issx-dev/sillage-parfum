@@ -6,6 +6,7 @@ export interface ProductFormDefaults {
   name?: string;
   brand?: string;
   family?: string;
+  inspiration?: string | null;
   gender?: string;
   short_description?: string;
   badge?: string | null;
@@ -65,6 +66,15 @@ export function ProductFormFields({ defaults }: { defaults?: ProductFormDefaults
           required
           placeholder="Amaderado, Floral, Cítrico…"
           defaultValue={d.family ?? ""}
+          className=""
+        />
+      </Field>
+      <Field id="f-inspiracion" label="Inspirado en" hint="Perfume de diseñador, p. ej. Sauvage de Dior.">
+        <Input
+          id="f-inspiracion"
+          name="inspiration"
+          placeholder="Sauvage de Dior…"
+          defaultValue={d.inspiration ?? ""}
           className=""
         />
       </Field>

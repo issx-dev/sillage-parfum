@@ -83,6 +83,7 @@ export default async function EditarProductoPage({ params }: EditarPageProps) {
                 name: product.name,
                 brand: product.brand,
                 family: product.family,
+                inspiration: product.inspiration,
                 gender: product.gender,
                 short_description: product.short_description,
                 badge: product.badge,

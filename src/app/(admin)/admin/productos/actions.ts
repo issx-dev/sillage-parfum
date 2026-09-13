@@ -31,6 +31,7 @@ const productSchema = z.object({
   name: z.string().trim().min(2, "El nombre necesita al menos 2 caracteres."),
   brand: z.string().trim().min(1, "La marca es obligatoria."),
   family: z.string().trim().min(1, "La familia olfativa es obligatoria."),
+  inspiration: z.string().trim().max(120, "Máximo 120 caracteres.").optional().default(""),
   gender: z.enum(GENDERS, { message: "Género no válido." }),
   short_description: z.string().trim().min(10, "La descripción necesita al menos 10 caracteres."),
   badge: z.string().trim().optional().default(""),
@@ -64,6 +65,7 @@ async function productInputFrom(formData: FormData, exceptProductId?: string): P
     name: formData.get("name"),
     brand: formData.get("brand"),
     family: formData.get("family"),
+    inspiration: formData.get("inspiration") ?? "",
     gender: formData.get("gender"),
     short_description: formData.get("short_description"),
     badge: formData.get("badge") ?? "",
@@ -107,6 +109,7 @@ async function productInputFrom(formData: FormData, exceptProductId?: string): P
     notes_top: csv(parsed.notes_top),
     notes_heart: csv(parsed.notes_heart),
     notes_base: csv(parsed.notes_base),
+    inspiration: parsed.inspiration === "" ? null : parsed.inspiration,
   };
 }
 

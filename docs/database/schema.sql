@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS products (
   notes_top TEXT[] NOT NULL DEFAULT '{}',
   notes_heart TEXT[] NOT NULL DEFAULT '{}',
   notes_base TEXT[] NOT NULL DEFAULT '{}',
+  inspiration TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

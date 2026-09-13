@@ -109,7 +109,7 @@ export async function readVariantStock(
   const rows = q
     ? ((await query(
         `SELECT ${STOCK_SELECT}
-         WHERE p.name ILIKE $1 OR v.sku ILIKE $1
+         WHERE p.name ILIKE $1 OR v.sku ILIKE $1 OR p.inspiration ILIKE $1
          ORDER BY p.name ASC, v.size_ml ASC LIMIT $2 OFFSET $3`,
         [`%${q}%`, limit, offset]
       )) as unknown as VariantStockDbRow[])
@@ -138,7 +138,7 @@ export async function countVariantStock(search?: string): Promise<number> {
   const rows = q
     ? ((await query(
         `SELECT COUNT(*)::int AS n FROM variants v JOIN products p ON p.product_id = v.product_id
-         WHERE p.name ILIKE $1 OR v.sku ILIKE $1`,
+         WHERE p.name ILIKE $1 OR v.sku ILIKE $1 OR p.inspiration ILIKE $1`,
         [`%${q}%`]
       )) as unknown as { n: number }[])
     : ((await query(
@@ -163,6 +163,7 @@ export interface AdminProductRow {
   notes_top: string[];
   notes_heart: string[];
   notes_base: string[];
+  inspiration: string | null;
   variant_count: number;
   total_stock: number;
   min_price: number | null;
@@ -178,7 +179,7 @@ export interface AdminProductDetail extends Omit<AdminProductRow, "variant_count
   }[];
 }
 
-const PRODUCT_COLUMNS = `product_id, slug, name, brand, family, gender, short_description, badge, images, discount_percent, notes_top, notes_heart, notes_base`;
+const PRODUCT_COLUMNS = `product_id, slug, name, brand, family, gender, short_description, badge, images, discount_percent, notes_top, notes_heart, notes_base, inspiration`;
 
 interface AdminProductDbRow {
   product_id: string;
@@ -194,6 +195,7 @@ interface AdminProductDbRow {
   notes_top: string[];
   notes_heart: string[];
   notes_base: string[];
+  inspiration: string | null;
   variant_count: string | number;
   total_stock: string | number;
   min_price: string | number | null;
@@ -214,6 +216,7 @@ function mapAdminProductRow(row: AdminProductDbRow): AdminProductRow {
     notes_top: row.notes_top ?? [],
     notes_heart: row.notes_heart ?? [],
     notes_base: row.notes_base ?? [],
+    inspiration: row.inspiration ?? null,
     variant_count: Number(row.variant_count),
     total_stock: Number(row.total_stock),
     min_price: row.min_price === null ? null : Number(row.min_price),
@@ -236,7 +239,7 @@ export async function readProductsPage(opts?: {
           COUNT(v.variant_id)::int AS variant_count,
           COALESCE(SUM(v.stock), 0)::int AS total_stock,
           MIN(v.price) AS min_price
-         ${base} WHERE p.name ILIKE $1 OR p.brand ILIKE $1 OR p.slug ILIKE $1
+         ${base} WHERE p.name ILIKE $1 OR p.brand ILIKE $1 OR p.slug ILIKE $1 OR p.inspiration ILIKE $1
          GROUP BY ${PRODUCT_COLUMNS.split(",").map((c) => `p.${c.trim()}`).join(", ")}
          ORDER BY p.created_at DESC, p.name ASC LIMIT $2 OFFSET $3`,
         [`%${q}%`, limit, offset]
@@ -259,7 +262,7 @@ export async function countProducts(search?: string): Promise<number> {
   const q = search?.trim();
   const rows = q
     ? ((await query(
-        `SELECT COUNT(*)::int AS n FROM products p WHERE p.name ILIKE $1 OR p.brand ILIKE $1 OR p.slug ILIKE $1`,
+        `SELECT COUNT(*)::int AS n FROM products p WHERE p.name ILIKE $1 OR p.brand ILIKE $1 OR p.slug ILIKE $1 OR p.inspiration ILIKE $1`,
         [`%${q}%`]
       )) as unknown as { n: number }[])
     : ((await query(`SELECT COUNT(*)::int AS n FROM products`)) as unknown as {
@@ -293,6 +296,7 @@ export async function readProductAdmin(productId: string): Promise<AdminProductD
     notes_top: p.notes_top ?? [],
     notes_heart: p.notes_heart ?? [],
     notes_base: p.notes_base ?? [],
+    inspiration: p.inspiration ?? null,
     variants: vrows.map((v) => ({
       variant_id: v.variant_id,
       size_ml: Number(v.size_ml),
@@ -316,15 +320,16 @@ export interface ProductInput {
   notes_top: string[];
   notes_heart: string[];
   notes_base: string[];
+  inspiration: string | null;
 }
 
 export async function updateProduct(productId: string, data: ProductInput): Promise<void> {
   const rows = (await query(
-    `UPDATE products SET name=$1, slug=$2, brand=$3, family=$4, gender=$5, short_description=$6, badge=$7, images=$8, discount_percent=$9, notes_top=$10, notes_heart=$11, notes_base=$12 WHERE product_id=$13 RETURNING product_id`,
+    `UPDATE products SET name=$1, slug=$2, brand=$3, family=$4, gender=$5, short_description=$6, badge=$7, images=$8, discount_percent=$9, notes_top=$10, notes_heart=$11, notes_base=$12, inspiration=$13 WHERE product_id=$14 RETURNING product_id`,
     [
       data.name, data.slug, data.brand, data.family, data.gender,
       data.short_description, data.badge, data.images, data.discount_percent,
-      data.notes_top, data.notes_heart, data.notes_base, productId,
+      data.notes_top, data.notes_heart, data.notes_base, data.inspiration, productId,
     ]
   )) as unknown[];
   if (rows.length === 0) throw new Error("Producto no encontrado.");
@@ -360,12 +365,12 @@ export async function createProduct(data: ProductInput, firstVariant: VariantInp
   const variantId = `${productId}-v${firstVariant.size_ml}`;
   return transaction(async (tx) => {
     await tx(
-      `INSERT INTO products (product_id, slug, name, brand, family, gender, short_description, badge, images, discount_percent, notes_top, notes_heart, notes_base)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+      `INSERT INTO products (product_id, slug, name, brand, family, gender, short_description, badge, images, discount_percent, notes_top, notes_heart, notes_base, inspiration)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)`,
       [
         productId, data.slug, data.name, data.brand, data.family, data.gender,
         data.short_description, data.badge, data.images, data.discount_percent,
-        data.notes_top, data.notes_heart, data.notes_base,
+        data.notes_top, data.notes_heart, data.notes_base, data.inspiration,
       ]
     );
     await tx(

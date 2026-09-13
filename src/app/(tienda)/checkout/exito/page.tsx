@@ -1,11 +1,20 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import Link from "next/link";
 import { CheckCircle2, Truck, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 export default function CheckoutSuccessPage() {
+  return (
+    <Suspense>
+      <CheckoutSuccessInner />
+    </Suspense>
+  );
+}
+
+function CheckoutSuccessInner() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId") || "COD-ORD-EX";
 

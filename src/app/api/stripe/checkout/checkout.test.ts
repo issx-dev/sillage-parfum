@@ -142,4 +142,109 @@ describe("POST /api/stripe/checkout", () => {
     const response = await POST(request);
     expect(response.status).toBe(404);
   });
+
+  it("charges the product discount (discount_percent), not the raw variant price", async () => {
+    mockGetVariant.mockResolvedValueOnce({
+      product: { ...mockProduct, discount_percent: 10 },
+      variant: mockVariant, // 79€ → 71.10€ con −10%
+    });
+    mockCreate.mockResolvedValueOnce({ id: "cs_disc", url: "https://x" } as any);
+
+    const request = new NextRequest("http://localhost:3000/api/stripe/checkout", {
+      method: "POST",
+      body: JSON.stringify({
+        items: [
+          {
+            productId: "sauvage-dior",
+            variantId: "sauvage-050",
+            name: "Sauvage EDT",
+            brand: "Dior",
+            image: "/images/sauvage.jpg",
+            size_ml: 50,
+            price: 1, // precio manipulado: el servidor debe ignorarlo
+            quantity: 1,
+          },
+        ],
+      }),
+      headers: { origin: "http://localhost:3000" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    const unit = (mockCreate.mock.calls[0]![0] as any).line_items[0];
+    expect(unit.price_data.unit_amount).toBe(7110);
+  });
+
+  it("applies the multibuy bundle: 2x70ml/35€ totals 6300, not 7000", async () => {
+    const std70 = { id: "v70", size_ml: 70, price: 35, stock: 10, sku: "s70" };
+    mockGetVariant.mockResolvedValue({
+      product: { ...mockProduct, discount_percent: 0 },
+      variant: std70,
+    });
+    mockCreate.mockResolvedValueOnce({ id: "cs_mb", url: "https://x" } as any);
+
+    const request = new NextRequest("http://localhost:3000/api/stripe/checkout", {
+      method: "POST",
+      body: JSON.stringify({
+        items: [
+          { productId: "p", variantId: "v70", size_ml: 70, price: 35, quantity: 2 },
+        ],
+      }),
+      headers: { origin: "http://localhost:3000" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    const args = mockCreate.mock.calls[0]![0] as any;
+    const total = args.line_items.reduce(
+      (s: number, li: any) => s + li.price_data.unit_amount * li.quantity,
+      0
+    );
+    expect(total).toBe(6300);
+  });
+
+  it("applies SILLAGE2 coupon and records it in metadata", async () => {
+    mockGetVariant.mockResolvedValueOnce({
+      product: mockProduct, // discount_percent 0: 79€ → −10% = 71.10€
+      variant: mockVariant,
+    });
+    mockCreate.mockResolvedValueOnce({ id: "cs_cp", url: "https://x" } as any);
+
+    const request = new NextRequest("http://localhost:3000/api/stripe/checkout", {
+      method: "POST",
+      body: JSON.stringify({
+        items: [
+          { productId: "sauvage-dior", variantId: "sauvage-050", size_ml: 50, price: 79, quantity: 1 },
+        ],
+        couponCode: "sillage2",
+      }),
+      headers: { origin: "http://localhost:3000" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    const args = mockCreate.mock.calls[0]![0] as any;
+    const total = args.line_items.reduce(
+      (s: number, li: any) => s + li.price_data.unit_amount * li.quantity,
+      0
+    );
+    expect(total).toBe(7110); // 7900 × 0.9
+    expect(JSON.parse(args.metadata.items)[0].quantity).toBe(1);
+    expect(args.metadata.couponCode).toBe("SILLAGE2");
+  });
+
+  it("rejects unknown coupon codes with 400", async () => {
+    const request = new NextRequest("http://localhost:3000/api/stripe/checkout", {
+      method: "POST",
+      body: JSON.stringify({
+        items: [{ productId: "p", variantId: "v", quantity: 1 }],
+        couponCode: "FAKE99",
+      }),
+      headers: { origin: "http://localhost:3000" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(400);
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
 });

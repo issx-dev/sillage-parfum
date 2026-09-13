@@ -78,7 +78,7 @@ export default function AccountPage() {
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 md:col-span-2">
             <div className="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
               <h2 className="font-serif text-lg font-bold flex items-center gap-2">
-                <Package className="w-5 h-5 text-gold" /> Mis Pedidos Reientes
+                <Package className="w-5 h-5 text-gold" /> Mis Pedidos Recientes
               </h2>
             </div>
 

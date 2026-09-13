@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { Heart, ArrowRight } from "lucide-react";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -93,7 +93,7 @@ export function WishlistView({ allProducts }: WishlistViewProps) {
                   <div className="bg-white border border-warm-200/60 rounded-card overflow-hidden transition-[transform,box-shadow] duration-300 group-hover:shadow-md group-hover:scale-[1.01]">
                     {/* Image */}
                     <div className="relative aspect-square bg-cream p-4">
-                      <Image
+                      <SafeImage
                         src={product.images[0] ?? "/images/og-default.jpg"}
                         alt={product.name}
                         fill

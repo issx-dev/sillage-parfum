@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { formatPrice } from "@/lib/utils";
+import { applyCouponToTotal } from "@/lib/coupons";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ChevronLeft, Lock, Truck, Sparkles, ShieldCheck, CreditCard, ChevronDown, Tag } from "lucide-react";
 
 export default function CheckoutPage() {
@@ -20,6 +21,10 @@ export default function CheckoutPage() {
   const [showMobileSummary, setShowMobileSummary] = useState(false);
   const [showDiscountInput, setShowDiscountInput] = useState(false);
   const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const [couponPercent, setCouponPercent] = useState(0);
+  const [couponError, setCouponError] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
   const [subscribeNewsletter, setSubscribeNewsletter] = useState(true);
 
   // Form Fields (Gymshark + Sillage Luxury Checkout)
@@ -36,6 +41,37 @@ export default function CheckoutPage() {
   const [deliveryPhone, setDeliveryPhone] = useState("");
 
   const totalItemsCount = items.reduce((acc, item) => acc + item.quantity, 0);
+  // Total que ve el cliente: bundles multi-compra y, si hay cupón validado
+  // en servidor, su descuento. Es el mismo total que Stripe cobra y que
+  // COD/webhook verifican (src/lib/pricing.ts).
+  const displayTotal = appliedCoupon ? applyCouponToTotal(total, appliedCoupon) : total;
+  const couponSavings = total - displayTotal;
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim() || couponLoading) return;
+    setCouponLoading(true);
+    setCouponError("");
+    try {
+      const res = await fetch(`/api/coupons/validate?code=${encodeURIComponent(couponCode.trim())}`);
+      const data = await res.json();
+      if (!res.ok || !data.valid) throw new Error(data.error || "Código no válido");
+      setAppliedCoupon(data.code);
+      setCouponPercent(data.percentOff);
+      setCouponCode(data.code);
+    } catch (err) {
+      setCouponError(err instanceof Error ? err.message : "Código no válido");
+      setAppliedCoupon(null);
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponPercent(0);
+    setCouponCode("");
+    setCouponError("");
+  };
 
   if (items.length === 0) {
     return (
@@ -79,8 +115,9 @@ export default function CheckoutPage() {
             subscribeNewsletter,
           },
           items,
-          total,
+          total: displayTotal,
           paymentMethod: "cod",
+          ...(appliedCoupon ? { couponCode: appliedCoupon } : {}),
         }),
       });
 
@@ -102,7 +139,11 @@ export default function CheckoutPage() {
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items, customerEmail: email }),
+        body: JSON.stringify({
+          items,
+          customerEmail: email,
+          ...(appliedCoupon ? { couponCode: appliedCoupon } : {}),
+        }),
       });
 
       const data = await response.json();
@@ -147,7 +188,7 @@ export default function CheckoutPage() {
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white border border-warm-200 rounded flex items-center justify-center relative flex-shrink-0">
-                <Image
+                <SafeImage
                   src={items[0]?.image || "/images/og-default.jpg"}
                   alt="Resumen"
                   width={36}
@@ -162,7 +203,7 @@ export default function CheckoutPage() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-gray-mid font-mono">EUR</span>
-              <span className="text-sm font-bold font-mono text-charcoal">{formatPrice(total)}</span>
+              <span className="text-sm font-bold font-mono text-charcoal">{formatPrice(displayTotal)}</span>
               <ChevronDown className={`w-4 h-4 text-gray-mid transition-transform ${showMobileSummary ? "rotate-180" : ""}`} />
             </div>
           </button>
@@ -183,21 +224,35 @@ export default function CheckoutPage() {
 
           {/* Input de cupón desplegable en móvil */}
           {showDiscountInput && (
-            <div className="p-3.5 bg-warm-50/40 border-t border-warm-200 flex gap-2">
-              <input
-                type="text"
-                placeholder="Código de descuento"
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value)}
-                className="flex-1 px-3 py-2 bg-white border border-warm-200 rounded text-xs text-charcoal placeholder:text-gray-mid focus:outline-none"
-              />
-              <button
-                type="button"
-                onClick={() => { if (couponCode) alert(`Código ${couponCode} aplicado`); }}
-                className="px-3 py-2 bg-charcoal text-white rounded text-xs font-semibold uppercase tracking-wider"
-              >
-                Aplicar
-              </button>
+            <div className="p-3.5 bg-warm-50/40 border-t border-warm-200 space-y-2">
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between text-xs bg-gold/10 text-gold-dark p-2.5 rounded border border-gold/20 font-medium">
+                  <span>Cupón {appliedCoupon} (−{couponPercent}%)</span>
+                  <button type="button" onClick={handleRemoveCoupon} className="underline font-semibold cursor-pointer">
+                    Quitar
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Código de descuento"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleApplyCoupon(); } }}
+                    className="flex-1 px-3 py-2 bg-white border border-warm-200 rounded text-xs text-charcoal placeholder:text-gray-mid focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyCoupon}
+                    disabled={couponLoading}
+                    className="px-3 py-2 bg-charcoal text-white rounded text-xs font-semibold uppercase tracking-wider disabled:opacity-50"
+                  >
+                    {couponLoading ? "···" : "Aplicar"}
+                  </button>
+                </div>
+              )}
+              {couponError && <p className="text-[11px] text-terracotta font-medium">{couponError}</p>}
             </div>
           )}
 
@@ -209,7 +264,7 @@ export default function CheckoutPage() {
                   <div key={item.variantId} className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2.5">
                       <div className="w-9 h-9 bg-warm-50 rounded border border-warm-200 relative flex-shrink-0 flex items-center justify-center">
-                        <Image src={item.image} alt={item.name} width={32} height={32} className="object-contain p-0.5" />
+                        <SafeImage src={item.image} alt={item.name} width={32} height={32} className="object-contain p-0.5" />
                         <span className="absolute -top-1 -right-1 bg-charcoal text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                           {item.quantity}
                         </span>
@@ -227,7 +282,7 @@ export default function CheckoutPage() {
               <div className="border-t border-warm-200/60 pt-3 space-y-1.5 text-xs text-gray-mid">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-mono font-semibold text-charcoal">{formatPrice(total)}</span>
+                  <span className="font-mono font-semibold text-charcoal">{formatPrice(displayTotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Envío</span>
@@ -502,7 +557,7 @@ export default function CheckoutPage() {
                   <div key={item.variantId} className="flex items-center justify-between gap-3 text-sm">
                     <div className="flex items-center gap-3">
                       <div className="w-14 h-14 bg-white rounded-md border border-warm-200 relative flex-shrink-0 flex items-center justify-center">
-                        <Image
+                        <SafeImage
                           src={item.image || "/images/og-default.jpg"}
                           alt={item.name}
                           width={52}
@@ -526,24 +581,36 @@ export default function CheckoutPage() {
               </div>
 
               {/* Campo de Código de Descuento (Gymshark Style) */}
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Código de descuento o tarjeta de regalo"
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                  className="flex-1 px-3.5 py-2.5 bg-white border border-warm-200 rounded-md text-xs text-charcoal placeholder:text-gray-mid focus:outline-none focus:border-gold"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (couponCode) alert(`Código ${couponCode} aplicado`);
-                  }}
-                  className="px-4 py-2.5 bg-warm-200 hover:bg-warm-300 text-charcoal text-xs font-semibold uppercase tracking-wider rounded-md transition-colors cursor-pointer"
-                >
-                  Aplicar
-                </button>
-              </div>
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between text-xs bg-gold/10 text-gold-dark p-3 rounded-md border border-gold/20 font-medium">
+                  <span>Cupón {appliedCoupon} aplicado (−{couponPercent}%)</span>
+                  <button type="button" onClick={handleRemoveCoupon} className="underline font-semibold cursor-pointer">
+                    Quitar
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-1.5">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Código de descuento o tarjeta de regalo"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleApplyCoupon(); } }}
+                      className="flex-1 px-3.5 py-2.5 bg-white border border-warm-200 rounded-md text-xs text-charcoal placeholder:text-gray-mid focus:outline-none focus:border-gold"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleApplyCoupon}
+                      disabled={couponLoading}
+                      className="px-4 py-2.5 bg-warm-200 hover:bg-warm-300 text-charcoal text-xs font-semibold uppercase tracking-wider rounded-md transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      {couponLoading ? "···" : "Aplicar"}
+                    </button>
+                  </div>
+                  {couponError && <p className="text-[11px] text-terracotta font-medium">{couponError}</p>}
+                </div>
+              )}
 
               {savings > 0 && (
                 <div className="flex justify-between items-center text-xs bg-gold/10 text-gold-dark p-3 rounded-md border border-gold/20 font-medium">
@@ -554,11 +621,18 @@ export default function CheckoutPage() {
                 </div>
               )}
 
+              {appliedCoupon && couponSavings > 0 && (
+                <div className="flex justify-between items-center text-xs bg-gold/10 text-gold-dark p-3 rounded-md border border-gold/20 font-medium">
+                  <span>Cupón {appliedCoupon} (−{couponPercent}%)</span>
+                  <span className="font-mono">-{formatPrice(couponSavings)}</span>
+                </div>
+              )}
+
               {/* Desglose de totales Gymshark Style */}
               <div className="border-t border-warm-200/60 pt-4 space-y-2 text-xs text-gray-mid">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-semibold text-charcoal font-mono">{formatPrice(total)}</span>
+                  <span className="font-semibold text-charcoal font-mono">{formatPrice(displayTotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Envío</span>
@@ -571,7 +645,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="text-right">
                     <span className="text-xs text-gray-mid mr-1 font-mono">EUR</span>
-                    <span className="text-xl font-bold font-mono text-charcoal">{formatPrice(total)}</span>
+                    <span className="text-xl font-bold font-mono text-charcoal">{formatPrice(displayTotal)}</span>
                   </div>
                 </div>
               </div>

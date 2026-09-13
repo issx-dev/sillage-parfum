@@ -20,7 +20,11 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const product = await getProductBySlug(params.slug);
-  if (!product) return { title: "Producto no encontrado" };
+  if (!product) {
+    // Sin producto: noindex (el status 200 lo compromete el shell de
+    // streaming antes del notFound() de la página — ver axiom-learnings).
+    return { title: "Producto no encontrado", robots: { index: false, follow: false } };
+  }
 
   if (!product.variants || product.variants.length === 0) {
     notFound();

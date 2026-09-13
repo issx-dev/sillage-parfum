@@ -8,6 +8,7 @@ const validEnv = {
   DATABASE_URL: "postgresql://user:pass@localhost:5432/sillage",
   UPSTASH_REDIS_REST_URL: "https://example.upstash.io",
   UPSTASH_REDIS_REST_TOKEN: "token_1234567890",
+  JWT_SECRET: "dev-test-jwt-secret-min-32-chars!!",
 };
 
 // ---------------------------------------------------------------------------

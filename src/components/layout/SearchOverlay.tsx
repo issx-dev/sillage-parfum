@@ -3,7 +3,7 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { VisuallyHidden } from "@/components/ui/VisuallyHidden";
 import { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { Search, X, ArrowUpRight } from "lucide-react";
 import type { Product } from "@/types";
@@ -131,7 +131,7 @@ function RecommendedCard({
         className="group relative flex flex-col bg-warm-50/60 border border-warm-200/60 hover:border-gold/40 transition-[border-color] duration-500 overflow-hidden"
       >
         <div className="relative aspect-[4/5] bg-warm-100 flex items-center justify-center overflow-hidden">
-          <Image
+          <SafeImage
             src={product.images[0] ?? "/images/og-default.jpg"}
             alt={product.name}
             fill
@@ -164,7 +164,7 @@ function RecommendedCard({
       className="group flex items-center gap-3 py-3.5 border-b border-warm-200/60 last:border-0 transition-colors duration-300"
     >
       <div className="relative w-12 h-12 bg-warm-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
-        <Image
+        <SafeImage
           src={product.images[0] ?? "/images/og-default.jpg"}
           alt={product.name}
           fill
@@ -207,7 +207,7 @@ function ResultRow({
       className="group flex items-center gap-4 py-4 border-b border-warm-200/60 last:border-0 transition-colors duration-300"
     >
 <div className="relative w-14 h-14 bg-warm-100 flex-shrink-0 overflow-hidden">
-            <Image
+            <SafeImage
               src={product.images[0] ?? "/images/og-default.jpg"}
               alt={product.name}
               fill

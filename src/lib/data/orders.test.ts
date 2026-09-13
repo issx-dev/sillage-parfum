@@ -12,7 +12,7 @@ vi.mock("@/lib/db", () => {
   };
 });
 
-import { readOrders, saveOrder } from "./orders";
+import { readOrders, saveOrder, markOrderRefundedByPaymentIntent } from "./orders";
 import { query, transaction } from "@/lib/db";
 import type { CartItem } from "@/types";
 
@@ -135,7 +135,10 @@ describe("saveOrder", () => {
     expect(update1[0]).toContain("UPDATE variants");
     expect(update1[0]).toContain("stock = stock - $1");
     expect(update1[0]).toContain("stock >= $1");
-    expect(update1[0]).toContain("RETURNING id");
+    // La PK de variants es variant_id (no id): con id el UPDATE falla y
+    // ningún pedido pagado descuenta stock.
+    expect(update1[0]).toContain("WHERE variant_id = $2");
+    expect(update1[0]).toContain("RETURNING variant_id");
     expect(update1[1]).toEqual([1, "v1"]); // [quantity, variantId]
 
     const update2 = mockQuery.mock.calls[2]!;
@@ -275,6 +278,33 @@ describe("saveOrder", () => {
     expect(mockTransaction).toHaveBeenCalledTimes(1);
     // The callback was invoked synchronously (mockImplementation).
     expect(mockQuery).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("markOrderRefundedByPaymentIntent", () => {
+  beforeEach(() => {
+    mockQuery.mockReset();
+    mockTransaction.mockReset();
+  });
+
+  it("marks the matching order as refunded", async () => {
+    mockQuery.mockResolvedValueOnce([{ id: "ord-1" }]);
+
+    const result = await markOrderRefundedByPaymentIntent("pi_123");
+
+    expect(result.updated).toBe(true);
+    const call = mockQuery.mock.calls[0]!;
+    expect(call[0]).toContain("payment_status = 'refunded'");
+    expect(call[0]).toContain("paymentIntent");
+    expect(call[1]).toEqual(["pi_123"]);
+  });
+
+  it("returns updated=false when no order matches", async () => {
+    mockQuery.mockResolvedValueOnce([]);
+
+    const result = await markOrderRefundedByPaymentIntent("pi_unknown");
+
+    expect(result.updated).toBe(false);
   });
 });
 

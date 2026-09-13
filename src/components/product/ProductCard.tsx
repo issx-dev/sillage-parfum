@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { Heart, ShoppingBag, X, Eye } from "lucide-react";
 import type { Product, Variant } from "@/types";
 import { useCartStore } from "@/store/cartStore";
@@ -193,7 +193,7 @@ export function ProductCard({
 
         {/* 4K AI Studio Product Photography */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 group-hover:scale-[1.04] transition-transform duration-500 ease-out overflow-hidden">
-          <Image
+          <SafeImage
             src={product.images[0] ?? "/images/og-default.jpg"}
             alt={product.name}
             fill

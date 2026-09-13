@@ -1,11 +1,29 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // H11: no anunciar framework/versión en la cabecera `X-Powered-By`.
+  poweredByHeader: false,
+  // H14: las Server Actions (/admin mutaciones) solo aceptan peticiones
+  // originadas en estos hosts. Sin esto, cualquier origen podría invocarlas.
+  experimental: {
+    serverActions: {
+      allowedOrigins:
+        process.env.NODE_ENV === "production"
+          ? ["sillage.com", "www.sillage.com"]
+          : ["localhost:3000", "127.0.0.1:3000", "sillage.com", "www.sillage.com"],
+    },
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+      },
+      // CDN de fichas de fabricante que el admin pega en productos.
+      // hosts arbitrarios fuera de esta lista los cubre SafeImage (<img>).
+      {
+        protocol: "https",
+        hostname: "media.sephora.eu",
       },
     ],
   },

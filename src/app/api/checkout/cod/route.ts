@@ -1,5 +1,12 @@
+import "server-only";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { getVariant } from "@/lib/data";
+import { saveOrder } from "@/lib/data/orders";
+import { applyDiscount } from "@/lib/utils";
+import { getCoupon, normalizeCoupon } from "@/lib/coupons";
+import { expectedTotalCents, type PricingLine } from "@/lib/pricing";
+import type { CartItem } from "@/types";
 
 const codSchema = z.object({
   customer: z.object({
@@ -25,6 +32,7 @@ const codSchema = z.object({
   ).min(1, "El carrito no puede estar vacío"),
   total: z.number().positive(),
   paymentMethod: z.literal("cod"),
+  couponCode: z.string().optional(),
 });
 
 export async function POST(req: Request) {
@@ -39,15 +47,107 @@ export async function POST(req: Request) {
       );
     }
 
-    const { customer, items, total } = result.data;
+    const { customer, items, total, couponCode: rawCoupon } = result.data;
+
+    // Cupón server-side: se valida aquí, nunca en el cliente.
+    const couponCode = rawCoupon ? normalizeCoupon(rawCoupon) : null;
+    if (couponCode && !getCoupon(couponCode)) {
+      return NextResponse.json(
+        { error: "Código de descuento no válido" },
+        { status: 400 }
+      );
+    }
+
+    // ─── Verificación server-side de precios (igual que el webhook) ───
+    // Se re-resuelve cada variante desde DB (precio + discount_percent +
+    // size_ml para bundles) y se compara el total del cliente con el
+    // esperado al céntimo. Nunca se confía en price/total del cliente.
+    const pricingLines: PricingLine[] = [];
+    const orderItems: CartItem[] = [];
+    for (const item of items) {
+      const found = await getVariant(item.productId, item.variantId);
+      if (!found) {
+        return NextResponse.json(
+          { error: "Uno o más productos ya no están disponibles" },
+          { status: 404 }
+        );
+      }
+      const { product, variant } = found;
+      const quantity = Math.min(Math.max(1, Math.floor(Number(item.quantity) || 1)), 10);
+      const unitPrice = applyDiscount(variant.price, product.discount_percent);
+      pricingLines.push({
+        variantId: variant.id,
+        sizeMl: variant.size_ml,
+        unitPrice,
+        quantity,
+      });
+      orderItems.push({
+        variantId: variant.id,
+        productId: product.id,
+        slug: product.slug,
+        name: product.name,
+        brand: product.brand,
+        image: product.images?.[0] ?? "",
+        size_ml: variant.size_ml,
+        price: unitPrice,
+        quantity,
+      });
+    }
+
+    const verifiedTotal = expectedTotalCents(pricingLines, couponCode) / 100;
+    if (Math.abs(verifiedTotal - total) > 0.005) {
+      console.error(
+        `[COD] Price mismatch: cliente dice ${total}€, servidor calcula ${verifiedTotal}€`
+      );
+      return NextResponse.json(
+        { error: "El total del pedido no coincide con los precios vigentes" },
+        { status: 400 }
+      );
+    }
+
     const orderId = `COD-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
 
-    // Here the order is saved securely into orders table or local store
-    console.log(`[COD Order Created] ID: ${orderId}, Total: ${total}€, Items count: ${items.length}, Customer: ${customer.email}`);
+    // Persiste vía saveOrder: idempotente por eventId y con decremento
+    // atómico de stock dentro de la misma transacción (rollback si falta).
+    try {
+      await saveOrder(
+        {
+          id: orderId,
+          items: orderItems,
+          total: verifiedTotal,
+          status: "pending",
+          customerEmail: customer.email,
+          createdAt: new Date().toISOString(),
+          paymentMethod: "cod",
+          ...(couponCode ? { couponCode } : {}),
+          shipping: {
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            address: customer.address,
+            city: customer.city,
+            postalCode: customer.postalCode,
+            phone: customer.phone,
+            ...(customer.notes ? { notes: customer.notes } : {}),
+          },
+        },
+        orderId
+      );
+    } catch (err) {
+      if (err instanceof Error && err.message.includes("insufficient stock")) {
+        return NextResponse.json(
+          { error: "Stock insuficiente para uno o más productos" },
+          { status: 409 }
+        );
+      }
+      throw err;
+    }
+
+    console.log(`[COD Order Created] ID: ${orderId}, Total: ${verifiedTotal}€, Items: ${orderItems.length}, Customer: ${customer.email}`);
 
     return NextResponse.json({
       success: true,
       orderId,
+      total: verifiedTotal,
       message: "Pedido registrado con éxito en modo Contra Reembolso",
       redirectUrl: `/checkout/exito?orderId=${orderId}&method=cod`,
     });

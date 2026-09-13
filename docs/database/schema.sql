@@ -1,8 +1,13 @@
 -- SILLAGE Parfumerie: Orders Table Schema
 -- Run this against your Supabase/PostgreSQL database before deploying.
 
--- Enable UUID generation
+-- Enable required extensions (canon completo verificado 2026-09-13 contra preview hqensmmyjpasurqsuegy)
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+-- supabase_vault y plpgsql son preinstaladas por la plataforma (vault / pg_catalog); se listan como requeridas.
+-- Accent-insensitive search (searchProducts usa unaccent() en columnas)
+CREATE EXTENSION IF NOT EXISTS unaccent;
 
 CREATE TABLE IF NOT EXISTS orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -96,3 +101,21 @@ CREATE POLICY "Service role can manage variants"
   TO service_role
   USING (true)
   WITH CHECK (true);
+
+-- Users Table Schema (auth real: register/login persisten en Postgres)
+-- email se guarda normalizado (lower(trim())) desde las rutas API.
+-- Seed de admin (manual, fuera de scope automatizar):
+--   UPDATE users SET role='admin' WHERE email='admin@example.com';
+CREATE TABLE IF NOT EXISTS users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'customer' CHECK (role IN ('customer', 'admin')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Service role can manage users"
+  ON users FOR ALL TO service_role USING (true) WITH CHECK (true);

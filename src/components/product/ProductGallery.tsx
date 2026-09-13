@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Maximize2, X } from "lucide-react";
 
@@ -27,7 +27,7 @@ export function ProductGallery({ images, name, discountPercent = 0 }: ProductGal
 
       {/* Product Image Container */}
       <div className="relative w-full h-full p-8 sm:p-12 lg:p-16 flex items-center justify-center">
-        <Image
+        <SafeImage
           src={mainImage}
           alt={name}
           fill
@@ -66,7 +66,7 @@ export function ProductGallery({ images, name, discountPercent = 0 }: ProductGal
               </Dialog.Title>
 
               <div className="relative w-full h-full">
-                <Image
+                <SafeImage
                   src={mainImage}
                   alt={`${name} - Vista ampliada`}
                   fill

@@ -181,6 +181,44 @@ describe("getProducts", () => {
     const firstCall = mockQuery.mock.calls[0];
     expect(firstCall![0]).not.toContain("WHERE");
   });
+
+  // ─── Regression: Postgres 22P02 on ANY($1) ───
+  // hydrateProductsWithVariants binds productIds to `ANY($1)`. A nullish
+  // product_id in the bound array corrupts the array literal (22P02
+  // "Array value must start with {") or throws UNDEFINED_VALUE client-side.
+  // The bound value must always be a clean string[].
+
+  it("binds ANY($1) to a clean string array when a row lacks product_id", async () => {
+    mockProductAndVariantQueries(
+      [
+        makeProductRow({ product_id: "test-1" }),
+        makeProductRow({ product_id: undefined, slug: "broken-slug" }),
+      ],
+      [makeVariantRow()]
+    );
+
+    const products = await getProducts();
+
+    expect(products).toHaveLength(2);
+    const secondCall = mockQuery.mock.calls[1];
+    expect(secondCall![0]).toContain("ANY");
+    const boundIds = secondCall![1]![0];
+    expect(Array.isArray(boundIds)).toBe(true);
+    expect(boundIds).toEqual(["test-1"]);
+  });
+
+  it("skips the variants query when no row has a usable product_id", async () => {
+    mockProductAndVariantQueries(
+      [makeProductRow({ product_id: null })],
+      []
+    );
+
+    const products = await getProducts();
+
+    expect(mockQuery).toHaveBeenCalledTimes(1);
+    expect(products).toHaveLength(1);
+    expect(products[0]!.variants).toEqual([]);
+  });
 });
 
 // ── getProductBySlug ────────────────────────────────────────
@@ -515,5 +553,43 @@ describe("searchProducts", () => {
 
     const results = await searchProducts("zzzznotfound");
     expect(results).toEqual([]);
+  });
+
+  // ─── Regression: Postgres numeric llega como string ───
+  // La columna price es numeric: el driver la devuelve como "29.00".
+  // Sin Number(), applyDiscount recibe un string, Number.isFinite falla y
+  // devuelve 0 → ficha, carrito y checkout muestran 0,00 €.
+
+  it("coerces string numeric price to number when hydrating variants", async () => {
+    mockProductAndVariantQueries(
+      [makeProductRow({ product_id: "p1" })],
+      [makeVariantRow({ variant_id: "v1", product_id: "p1", price: "29.00" })]
+    );
+
+    const results = await searchProducts("chanel");
+
+    expect(results).toHaveLength(1);
+    expect(results[0]!.variants[0]!.price).toBe(29);
+  });
+
+  // ─── Regression: productos solo-DB visibles en listados ───
+  // mergeProducts ignoraba dbProducts y devolvía solo el JSON: lo creado
+  // en /admin solo existía por URL directa.
+
+  it("merge incluye productos que solo existen en la DB (creados en /admin)", async () => {
+    // mergeProducts solo fusiona fuera de VITEST: desactivarlo para este test.
+    vi.stubEnv("VITEST", "");
+    try {
+      mockProductAndVariantQueries(
+        [makeProductRow({ product_id: "db-only-1", slug: "solo-db", name: "Solo DB" })],
+        [makeVariantRow({ variant_id: "v-db1", product_id: "db-only-1" })]
+      );
+
+      const results = await searchProducts("solo");
+
+      expect(results.some((p) => p.slug === "solo-db")).toBe(true);
+    } finally {
+      vi.stubEnv("VITEST", "true");
+    }
   });
 });

@@ -4,7 +4,7 @@ import { useCartStore } from "@/store/cartStore";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Sheet, SheetContent } from "@/components/ui/Sheet";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
@@ -95,7 +95,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                     {/* Thumbnail */}
                     <div className="w-16 h-16 bg-cream/40 rounded border border-warm-200/50 flex-shrink-0 relative overflow-hidden flex items-center justify-center">
                       {item.image ? (
-                        <Image
+                        <SafeImage
                           src={item.image}
                           alt={item.name}
                           fill

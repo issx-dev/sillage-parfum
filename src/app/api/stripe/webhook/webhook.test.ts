@@ -11,6 +11,7 @@ vi.mock("@/lib/stripe", () => ({
 
 vi.mock("@/lib/data/orders", () => ({
   saveOrder: vi.fn(),
+  markOrderRefundedByPaymentIntent: vi.fn(),
 }));
 
 vi.mock("@/lib/env", () => ({
@@ -35,11 +36,12 @@ vi.mock("server-only", () => ({}));
 import { NextRequest } from "next/server";
 import { POST } from "./route";
 import { stripe } from "@/lib/stripe";
-import { saveOrder } from "@/lib/data/orders";
+import { saveOrder, markOrderRefundedByPaymentIntent } from "@/lib/data/orders";
 import { query } from "@/lib/db";
 
 const mockConstructEvent = vi.mocked(stripe.webhooks.constructEvent);
 const mockSaveOrder = vi.mocked(saveOrder);
+const mockMarkRefunded = vi.mocked(markOrderRefundedByPaymentIntent);
 const mockQuery = vi.mocked(query);
 
 /**
@@ -70,6 +72,7 @@ describe("POST /api/stripe/webhook", () => {
     mockQuery.mockReset();
     mockConstructEvent.mockReset();
     mockSaveOrder.mockReset();
+    mockMarkRefunded.mockReset();
   });
 
   // ─── Signature & basic flow ───
@@ -111,8 +114,8 @@ describe("POST /api/stripe/webhook", () => {
     const mockEvent = makeCheckoutEvent(16000, items);
     mockConstructEvent.mockReturnValue(mockEvent as any);
     mockQuery.mockResolvedValueOnce([
-      { id: "v1", price: 90 },
-      { id: "v2", price: 70 },
+      { variant_id: "v1", price: 90 },
+      { variant_id: "v2", price: 70 },
     ]);
     mockSaveOrder.mockResolvedValueOnce({ success: true, isDuplicate: false });
 
@@ -146,8 +149,8 @@ describe("POST /api/stripe/webhook", () => {
     const mockEvent = makeCheckoutEvent(15000, items);
     mockConstructEvent.mockReturnValue(mockEvent as any);
     mockQuery.mockResolvedValueOnce([
-      { id: "v1", price: 90 },
-      { id: "v2", price: 70 },
+      { variant_id: "v1", price: 90 },
+      { variant_id: "v2", price: 70 },
     ]);
 
     const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {
@@ -172,7 +175,7 @@ describe("POST /api/stripe/webhook", () => {
     // DB only finds v1, not "gone"
     const mockEvent = makeCheckoutEvent(16000, items);
     mockConstructEvent.mockReturnValue(mockEvent as any);
-    mockQuery.mockResolvedValueOnce([{ id: "v1", price: 90 }]);
+    mockQuery.mockResolvedValueOnce([{ variant_id: "v1", price: 90 }]);
 
     const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {
       method: "POST",
@@ -297,7 +300,7 @@ describe("POST /api/stripe/webhook", () => {
     // Price 79 × qty 2 = 158.00 → 15800 cents
     const mockEvent = makeCheckoutEvent(15800, items);
     mockConstructEvent.mockReturnValue(mockEvent as any);
-    mockQuery.mockResolvedValueOnce([{ id: "v1", price: 79 }]);
+    mockQuery.mockResolvedValueOnce([{ variant_id: "v1", price: 79 }]);
     mockSaveOrder.mockResolvedValueOnce({ success: true, isDuplicate: false });
 
     const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {
@@ -309,5 +312,178 @@ describe("POST /api/stripe/webhook", () => {
     const response = await POST(request);
     expect(response.status).toBe(200);
     expect(mockSaveOrder).toHaveBeenCalledTimes(1);
+  });
+
+  // ─── Cupón server-side SILLAGE2 ───
+
+  it("accepts the SILLAGE2 coupon total recorded in metadata", async () => {
+    const items = [
+      { variantId: "v1", productId: "p1", sku: "sku-1", quantity: 1 },
+      { variantId: "v2", productId: "p2", sku: "sku-2", quantity: 1 },
+    ];
+
+    // DB: 90+70=160.00 → con SILLAGE2 (−10%) el total legítimo es 14400
+    const mockEvent = {
+      ...makeCheckoutEvent(14400, items),
+      data: {
+        object: {
+          ...(makeCheckoutEvent(14400, items).data.object as object),
+          metadata: {
+            items: JSON.stringify(items),
+            couponCode: "SILLAGE2",
+          },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(mockEvent as any);
+    mockQuery.mockResolvedValueOnce([
+      { variant_id: "v1", price: 90 },
+      { variant_id: "v2", price: 70 },
+    ]);
+    mockSaveOrder.mockResolvedValueOnce({ success: true, isDuplicate: false });
+
+    const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {
+      method: "POST",
+      body: JSON.stringify(mockEvent),
+      headers: { "stripe-signature": "valid_sig" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    expect(mockSaveOrder).toHaveBeenCalledTimes(1);
+    expect(mockSaveOrder.mock.calls[0]![0].couponCode).toBe("SILLAGE2");
+  });
+
+  it("still rejects a coupon total that does not match the coupon math", async () => {
+    const items = [{ variantId: "v1", productId: "p1", sku: "sku-1", quantity: 1 }];
+
+    // DB: 100.00 → SILLAGE2 daría 9000, pero llegan 5000: manipulación
+    const mockEvent = {
+      type: "checkout.session.completed",
+      id: "evt_bad_coupon",
+      data: {
+        object: {
+          id: "cs_bad",
+          amount_total: 5000,
+          customer_email: "test@example.com",
+          customer_details: { email: "test@example.com" },
+          metadata: { items: JSON.stringify(items), couponCode: "SILLAGE2" },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(mockEvent as any);
+    mockQuery.mockResolvedValueOnce([{ variant_id: "v1", price: 100 }]);
+
+    const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {
+      method: "POST",
+      body: JSON.stringify(mockEvent),
+      headers: { "stripe-signature": "valid_sig" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(400);
+    expect(mockSaveOrder).not.toHaveBeenCalled();
+  });
+
+  // ─── Stripe promotion codes (allow_promotion_codes) ───
+
+  it("accepts a Stripe promotion-code discount attested by total_details", async () => {
+    const items = [
+      { variantId: "v1", productId: "p1", sku: "sku-1", quantity: 1 },
+      { variantId: "v2", productId: "p2", sku: "sku-2", quantity: 1 },
+    ];
+
+    // DB: 90+70=160.00; Stripe aplicó un promotion code de 16€:
+    // amount_total=14400 con amount_discount=1600 atestiguado por Stripe.
+    const mockEvent = {
+      type: "checkout.session.completed",
+      id: "evt_promo",
+      data: {
+        object: {
+          id: "cs_promo",
+          amount_total: 14400,
+          total_details: { amount_discount: 1600, amount_tax: 0, amount_shipping: 0 },
+          customer_email: "test@example.com",
+          customer_details: { email: "test@example.com" },
+          metadata: { items: JSON.stringify(items) },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(mockEvent as any);
+    mockQuery.mockResolvedValueOnce([
+      { variant_id: "v1", price: 90 },
+      { variant_id: "v2", price: 70 },
+    ]);
+    mockSaveOrder.mockResolvedValueOnce({ success: true, isDuplicate: false });
+
+    const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {
+      method: "POST",
+      body: JSON.stringify(mockEvent),
+      headers: { "stripe-signature": "valid_sig" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    expect(mockSaveOrder).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects a discount claim without Stripe attestation", async () => {
+    const items = [{ variantId: "v1", productId: "p1", sku: "sku-1", quantity: 1 }];
+
+    // 100.00 esperado, llegan 9000 sin amount_discount ni cupón: manipulación.
+    const mockEvent = makeCheckoutEvent(9000, items);
+    mockConstructEvent.mockReturnValue(mockEvent as any);
+    mockQuery.mockResolvedValueOnce([{ variant_id: "v1", price: 100 }]);
+
+    const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {
+      method: "POST",
+      body: JSON.stringify(mockEvent),
+      headers: { "stripe-signature": "valid_sig" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(400);
+    expect(mockSaveOrder).not.toHaveBeenCalled();
+  });
+
+  // ─── charge.refunded actualiza el pedido ───
+
+  it("marks the order refunded on charge.refunded with payment_intent", async () => {
+    const mockEvent = {
+      type: "charge.refunded",
+      id: "evt_refund_ok",
+      data: { object: { id: "ch_123", amount: 5000, currency: "eur", payment_intent: "pi_123" } },
+    };
+    mockConstructEvent.mockReturnValueOnce(mockEvent as any);
+    mockMarkRefunded.mockResolvedValueOnce({ updated: true });
+
+    const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {
+      method: "POST",
+      body: JSON.stringify(mockEvent),
+      headers: { "stripe-signature": "valid_sig" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    expect(mockMarkRefunded).toHaveBeenCalledWith("pi_123");
+  });
+
+  it("acks charge.refunded without payment_intent (nothing to link)", async () => {
+    const mockEvent = {
+      type: "charge.refunded",
+      id: "evt_refund_nopi",
+      data: { object: { id: "ch_124", amount: 5000, currency: "eur" } },
+    };
+    mockConstructEvent.mockReturnValueOnce(mockEvent as any);
+
+    const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {
+      method: "POST",
+      body: JSON.stringify(mockEvent),
+      headers: { "stripe-signature": "valid_sig" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    expect(mockMarkRefunded).not.toHaveBeenCalled();
   });
 });

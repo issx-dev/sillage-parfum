@@ -53,15 +53,33 @@ export interface Brand {
   logo_slug: string;
 }
 
+export interface OrderShipping {
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  phone: string;
+  notes?: string;
+}
+
 export interface Order {
   id: string;
   items: CartItem[];
   total: number;
-  /** Payment status derived from Stripe webhook events. */
-  status: "paid" | "refunded" | "failed";
+  /** Payment status derived from Stripe webhook events (`pending` = COD). */
+  status: "paid" | "pending" | "refunded" | "failed";
   customerEmail?: string;
   createdAt: string;
   stripe_event_id: string;
+  /** Origen del pedido; el webhook Stripe lo fija a `stripe`. */
+  paymentMethod?: "stripe" | "cod";
+  /** Cupón server-side aplicado (ej. SILLAGE2). */
+  couponCode?: string;
+  /** Stripe payment_intent id — enlaza charge.refunded con el pedido. */
+  paymentIntent?: string | null;
+  /** Dirección de envío (pedidos COD). */
+  shipping?: OrderShipping;
 }
 
 // Type guard

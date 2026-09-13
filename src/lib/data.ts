@@ -29,7 +29,8 @@ interface VariantRow {
   variant_id: string;
   product_id: string;
   size_ml: number;
-  price: number;
+  // Postgres `numeric` llega como string ("29.00") — se coacciona en mapVariantRow.
+  price: number | string;
   stock: number;
   sku: string;
 }
@@ -47,7 +48,7 @@ function mapProductRow(row: ProductRow): Omit<Product, "variants"> {
     shortDescription: row.short_description,
     badge: (row.badge ?? null) as BadgeType,
     images: row.images,
-    discount_percent: row.discount_percent,
+    discount_percent: Number(row.discount_percent ?? 0),
     notes: {
       top: row.notes_top,
       heart: row.notes_heart,
@@ -61,9 +62,11 @@ function mapProductRow(row: ProductRow): Omit<Product, "variants"> {
 function mapVariantRow(row: VariantRow): Variant {
   return {
     id: row.variant_id,
-    size_ml: row.size_ml,
-    price: row.price,
-    stock: row.stock,
+    size_ml: Number(row.size_ml),
+    // numeric de Postgres llega como string: sin Number(), applyDiscount
+    // devuelve 0 y la tienda muestra 0,00 € en ficha, carrito y checkout.
+    price: Number(row.price),
+    stock: Number(row.stock),
     sku: row.sku,
   };
 }
@@ -78,20 +81,33 @@ async function hydrateProductsWithVariants(
 ): Promise<Product[]> {
   if (productRows.length === 0) return [];
 
-  const productIds = productRows.map((r) => r.product_id);
-
-  const variantRows = (await db`
-    SELECT variant_id, product_id, size_ml, price, stock, sku 
-    FROM variants 
-    WHERE product_id = ANY(${productIds}) 
-    ORDER BY size_ml
-  `) as unknown as VariantRow[];
+  // Sanitize ids before binding to `ANY($1)`: a nullish/empty element
+  // corrupts the array literal Postgres receives for $1 → 22P02
+  // ("Array value must start with {"), or throws UNDEFINED_VALUE
+  // client-side in the postgres driver. Dedupe to keep the array small.
+  const productIds = Array.from(
+    new Set(
+      productRows
+        .map((r) => r.product_id)
+        .filter((id): id is string => typeof id === "string" && id.length > 0)
+    )
+  );
 
   const variantsByProduct = new Map<string, Variant[]>();
-  for (const vRow of variantRows) {
-    const existing = variantsByProduct.get(vRow.product_id) ?? [];
-    existing.push(mapVariantRow(vRow));
-    variantsByProduct.set(vRow.product_id, existing);
+
+  if (productIds.length > 0) {
+    const variantRows = (await db`
+      SELECT variant_id, product_id, size_ml, price, stock, sku 
+      FROM variants 
+      WHERE product_id = ANY(${productIds}) 
+      ORDER BY size_ml
+    `) as unknown as VariantRow[];
+
+    for (const vRow of variantRows) {
+      const existing = variantsByProduct.get(vRow.product_id) ?? [];
+      existing.push(mapVariantRow(vRow));
+      variantsByProduct.set(vRow.product_id, existing);
+    }
   }
 
   const localMap = new Map(localProducts.map((p) => [p.id, p]));
@@ -130,18 +146,25 @@ const localProducts = productsJson as unknown as Product[];
 /**
  * Merge DB products with local products.json to ensure any products missing from DB
  * (e.g. initial 4-row DB setup) are seamlessly supplied from the full 45-product local catalog.
+ *
+ * Los productos creados en /admin solo existen en la DB: si no se fusionan
+ * aquí, son invisibles en catálogo, buscador, filtros y relacionados (solo
+ * accesibles por URL directa vía getProductBySlug). Dedupe por id y slug
+ * porque el catálogo Chogan vive en ambos lados con los mismos ids.
  */
 function mergeProducts(dbProducts: Product[], filterFn?: (p: Product) => boolean): Product[] {
   if (process.env.VITEST) {
     return dbProducts;
   }
 
-  let pool = localProducts;
-  if (filterFn) {
-    pool = pool.filter(filterFn);
+  const seen = new Set(dbProducts.flatMap((p) => [p.id, p.slug]));
+  const combined = [...dbProducts];
+  for (const local of localProducts) {
+    if (!seen.has(local.id) && !seen.has(local.slug)) {
+      combined.push(local);
+    }
   }
-
-  return pool;
+  return filterFn ? combined.filter(filterFn) : combined;
 }
 
 /**

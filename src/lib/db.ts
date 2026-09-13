@@ -6,14 +6,25 @@ import { env } from "@/lib/env";
 const globalForDb = globalThis as unknown as { __db: postgres.Sql | undefined };
 
 // Serverless-safe connection options:
-// - max: 1          one connection per lambda instance; each Vercel function
-//                   keeps its own pool, so a large per-instance pool would
-//                   exhaust the Supabase pooler under concurrent traffic.
-// - prepare: false  required for the Supabase transaction pooler (pgBouncer
-//                   transaction mode discards prepared statements between
-//                   transactions). Queries stay parameterized via unsafe().
+// - max: 5          small pool: avoids the parallel-query stalls seen
+//                   with max 1 under the Supabase pooler, still small enough
+//                   not to exhaust it (measured 2026-09-13: 12 parallel
+//                   queries in ~65-436ms on session pooler :5432).
+// - prepare: false  required for the Supabase pooler (pgBouncer
+//                   transaction/session mode discards prepared statements
+//                   between transactions). Queries stay parameterized via unsafe().
+// - connect_timeout: fail fast instead of hanging minutes on a dead route.
+// - idle_timeout:   close idle connections so the pooler/NAT never hands us
+//                   a stale socket (without this, a dead connection hangs
+//                   until TCP timeout — observed 90-300s stalls in dev).
 export const db =
-  globalForDb.__db ?? postgres(env.DATABASE_URL, { max: 1, prepare: false });
+  globalForDb.__db ??
+  postgres(env.DATABASE_URL, {
+    max: 5,
+    prepare: false,
+    connect_timeout: 10,
+    idle_timeout: 20,
+  });
 
 if (process.env.NODE_ENV !== "production") {
   globalForDb.__db = db;

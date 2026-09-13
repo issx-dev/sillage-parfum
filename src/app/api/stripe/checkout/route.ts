@@ -2,6 +2,9 @@ import "server-only";
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getVariant } from "@/lib/data";
+import { applyDiscount } from "@/lib/utils";
+import { getCoupon, normalizeCoupon } from "@/lib/coupons";
+import { priceLines, type PricingLine } from "@/lib/pricing";
 import type { CartItem } from "@/types";
 
 const MAX_QUANTITY_PER_ITEM = 10;
@@ -9,7 +12,11 @@ const MAX_QUANTITY_PER_ITEM = 10;
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { items } = body as { items: CartItem[] };
+    const { items, couponCode: rawCoupon } = body as {
+      items: CartItem[];
+      customerEmail?: string;
+      couponCode?: string;
+    };
 
     if (!Array.isArray(items)) {
       return NextResponse.json({ error: "Invalid items" }, { status: 400 });
@@ -21,18 +28,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Too many items" }, { status: 413 });
     }
 
+    // Cupón server-side (SILLAGE2): se valida aquí, nunca en el cliente.
+    // Un código desconocido es 400 para que la UI muestre el error.
+    const couponCode = rawCoupon ? normalizeCoupon(String(rawCoupon)) : null;
+    if (couponCode && !getCoupon(couponCode)) {
+      return NextResponse.json({ error: "Código de descuento no válido" }, { status: 400 });
+    }
+
     // Server-side price resolution: never trust client-supplied prices.
+    // El unitario parte de variant.price + discount_percent de DB y el
+    // total aplica los bundles multi-compra — lo mismo que ve la UI
+    // (cartStore.getDiscountedTotal). Ver src/lib/pricing.ts.
     const resolvedItems: Array<{
       productId: string;
       variantId: string;
       productName: string;
       brand: string;
       size_ml: number;
-      price: number;
       sku: string;
       image?: string;
       quantity: number;
     }> = [];
+    const pricingLines: PricingLine[] = [];
     for (const item of items) {
       const found = await getVariant(item.productId, item.variantId);
       if (!found) {
@@ -42,21 +59,31 @@ export async function POST(request: NextRequest) {
         );
       }
       const { product, variant } = found;
+      const quantity = Math.min(
+        Math.max(1, Math.floor(Number(item.quantity) || 1)),
+        MAX_QUANTITY_PER_ITEM
+      );
+      const unitPrice = applyDiscount(variant.price, product.discount_percent);
       resolvedItems.push({
         productId: product.id,
         variantId: variant.id,
         productName: product.name,
         brand: product.brand,
         size_ml: variant.size_ml,
-        price: variant.price,
         sku: variant.sku,
         ...(product.images?.[0] ? { image: product.images[0] } : {}),
-        quantity: Math.min(
-          Math.max(1, Math.floor(Number(item.quantity) || 1)),
-          MAX_QUANTITY_PER_ITEM
-        ),
+        quantity,
+      });
+      pricingLines.push({
+        variantId: variant.id,
+        sizeMl: variant.size_ml,
+        unitPrice,
+        quantity,
       });
     }
+
+    const priced = priceLines(pricingLines, couponCode);
+    const byVariant = new Map(resolvedItems.map((i) => [i.variantId, i]));
 
     const ALLOWED_ORIGINS = new Set<string>([
       process.env.NEXT_PUBLIC_BASE_URL,
@@ -74,8 +101,12 @@ export async function POST(request: NextRequest) {
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      // Se mantiene para códigos creados en el dashboard de Stripe; el
+      // webhook los tolera verificando total_details.amount_discount del
+      // evento firmado. SILLAGE2 no necesita Stripe: va bakeado en líneas.
       allow_promotion_codes: true,
-      line_items: resolvedItems.map((item) => {
+      line_items: priced.chargeLines.map((line) => {
+        const item = byVariant.get(line.variantId)!;
         let imageUrl = item.image;
         if (imageUrl && !imageUrl.startsWith("http")) {
           imageUrl = `${cleanBaseUrl}${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
@@ -88,9 +119,9 @@ export async function POST(request: NextRequest) {
               name: `${item.productName} - ${item.size_ml}ml`,
               ...(imageUrl ? { images: [imageUrl] } : {}),
             },
-            unit_amount: Math.round(item.price * 100),
+            unit_amount: line.unitAmountCents,
           },
-          quantity: item.quantity,
+          quantity: line.quantity,
         };
       }),
       success_url: `${cleanBaseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
@@ -107,6 +138,9 @@ export async function POST(request: NextRequest) {
             quantity: i.quantity,
           }))
         ),
+        // El webhook re-deriva el total esperado con este cupón; sin él,
+        // un total con descuento se rechazaría como manipulación.
+        ...(priced.appliedCoupon ? { couponCode: priced.appliedCoupon } : {}),
       },
     });
 
@@ -119,4 +153,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

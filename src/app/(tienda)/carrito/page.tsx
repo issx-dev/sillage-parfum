@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { useCartStore } from "@/store/cartStore";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
@@ -77,7 +77,7 @@ export default function CarritoPage() {
                 {/* Thumbnail image */}
                 <div className="w-20 h-20 sm:w-24 sm:h-24 bg-cream/30 rounded-md border border-warm-200 relative overflow-hidden flex-shrink-0 flex items-center justify-center">
                   {item.image ? (
-                    <Image
+                    <SafeImage
                       src={item.image}
                       alt={item.name}
                       fill

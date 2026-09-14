@@ -4,11 +4,18 @@ const nextConfig = {
   poweredByHeader: false,
   // H14: las Server Actions (/admin mutaciones) solo aceptan peticiones
   // originadas en estos hosts. Sin esto, cualquier origen podría invocarlas.
+  // Env-driven: el deploy de rama no tiene dominio fijo hasta comprar el
+  // definitivo. Define SERVER_ACTIONS_ALLOWED_ORIGINS="dominio.com,www.dominio.com"
+  // en el entorno; vacío = solo mismo origen (suficiente para un deploy
+  // de un solo dominio). Nunca localhost en producción.
   experimental: {
     serverActions: {
       allowedOrigins:
         process.env.NODE_ENV === "production"
-          ? ["sillage.com", "www.sillage.com"]
+          ? (process.env.SERVER_ACTIONS_ALLOWED_ORIGINS ?? "")
+              .split(",")
+              .map((h) => h.trim())
+              .filter(Boolean)
           : ["localhost:3000", "127.0.0.1:3000", "sillage.com", "www.sillage.com"],
     },
   },

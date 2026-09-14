@@ -81,3 +81,11 @@
   "build rojo" a mitad del trabajo del otro. Regla: gates de build/suite
   SIEMPRE en serie y re-medidos por el orquestador (tsc + build + suite
   propios dieron verde: 212 pass / 39 baseline).
+
+## 2026-09-14 — Deudas prod registradas (no bloquean rama, sí el ship final)
+- Legal placeholder: `legal/aviso` y `legal/privacidad` llevan NIF
+  B-XXXXXXXX y registro mercantil ficticio con TODOs. Decisión del dueño:
+  se rellena con datos reales antes del ship, no ahora.
+- H6 (secreto en historial git): hay un secreto commiteado en el historial.
+  Pendiente rotarlo + decidir `git filter-repo`. Riesgo: despliegues o clones
+  viejos lo conservan aunque el código actual sea fail-closed.

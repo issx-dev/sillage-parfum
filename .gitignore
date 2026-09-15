@@ -63,3 +63,10 @@ resources/chogan-parfums/
 # Playwright E2E (contiene JWT de sesion: jamas commitear)
 tests/e2e/.auth/
 test-results/
+
+# Backups locales de env (pueden contener secretos: jamas commitear)
+.env*.bak
+.env*.bak-*
+
+# CodeGraph daemon state
+.codegraph/

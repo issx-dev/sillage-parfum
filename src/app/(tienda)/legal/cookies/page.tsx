@@ -2,8 +2,47 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Política de Cookies — SILLAGE",
-  description: "Política de cookies de SILLAGE Perfumería de Lujo.",
+  description: "Qué cookies usa SILLAGE y cómo gestionarlas.",
 };
+
+const COOKIE_TABLE: { nombre: string; finalidad: string; duración: string; tipo: string }[] = [
+  {
+    nombre: "auth_token",
+    finalidad: "Mantener tu sesión iniciada de forma segura (httpOnly, 24 h).",
+    duración: "24 horas",
+    tipo: "Técnica · propia",
+  },
+  {
+    nombre: "sillage-cart",
+    finalidad: "Recordar el contenido de tu carrito en este navegador.",
+    duración: "Persistente (hasta que lo vacíes o borres datos)",
+    tipo: "Técnica · almacenamiento local",
+  },
+  {
+    nombre: "sillage-wishlist",
+    finalidad: "Recordar tu lista de deseos en este navegador.",
+    duración: "Persistente (hasta que la vacíes o borres datos)",
+    tipo: "Técnica · almacenamiento local",
+  },
+  {
+    nombre: "sillage-consent",
+    finalidad: "Recordar tu elección en el aviso de cookies.",
+    duración: "Persistente (hasta que borres datos)",
+    tipo: "Técnica · almacenamiento local",
+  },
+  {
+    nombre: "chogan_lead_dismissed",
+    finalidad: "No volver a mostrarte la ventana de bienvenida.",
+    duración: "Persistente (hasta que borres datos)",
+    tipo: "Técnica · almacenamiento local",
+  },
+  {
+    nombre: "Cookies de Stripe",
+    finalidad: "Procesar el pago con tarjeta de forma segura en el checkout (stripe.com).",
+    duración: "Según política de Stripe",
+    tipo: "Técnica · tercero",
+  },
+];
 
 export default function CookiesPage() {
   return (
@@ -15,84 +54,79 @@ export default function CookiesPage() {
           <div>
             <h2 className="text-base font-semibold text-warm-900 mb-3">1. ¿Qué son las cookies?</h2>
             <p>
-              Las cookies son pequeños archivos de texto que se almacenan en el dispositivo del usuario
-              al visitar un sitio web. Permiten al sitio recordar información sobre la visita, como el
-              idioma preferido, el contenido del carrito de compra u otros ajustes de configuración,
-              facilitando así la navegación y mejorando la experiencia del usuario.
+              Son pequeños archivos que se guardan en tu dispositivo para que la web
+              recuerde información de tu visita (sesión, carrito, preferencias). Algunas
+              viven en el almacenamiento local del navegador en lugar de en cookies
+              clásicas; te las detallamos igual, por transparencia.
             </p>
           </div>
 
           <div>
-            <h2 className="text-base font-semibold text-warm-900 mb-3">2. Tipos de cookies que utilizamos</h2>
+            <h2 className="text-base font-semibold text-warm-900 mb-3">2. Qué usamos en SILLAGE</h2>
             <p className="mb-3">
-              En sillage.com utilizamos los siguientes tipos de cookies:
+              Solo cookies técnicas, necesarias para que la tienda funcione. No usamos
+              analítica ni publicidad de terceros. Listado completo y honesto:
             </p>
-
-            <h3 className="text-sm font-semibold text-warm-900 mb-2">Cookies técnicas</h3>
-            <p className="mb-3">
-              Son necesarias para el funcionamiento del sitio web. Permiten la gestión del carrito de
-              compra y el proceso de pago, la autenticación del usuario y el mantenimiento de la sesión.
-              Sin estas cookies, no sería posible realizar compras ni utilizar funciones esenciales del
-              sitio. Estas cookies no requieren consentimiento expreso.
-            </p>
-
-            <h3 className="text-sm font-semibold text-warm-900 mb-2">Cookies de sesión</h3>
-            <p className="mb-3">
-              Almacenan información temporal necesaria durante la visita del usuario, como los productos
-              añadidos al carrito. Se eliminan automáticamente al cerrar el navegador.
-            </p>
-
-            <h3 className="text-sm font-semibold text-warm-900 mb-2">Cookies analíticas</h3>
-            <p className="mb-3">
-              Nos ayudan a comprender cómo los usuarios interactúan con el sitio web, qué páginas visitan
-              con mayor frecuencia y qué errores pueden producirse. Empleamos herramientas de análisis
-              que recopilan información de forma anónima y agregada. Estas cookies solo se activan con el
-              consentimiento expreso del usuario.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="text-base font-semibold text-warm-900 mb-3">3. Cookies de terceros</h2>
-            <p>
-              Algunos servicios integrados en nuestro sitio web pueden establecer cookies propias. Entre
-              ellos se incluyen proveedores de pago (como Stripe, que gestiona las transacciones de forma
-              segura) y herramientas analíticas. SILLAGE PARFUMS, S.L. no controla ni tiene acceso a
-              las cookies establecidas por estos terceros, y cada uno de ellos dispone de su propia
-              política de privacidad y cookies.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="text-base font-semibold text-warm-900 mb-3">4. ¿Cómo gestionar las cookies?</h2>
-            <p className="mb-3">
-              El usuario puede configurar su navegador para rechazar, bloquear o eliminar las cookies
-              instaladas en su dispositivo. A continuacón se indican los enlaces de configuración de los
-              navegadores más utilizados:
-            </p>
-            <ul className="list-disc pl-6 space-y-1">
-              <li>Google Chrome: Configuración ygt; Privacidad y seguridad ygt; Cookies y otros datos de sitios</li>
-              <li>Mozilla Firefox: Opciones ygt; Privacidad y seguridad ygt; Cookies y datos de sitios</li>
-              <li>Safari: Preferencias ygt; Privacidad ygt; Cookies y datos de sitios web</li>
-              <li>Microsoft Edge: Configuración ygt; Cookies y permisos del sitio</li>
-            </ul>
+            <div className="overflow-x-auto rounded-card border border-warm-200">
+              <table className="w-full min-w-[560px] caption-bottom text-[13px]">
+                <thead>
+                  <tr className="border-b border-warm-200 bg-white text-left">
+                    <th className="px-3 py-2 font-semibold text-warm-900">Nombre</th>
+                    <th className="px-3 py-2 font-semibold text-warm-900">Finalidad</th>
+                    <th className="px-3 py-2 font-semibold text-warm-900">Duración</th>
+                    <th className="px-3 py-2 font-semibold text-warm-900">Tipo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {COOKIE_TABLE.map((row) => (
+                    <tr key={row.nombre} className="border-b border-warm-100 bg-cream last:border-0">
+                      <td className="px-3 py-2 font-mono text-xs text-warm-900">{row.nombre}</td>
+                      <td className="px-3 py-2">{row.finalidad}</td>
+                      <td className="px-3 py-2">{row.duración}</td>
+                      <td className="px-3 py-2">{row.tipo}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             <p className="mt-3">
-              Tenga en cuenta que la desactivación de cookies puede afectar al funcionamiento del sitio
-              web y limitar algunas de sus funcionalidades, como el carrito de compra y el proceso de
-              pago.
+              Las cookies técnicas están exentas de consentimiento (art. 22.2 LSSI y
+              Guía de cookies de la AEPD), pero te las mostramos todas igualmente. Si
+              algún día añadimos analítica o marketing, te pediremos permiso antes y
+              actualizaremos esta tabla.
             </p>
           </div>
 
           <div>
-            <h2 className="text-base font-semibold text-warm-900 mb-3">5. Actualización de la política</h2>
+            <h2 className="text-base font-semibold text-warm-900 mb-3">3. Tu elección</h2>
             <p>
-              SILLAGE PARFUMS, S.L. se reserva el derecho de actualizar esta política de cookies en
-              función de cambios legislativos, técnicos o comerciales. Cualquier modificación será
-              publicada en esta página con la fecha de la última actualización.
+              Al entrar verás un aviso donde puedes aceptar todas o quedarte solo con
+              las técnicas. Tu elección se guarda en este navegador y puedes cambiarla
+              cuando quieras borrando los datos del sitio; el aviso volverá a aparecer.
+              También puedes gestionarlas desde tu navegador:
+            </p>
+            <ul className="list-disc pl-6 mt-2 space-y-1">
+              <li>Chrome: Configuración › Privacidad y seguridad › Cookies y otros datos de sitios</li>
+              <li>Firefox: Ajustes › Privacidad y seguridad › Cookies y datos de sitios</li>
+              <li>Safari: Ajustes › Privacidad › Cookies y datos de sitios web</li>
+              <li>Edge: Configuración › Cookies y permisos del sitio</li>
+            </ul>
+            <p className="mt-2">
+              Bloquear las técnicas impedirá comprar o iniciar sesión: son las que
+              hacen que el carrito y la cuenta funcionen.
+            </p>
+          </div>
+
+          <div>
+            <h2 className="text-base font-semibold text-warm-900 mb-3">4. Actualizaciones</h2>
+            <p>
+              Actualizaremos esta página si cambian la ley, la tecnología o nuestros
+              servicios, indicando siempre la fecha de la última revisión.
             </p>
           </div>
 
           <p className="text-xs text-warm-500 pt-4">
-            Última actualización: enero de 2025
+            Última actualización: septiembre de 2026
           </p>
         </section>
       </div>

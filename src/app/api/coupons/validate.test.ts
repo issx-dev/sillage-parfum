@@ -11,8 +11,30 @@ import { query } from "@/lib/db";
 
 const mockQuery = vi.mocked(query);
 
+// Igual que en coupon-eligibility.test.ts: la resolución del cupón
+// consulta `coupons` y la elegibilidad consulta `orders`.
+const COUPON_ROWS = [
+  { code: "SILLAGE2", percent_off: 10, first_order_only: false, active: true },
+  { code: "BIENVENIDA10", percent_off: 10, first_order_only: true, active: true },
+];
+
+function mockDb(orders: unknown[] = []) {
+  mockQuery.mockImplementation(async (sql: unknown, values?: unknown) => {
+    if (typeof sql === "string" && sql.includes("FROM coupons")) {
+      const code = Array.isArray(values) ? String(values[0]) : null;
+      return COUPON_ROWS.filter((c) => !code || c.code === code) as unknown[];
+    }
+    return orders as unknown[];
+  });
+}
+
+function queriedOrders(): boolean {
+  return mockQuery.mock.calls.some(([sql]) => String(sql).includes("FROM orders"));
+}
+
 beforeEach(() => {
   mockQuery.mockReset();
+  mockDb([]);
 });
 
 describe("GET /api/coupons/validate", () => {
@@ -50,11 +72,12 @@ describe("GET /api/coupons/validate", () => {
 
     expect(response.status).toBe(200);
     expect(data).toEqual({ valid: true, code: "BIENVENIDA10", percentOff: 10 });
-    expect(mockQuery).not.toHaveBeenCalled();
+    // El cupón se resuelve en DB, pero sin email no se toca `orders`.
+    expect(queriedOrders()).toBe(false);
   });
 
   it("validates BIENVENIDA10 for a first-time email", async () => {
-    mockQuery.mockResolvedValue([]);
+    mockDb([]);
     const request = new NextRequest(
       "http://localhost:3000/api/coupons/validate?code=BIENVENIDA10&email=nueva%40email.com"
     );
@@ -66,7 +89,7 @@ describe("GET /api/coupons/validate", () => {
   });
 
   it("rejects BIENVENIDA10 with 422 for an email with prior orders", async () => {
-    mockQuery.mockResolvedValue([{ "1": 1 }]);
+    mockDb([{ "1": 1 }]);
     const request = new NextRequest(
       "http://localhost:3000/api/coupons/validate?code=BIENVENIDA10&email=vieja%40email.com"
     );

@@ -44,7 +44,7 @@ describe("AdminNav (patrón sidebar-07)", () => {
     pathnameSpy.mockReturnValue("/admin/pedidos");
   });
 
-  it("sidebar: renderiza las 4 secciones con sus rutas y marca la activa", () => {
+  it("sidebar: renderiza las 5 secciones con sus rutas y marca la activa", () => {
     const { container } = renderChrome();
     const sidebar = container.querySelector("aside");
     expect(sidebar).toBeInTheDocument();
@@ -54,6 +54,7 @@ describe("AdminNav (patrón sidebar-07)", () => {
       ["Pedidos", "/admin/pedidos"],
       ["Productos", "/admin/productos"],
       ["Stock", "/admin/stock"],
+      ["Cupones", "/admin/cupones"],
     ] as const) {
       const link = sidebar!.querySelector(`a[href="${href}"]`);
       expect(link).toBeInTheDocument();

@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
           };
         });
 
-        const expectedCents = expectedTotalCents(lines, couponCode);
+        const expectedCents = await expectedTotalCents(lines, couponCode);
         const actualTotalCents = session.amount_total ?? 0;
 
         if (expectedCents !== actualTotalCents) {

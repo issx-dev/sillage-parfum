@@ -14,6 +14,7 @@ const footerLinks = {
     { href: "/legal/aviso", label: "Aviso Legal" },
     { href: "/legal/privacidad", label: "Privacidad" },
     { href: "/legal/cookies", label: "Cookies" },
+    { href: "/legal/condiciones", label: "Condiciones de compra" },
   ],
   Síguenos: [
     { href: "https://instagram.com/sillage", label: "Instagram", external: true, icon: <FaInstagram className="w-4 h-4" /> },
@@ -86,6 +87,7 @@ export function Footer() {
             <Link href="/legal/aviso" className="text-xs text-cream/60 hover:text-cream transition-colors duration-200">Aviso legal</Link>
             <Link href="/legal/privacidad" className="text-xs text-cream/60 hover:text-cream transition-colors duration-200">Privacidad</Link>
             <Link href="/legal/cookies" className="text-xs text-cream/60 hover:text-cream transition-colors duration-200">Cookies</Link>
+            <Link href="/legal/condiciones" className="text-xs text-cream/60 hover:text-cream transition-colors duration-200">Condiciones</Link>
           </div>
         </div>
       </Container>

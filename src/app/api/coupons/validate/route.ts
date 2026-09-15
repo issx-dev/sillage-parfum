@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCoupon, normalizeCoupon } from "@/lib/coupons";
+import { normalizeCoupon } from "@/lib/coupons";
+import { getCouponAsync } from "@/lib/coupon-store";
 import { isCouponEligibleForEmail } from "@/lib/coupon-eligibility";
 
 /**
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const coupon = getCoupon(code);
+  const coupon = await getCouponAsync(code);
   if (!coupon) {
     return NextResponse.json(
       { valid: false, error: `El código ${code} no es válido` },

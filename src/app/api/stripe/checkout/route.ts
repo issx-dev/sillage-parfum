@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const priced = priceLines(pricingLines, couponCode);
+    const priced = await priceLines(pricingLines, couponCode);
     const byVariant = new Map(resolvedItems.map((i) => [i.variantId, i]));
 
     const ALLOWED_ORIGINS = new Set<string>([

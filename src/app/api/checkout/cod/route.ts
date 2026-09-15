@@ -97,7 +97,7 @@ export async function POST(req: Request) {
       });
     }
 
-    const verifiedTotal = expectedTotalCents(pricingLines, couponCode) / 100;
+    const verifiedTotal = (await expectedTotalCents(pricingLines, couponCode)) / 100;
     if (Math.abs(verifiedTotal - total) > 0.005) {
       console.error(
         `[COD] Price mismatch: cliente dice ${total}€, servidor calcula ${verifiedTotal}€`

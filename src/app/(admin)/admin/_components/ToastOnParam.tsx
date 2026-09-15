@@ -15,6 +15,8 @@ import toast from "react-hot-toast";
 const MESSAGES: Record<string, string> = {
   creado: "Producto creado. Completa su ficha.",
   eliminado: "Producto eliminado.",
+  "cupon-creado": "Cupón creado y activo.",
+  "cupon-actualizado": "Cupón actualizado.",
 };
 
 export function ToastOnParam() {

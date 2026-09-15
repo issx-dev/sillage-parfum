@@ -1,6 +1,6 @@
 import "server-only";
 import { query } from "@/lib/db";
-import { getCoupon } from "@/lib/coupons";
+import { getCouponAsync } from "@/lib/coupon-store";
 
 export interface Eligibility {
   eligible: boolean;
@@ -29,7 +29,7 @@ export async function isCouponEligibleForEmail(
   couponCode: string,
   email?: string | null
 ): Promise<Eligibility> {
-  const coupon = getCoupon(couponCode);
+  const coupon = await getCouponAsync(couponCode);
   if (!coupon) return { eligible: false, reason: "Código de descuento no válido" };
   if (coupon.firstOrderOnly && email?.trim()) {
     if (await hasPriorOrders(email)) {

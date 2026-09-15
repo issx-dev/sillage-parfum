@@ -3,6 +3,7 @@ import { PromoBar } from "@/components/layout/PromoBar";
 import { Navbar } from "@/components/layout/Navbar";
 import { CartDrawerWrapper } from "@/components/layout/CartDrawerWrapper";
 import { Footer } from "@/components/layout/Footer";
+import { CookieBanner } from "@/components/layout/CookieBanner";
 import { SillageToaster } from "@/components/ui/SillageToaster";
 import { getProductBySlug } from "@/lib/data";
 import { SITE_URL } from "@/lib/site-config";
@@ -39,6 +40,7 @@ export default async function TiendaLayout({ children }: { children: React.React
       <CartDrawerWrapper />
       <main>{children}</main>
       <Footer />
+      <CookieBanner />
       <SillageToaster />
       <script
         type="application/ld+json"

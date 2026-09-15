@@ -14,6 +14,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   ChevronRight,
+  TicketPercent,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
@@ -58,6 +59,7 @@ const GROUPS: SectionGroup[] = [
       { href: "/admin/pedidos", label: "Pedidos", icon: Package },
       { href: "/admin/productos", label: "Productos", icon: ShoppingBag },
       { href: "/admin/stock", label: "Stock", icon: Boxes },
+      { href: "/admin/cupones", label: "Cupones", icon: TicketPercent },
     ],
   },
 ];
@@ -324,6 +326,7 @@ const SECTION_LABELS: Record<string, string> = {
   pedidos: "Pedidos",
   productos: "Productos",
   stock: "Stock",
+  cupones: "Cupones",
 };
 
 export function AdminBreadcrumb({ pathname }: { pathname: string }) {

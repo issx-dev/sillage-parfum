@@ -1,3 +1,5 @@
+import "server-only";
+
 /**
  * Precio server-side compartido por Stripe checkout, COD y webhook.
  *
@@ -21,7 +23,7 @@
  * Σ(unitAmountCents × quantity) === totalCents SIEMPRE, que es lo que
  * Stripe cobra y lo que el webhook verifica.
  */
-import { getCoupon } from "./coupons";
+import { getCouponAsync } from "./coupon-store";
 
 export interface PricingLine {
   variantId: string;
@@ -77,7 +79,7 @@ function distribute(total: number, weights: number[]): number[] {
   return floored;
 }
 
-export function priceLines(lines: PricingLine[], couponCode?: string | null): PricedCart {
+export async function priceLines(lines: PricingLine[], couponCode?: string | null): Promise<PricedCart> {
   const clean = lines
     .filter((l) => l.quantity > 0)
     .map((l) => ({ ...l, quantity: Math.floor(l.quantity) }));
@@ -106,7 +108,7 @@ export function priceLines(lines: PricingLine[], couponCode?: string | null): Pr
   });
 
   const preCouponTotal = Math.round(unitWeights.reduce((a, b) => a + b, 0));
-  const coupon = couponCode ? getCoupon(couponCode) : null;
+  const coupon = couponCode ? await getCouponAsync(couponCode) : null;
   const totalCents = coupon
     ? Math.round((preCouponTotal * (100 - coupon.percentOff)) / 100)
     : preCouponTotal;
@@ -145,6 +147,9 @@ export function priceLines(lines: PricingLine[], couponCode?: string | null): Pr
 }
 
 /** Total en céntimos para verificación (COD, webhook). */
-export function expectedTotalCents(lines: PricingLine[], couponCode?: string | null): number {
-  return priceLines(lines, couponCode).totalCents;
+export async function expectedTotalCents(
+  lines: PricingLine[],
+  couponCode?: string | null
+): Promise<number> {
+  return (await priceLines(lines, couponCode)).totalCents;
 }

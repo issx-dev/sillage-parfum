@@ -25,6 +25,7 @@ export default function CheckoutPage() {
   const [couponPercent, setCouponPercent] = useState(0);
   const [couponError, setCouponError] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [subscribeNewsletter, setSubscribeNewsletter] = useState(true);
 
   // Form Fields (Gymshark + Sillage Luxury Checkout)
@@ -96,6 +97,10 @@ export default function CheckoutPage() {
 
   const handleSubmitCod = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!acceptedTerms) {
+      setError("Debes aceptar las Condiciones de compra para continuar.");
+      return;
+    }
     setLoading(true);
     setError("");
 
@@ -137,6 +142,10 @@ export default function CheckoutPage() {
   };
 
   const handleStripeCheckout = async () => {
+    if (!acceptedTerms) {
+      setError("Debes aceptar las Condiciones de compra para continuar.");
+      return;
+    }
     setLoading(true);
     setError("");
     try {
@@ -331,12 +340,33 @@ export default function CheckoutPage() {
                   <span className="text-xs text-gray-mid font-light">Pago al recibir</span>
                 </div>
 
+                {/* Aceptación de condiciones (obligatoria para pagar) */}
+                <label className="flex items-start gap-2.5 text-xs text-charcoal/80 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={acceptedTerms}
+                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                    className="mt-0.5 rounded border-warm-300 text-gold-dark focus:ring-gold"
+                  />
+                  <span>
+                    He leído y acepto las{" "}
+                    <Link href="/legal/condiciones" target="_blank" className="font-medium text-gold-dark underline-offset-4 hover:underline">
+                      Condiciones de compra
+                    </Link>
+                    , el <Link href="/legal/aviso" target="_blank" className="font-medium text-gold-dark underline-offset-4 hover:underline">Aviso legal</Link> y la{" "}
+                    <Link href="/legal/privacidad" target="_blank" className="font-medium text-gold-dark underline-offset-4 hover:underline">
+                      Política de privacidad
+                    </Link>
+                    .
+                  </span>
+                </label>
+
                 {/* Botón de confirmación para Contra Reembolso */}
                 {paymentMethod === "cod" && (
                   <button
                     type="submit"
-                    disabled={loading}
-                    className="w-full py-4 bg-charcoal hover:bg-black text-white font-semibold text-xs uppercase tracking-[0.18em] rounded-md shadow-md transition-all cursor-pointer active:scale-[0.98]"
+                    disabled={loading || !acceptedTerms}
+                    className="w-full py-4 bg-charcoal hover:bg-black text-white font-semibold text-xs uppercase tracking-[0.18em] rounded-md shadow-md transition-all cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? "Procesando pedido..." : "PAGAR AHORA (CONTRA REEMBOLSO)"}
                   </button>
@@ -355,8 +385,8 @@ export default function CheckoutPage() {
                   <button
                     type="button"
                     onClick={handleStripeCheckout}
-                    disabled={loading}
-                    className="w-full py-4 px-6 bg-slate-900 hover:bg-black text-white font-semibold text-xs uppercase tracking-[0.18em] rounded-md shadow-md transition-all flex items-center justify-center gap-2.5 cursor-pointer active:scale-[0.98]"
+                    disabled={loading || !acceptedTerms}
+                    className="w-full py-4 px-6 bg-slate-900 hover:bg-black text-white font-semibold text-xs uppercase tracking-[0.18em] rounded-md shadow-md transition-all flex items-center justify-center gap-2.5 cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <CreditCard className="w-4.5 h-4.5 text-gold" />
                     <span>PAGAR CON STRIPE</span>

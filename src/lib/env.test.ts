@@ -4,8 +4,7 @@ import { loadEnv, envSchema } from "./env";
 const validEnv = {
   STRIPE_SECRET_KEY: "sk_test_1234567890",
   STRIPE_WEBHOOK_SECRET: "whsec_1234567890",
-  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_1234567890",
-  DATABASE_URL: "postgresql://user:pass@localhost:5432/sillage",
+  DATABASE_URL: "postgresql://user:***@localhost:5432/sillage",
   UPSTASH_REDIS_REST_URL: "https://example.upstash.io",
   UPSTASH_REDIS_REST_TOKEN: "token_1234567890",
   JWT_SECRET: "dev-test-jwt-secret-min-32-chars!!",
@@ -21,8 +20,7 @@ describe("envSchema — validates environment variables", () => {
 
     expect(result.STRIPE_SECRET_KEY).toBe("sk_test_1234567890");
     expect(result.STRIPE_WEBHOOK_SECRET).toBe("whsec_1234567890");
-    expect(result.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY).toBe("pk_test_1234567890");
-    expect(result.DATABASE_URL).toBe("postgresql://user:pass@localhost:5432/sillage");
+    expect(result.DATABASE_URL).toBe("postgresql://user:***@localhost:5432/sillage");
     expect(result.UPSTASH_REDIS_REST_URL).toBe("https://example.upstash.io");
     expect(result.UPSTASH_REDIS_REST_TOKEN).toBe("token_1234567890");
   });
@@ -58,7 +56,6 @@ describe("envSchema — validates environment variables", () => {
       const fieldErrors = Object.keys(result.error.flatten().fieldErrors);
       expect(fieldErrors).toContain("STRIPE_SECRET_KEY");
       expect(fieldErrors).toContain("STRIPE_WEBHOOK_SECRET");
-      expect(fieldErrors).toContain("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY");
       expect(fieldErrors).toContain("DATABASE_URL");
       expect(fieldErrors).toContain("UPSTASH_REDIS_REST_URL");
       expect(fieldErrors).toContain("UPSTASH_REDIS_REST_TOKEN");
@@ -95,7 +92,7 @@ describe("loadEnv — safeParse with graceful exit", () => {
     const result = loadEnv(validEnv);
 
     expect(result.STRIPE_SECRET_KEY).toBe("sk_test_1234567890");
-    expect(result.DATABASE_URL).toBe("postgresql://user:pass@localhost:5432/sillage");
+    expect(result.DATABASE_URL).toBe(validEnv.DATABASE_URL);
     expect(result.UPSTASH_REDIS_REST_URL).toBe("https://example.upstash.io");
     expect(result.UPSTASH_REDIS_REST_TOKEN).toBe("token_1234567890");
   });
@@ -118,7 +115,6 @@ describe("loadEnv — safeParse with graceful exit", () => {
     const errorMessages = errorSpy.mock.calls.map((c) => String(c[0]));
     expect(errorMessages.some((m) => m.includes("STRIPE_SECRET_KEY"))).toBe(true);
     expect(errorMessages.some((m) => m.includes("STRIPE_WEBHOOK_SECRET"))).toBe(true);
-    expect(errorMessages.some((m) => m.includes("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"))).toBe(true);
     expect(errorMessages.some((m) => m.includes("DATABASE_URL"))).toBe(true);
     expect(errorMessages.some((m) => m.includes("UPSTASH_REDIS_REST_URL"))).toBe(true);
     expect(errorMessages.some((m) => m.includes("UPSTASH_REDIS_REST_TOKEN"))).toBe(true);

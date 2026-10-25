@@ -1,6 +1,9 @@
 import { getProducts } from "@/lib/data";
 import type { MetadataRoute } from "next";
 
+// Catalog data lives in the database: never prerender or cache it.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sillage.com";
   const products = await getProducts();

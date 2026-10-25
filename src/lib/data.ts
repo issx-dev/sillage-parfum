@@ -45,7 +45,7 @@ function mapProductRow(row: ProductRow): Omit<Product, "variants"> {
     shortDescription: row.short_description,
     badge: (row.badge ?? null) as BadgeType,
     images: row.images,
-    discount_percent: row.discount_percent,
+    discount_percent: Math.min(100, Math.max(0, Number(row.discount_percent) || 0)),
     notes: {
       top: row.notes_top,
       heart: row.notes_heart,
@@ -59,9 +59,22 @@ function mapVariantRow(row: VariantRow): Variant {
     id: row.variant_id,
     size_ml: row.size_ml,
     price: row.price,
-    stock: row.stock,
+    stock: Math.max(0, Math.floor(Number(row.stock) || 0)),
     sku: row.sku,
   };
+}
+
+/**
+ * A variant is sellable only with a finite price above zero. Anything else
+ * (NULL, 0, negative) is a data-entry mistake and must never reach the shop
+ * or Stripe, so it is dropped here and logged.
+ */
+function isValidVariantRow(row: VariantRow): boolean {
+  const ok = Number.isFinite(row.price) && row.price > 0;
+  if (!ok) {
+    console.warn(`[data] Ignoring variant ${row.variant_id}: invalid price ${String(row.price)}`);
+  }
+  return ok;
 }
 
 /**
@@ -85,15 +98,20 @@ async function hydrateProductsWithVariants(
 
   const variantsByProduct = new Map<string, Variant[]>();
   for (const vRow of variantRows) {
+    if (!isValidVariantRow(vRow)) continue;
     const existing = variantsByProduct.get(vRow.product_id) ?? [];
     existing.push(mapVariantRow(vRow));
     variantsByProduct.set(vRow.product_id, existing);
   }
 
-  return productRows.map((pRow) => ({
-    ...mapProductRow(pRow),
-    variants: variantsByProduct.get(pRow.product_id) ?? [],
-  }));
+  // Products without any sellable variant are hidden everywhere: a product
+  // page or card with no price would crash or show 0 €.
+  return productRows
+    .map((pRow) => ({
+      ...mapProductRow(pRow),
+      variants: variantsByProduct.get(pRow.product_id) ?? [],
+    }))
+    .filter((p) => p.variants.length > 0);
 }
 
 // ── Exported async data functions ──────────────────────────
@@ -109,10 +127,11 @@ export async function getProducts(family?: string): Promise<Product[]> {
     productRows = (await db`
       SELECT * FROM products 
       WHERE family ILIKE ${'%' + family + '%'}
+      ORDER BY product_id
     `) as unknown as ProductRow[];
   } else {
     productRows = (await db`
-      SELECT * FROM products
+      SELECT * FROM products ORDER BY product_id
     `) as unknown as ProductRow[];
   }
 
@@ -133,6 +152,7 @@ export async function getProductsByGender(
   const productRows = (await db`
     SELECT * FROM products 
     WHERE gender = ${gender}
+    ORDER BY product_id
   `) as unknown as ProductRow[];
 
   return hydrateProductsWithVariants(productRows);
@@ -215,6 +235,7 @@ export async function getNewArrivals(): Promise<Product[]> {
   const productRows = (await db`
     SELECT * FROM products 
     WHERE badge = ${"nuevo"}
+    ORDER BY product_id
   `) as unknown as ProductRow[];
 
   return hydrateProductsWithVariants(productRows);
@@ -279,8 +300,34 @@ export async function searchProducts(
       unaccent(array_to_string(notes_top, ' ')) ILIKE '%' || ${q} || '%' OR
       unaccent(array_to_string(notes_heart, ' ')) ILIKE '%' || ${q} || '%' OR
       unaccent(array_to_string(notes_base, ' ')) ILIKE '%' || ${q} || '%'
+    ORDER BY product_id
     LIMIT ${limit}
   `) as unknown as ProductRow[];
 
   return hydrateProductsWithVariants(productRows);
+}
+
+/**
+ * Resolve many variants at once (cart sync). Returns a map keyed by variant id;
+ * ids that no longer exist, or whose product is no longer sellable, are absent.
+ */
+export async function getVariantsByIds(
+  variantIds: string[]
+): Promise<Map<string, { product: Product; variant: Variant }>> {
+  const result = new Map<string, { product: Product; variant: Variant }>();
+  if (variantIds.length === 0) return result;
+
+  const productRows = (await db`
+    SELECT * FROM products
+    WHERE product_id IN (
+      SELECT product_id FROM variants WHERE variant_id = ANY(${variantIds})
+    )
+  `) as unknown as ProductRow[];
+
+  for (const product of await hydrateProductsWithVariants(productRows)) {
+    for (const variant of product.variants) {
+      if (variantIds.includes(variant.id)) result.set(variant.id, { product, variant });
+    }
+  }
+  return result;
 }

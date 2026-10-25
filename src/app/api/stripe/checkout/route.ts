@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getVariant } from "@/lib/data";
 import { getUnitPriceCents, getShippingCents } from "@/lib/utils";
+import { encodeItemsMetadata } from "@/lib/order-metadata";
 import type { CartItem } from "@/types";
 
 const MAX_QUANTITY_PER_ITEM = 10;
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
     if (items.length === 0) {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
     }
-    if (items.length > 100) {
+    if (items.length > 50) {
       return NextResponse.json({ error: "Too many items" }, { status: 413 });
     }
 
@@ -34,7 +35,19 @@ export async function POST(request: NextRequest) {
       image?: string;
       quantity: number;
     }> = [];
+
+    // Merge repeated lines for the same variant so stock is checked against the
+    // combined quantity and Stripe gets a single line per variant.
+    const merged = new Map<string, CartItem>();
     for (const item of items) {
+      const prev = merged.get(item?.variantId);
+      merged.set(
+        item?.variantId,
+        prev ? { ...prev, quantity: Number(prev.quantity || 1) + Number(item.quantity || 1) } : item
+      );
+    }
+
+    for (const item of Array.from(merged.values())) {
       const found = await getVariant(item.productId, item.variantId);
       if (!found) {
         return NextResponse.json(
@@ -122,16 +135,14 @@ export async function POST(request: NextRequest) {
           },
         },
       ],
-      metadata: {
-        items: JSON.stringify(
-          resolvedItems.map((i) => ({
-            productId: i.productId,
-            variantId: i.variantId,
-            sku: i.sku,
-            quantity: i.quantity,
-          }))
-        ),
-      },
+      metadata: encodeItemsMetadata(
+        resolvedItems.map((i) => ({
+          productId: i.productId,
+          variantId: i.variantId,
+          sku: i.sku,
+          quantity: i.quantity,
+        }))
+      ),
     });
 
     return NextResponse.json({ url: session.url });

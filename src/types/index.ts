@@ -43,6 +43,22 @@ export interface CartItem {
   quantity: number;
 }
 
+/** Authoritative cart line data returned by /api/cart/sync. */
+export type CartSyncEntry =
+  | { variantId: string; available: false }
+  | {
+      variantId: string;
+      available: true;
+      productId: string;
+      slug: string;
+      name: string;
+      brand: string;
+      image: string;
+      size_ml: number;
+      price: number;
+      stock: number;
+    };
+
 export interface Brand {
   id: string;
   name: string;

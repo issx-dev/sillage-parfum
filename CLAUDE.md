@@ -29,6 +29,8 @@ Vitest only picks up tests under `src/{app,components,lib,store,hooks,scripts}` 
 
 **Data layer is Postgres, not JSON.** `src/lib/db.ts` exports a cached `postgres` pool (`query`, `transaction`; raw parameterized SQL, rows returned as `unknown[]` and cast by callers). `src/lib/data.ts` maps snake_case rows (`products`, `variants` tables) to the camelCase types in `src/types`; `brands.json` is the only static data still read directly. `products.json` is only the seed source. Schema (with RLS enabled) lives in `docs/database/schema.sql`. Modules that touch the DB or secrets import `"server-only"`.
 
+**Database is the source of truth.** Pages/layout/sitemap are `force-dynamic` and `staleTimes` is 0 (`next.config.js`), so edits made directly in the DB show up on the next request; `LiveRefresh` calls `router.refresh()` on tab focus and every 30 s. The cart persists only what it needs: `CartSync` (+ `src/lib/cart-sync.ts`, `POST /api/cart/sync`) re-reads price/stock/name from the DB on load, focus, every 30 s and before paying (`cartStore.applyServerState`). `src/lib/data.ts` drops variants with a non-positive/NULL price and hides products left with no variants, clamps `discount_percent` to 0–100 and stock to ≥ 0; keep that invariant when adding queries (always `ORDER BY`). Stripe metadata values are capped at 500 chars, so order items are chunked via `src/lib/order-metadata.ts`.
+
 **Env validation:** `src/lib/env.ts` validates all required vars with zod at import time and `process.exit(1)`s on failure; it is skipped under `VITEST` (tests call `loadEnv()` directly). So any new required env var must be added to the schema, `.env.local.example`, and the CI workflow env blocks.
 
 **Payment flow (the multi-file piece):**

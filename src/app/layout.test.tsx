@@ -52,6 +52,12 @@ vi.mock("@/components/layout/Navbar", () => ({
 vi.mock("@/components/layout/CartDrawerWrapper", () => ({
   CartDrawerWrapper: () => <div data-testid="cart-drawer" />,
 }));
+vi.mock("@/components/layout/CartSync", () => ({
+  CartSync: () => null,
+}));
+vi.mock("@/components/layout/LiveRefresh", () => ({
+  LiveRefresh: () => null,
+}));
 vi.mock("@/components/layout/Footer", () => ({
   Footer: () => <div data-testid="footer" />,
 }));

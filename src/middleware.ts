@@ -15,7 +15,7 @@ async function checkRateLimit(
   // Stripe routes: 10/min per IP
   const isStripe = path.startsWith("/api/stripe/");
   // Search routes: 30/min per IP
-  const isSearch = path.startsWith("/api/search");
+  const isSearch = path.startsWith("/api/search") || path.startsWith("/api/cart/");
 
   if (!isStripe && !isSearch) return null;
 
@@ -156,5 +156,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/stripe/:path*", "/api/search", "/((?!_next/static|_next/image|favicon.svg).*)"],
+  matcher: ["/api/stripe/:path*", "/api/search", "/api/cart/:path*", "/((?!_next/static|_next/image|favicon.svg).*)"],
 };

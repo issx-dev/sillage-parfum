@@ -6,6 +6,9 @@ import { Newsletter } from "@/components/home/Newsletter";
 import { getFeaturedProducts, getNewArrivals, getDiscoverProducts } from "@/lib/data";
 import type { Metadata } from "next";
 
+// Catalog data lives in the database: never prerender or cache it.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   alternates: {
     canonical: "/",

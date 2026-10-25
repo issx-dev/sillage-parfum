@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { getProducts } from "@/lib/data";
 import { WishlistView } from "./WishlistView";
 
+// Catalog data lives in the database: never prerender or cache it.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Lista de Deseos | SILLAGE",
   description: "Tus fragancias guardadas. Encuentra y compra los perfumes que te han enamorado.",

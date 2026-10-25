@@ -6,7 +6,7 @@ import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { Button } from "@/components/ui/Button";
-import { formatSessionId } from "@/lib/utils";
+import { formatSessionId, formatPrice } from "@/lib/utils";
 
 interface SessionInfo {
   paymentStatus: string;
@@ -41,7 +41,8 @@ function SuccessContent() {
           amountTotal: data.amount_total ?? 0,
           customerEmail: data.customer_email ?? null,
         });
-        clearCart();
+        // Only empty the cart once the payment is actually confirmed.
+        if (data.payment_status === "paid") clearCart();
       } catch {
         setError("No se pudo recuperar el pedido");
       } finally {
@@ -56,6 +57,20 @@ function SuccessContent() {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="skeleton h-[300px] w-full max-w-lg mx-auto rounded-card" />
+      </div>
+    );
+  }
+
+  if (session && session.paymentStatus !== "paid") {
+    return (
+      <div className="text-center py-16">
+        <h1 className="font-serif text-2xl mb-4">Pago pendiente</h1>
+        <p className="text-gray-mid mb-8">
+          Todavía no hemos recibido la confirmación del pago. Tu carrito sigue intacto.
+        </p>
+        <Link href="/carrito">
+          <Button>Volver al carrito</Button>
+        </Link>
       </div>
     );
   }
@@ -90,7 +105,11 @@ function SuccessContent() {
           </div>
           <div className="flex justify-between">
             <span className="text-gray-mid">Email</span>
-            <span className="text-sm">{session.customerEmail}</span>
+            <span className="text-sm">{session.customerEmail ?? "—"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-mid">Total pagado</span>
+            <span className="text-sm">{formatPrice(session.amountTotal / 100)}</span>
           </div>
         </div>
       </div>

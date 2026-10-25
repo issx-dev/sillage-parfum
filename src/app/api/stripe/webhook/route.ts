@@ -5,6 +5,7 @@ import { saveOrder } from "@/lib/data/orders";
 import { query } from "@/lib/db";
 import { env } from "@/lib/env";
 import { getUnitPriceCents, getShippingCents } from "@/lib/utils";
+import { decodeItemsMetadata } from "@/lib/order-metadata";
 import { NON_PENINSULAR_POSTAL_PREFIXES } from "@/lib/constants";
 import type { Order } from "@/types";
 
@@ -39,9 +40,9 @@ export async function POST(request: NextRequest) {
     const session = event.data.object;
     console.log("Pedido completado:", session.id);
     console.log("   Total:", session.amount_total);
-    console.log("   Items:", session.metadata?.items);
+    console.log("   Items:", decodeItemsMetadata(session.metadata));
 
-    const metadataItems = session.metadata?.items;
+    const metadataItems = decodeItemsMetadata(session.metadata);
     const order: Omit<Order, "stripe_event_id"> = {
       id: session.id,
       items: [],
@@ -153,6 +154,27 @@ export async function POST(request: NextRequest) {
   if (event.type === "charge.refunded") {
     const charge = event.data.object;
     console.log(`[Webhook] Refund processed: ${charge.id} for ${charge.amount} ${charge.currency}`);
+
+    // Reflect the refund on the order so the database stays the source of truth.
+    // Only a full refund flips the status; partial refunds keep it as "paid".
+    if (charge.refunded && typeof charge.payment_intent === "string") {
+      try {
+        const sessions = await stripe.checkout.sessions.list({
+          payment_intent: charge.payment_intent,
+          limit: 1,
+        });
+        const sessionId = sessions.data[0]?.id;
+        if (sessionId) {
+          await query(
+            "UPDATE orders SET payment_status = 'refunded' WHERE stripe_session_id = $1",
+            [sessionId]
+          );
+        }
+      } catch (err) {
+        console.error("[Webhook] Failed to mark order as refunded:", err);
+        return NextResponse.json({ error: "Refund update failed" }, { status: 500 });
+      }
+    }
   }
 
   if (event.type === "payment_intent.payment_failed") {

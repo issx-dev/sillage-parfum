@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     // Filter response to only safe, non-sensitive metrics
     return NextResponse.json({
       payment_status: session.payment_status,
-      customer_email: session.customer_email ?? null,
+      customer_email: session.customer_details?.email ?? session.customer_email ?? null,
       amount_total: session.amount_total ?? 0,
       currency: session.currency ?? "eur",
     });

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
-import { getProductBySlug, getProducts } from "@/lib/data";
+import { getProductBySlug } from "@/lib/data";
 import type { Metadata } from "next";
 import { applyDiscount } from "@/lib/utils";
 import { SITE_URL } from "@/lib/site-config";
@@ -12,10 +12,8 @@ interface ProductPageProps {
   params: { slug: string };
 }
 
-export async function generateStaticParams() {
-  const products = await getProducts();
-  return products.map((p) => ({ slug: p.slug }));
-}
+// Catalog data lives in the database: never prerender or cache it.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const product = await getProductBySlug(params.slug);

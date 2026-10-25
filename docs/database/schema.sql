@@ -3,6 +3,8 @@
 
 -- Enable UUID generation
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- Required by searchProducts() (accent-insensitive search).
+CREATE EXTENSION IF NOT EXISTS unaccent;
 
 CREATE TABLE IF NOT EXISTS orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -43,7 +45,7 @@ CREATE TABLE IF NOT EXISTS products (
   short_description TEXT NOT NULL,
   badge TEXT,
   images TEXT[] NOT NULL DEFAULT '{}',
-  discount_percent INTEGER NOT NULL DEFAULT 0,
+  discount_percent INTEGER NOT NULL DEFAULT 0 CHECK (discount_percent BETWEEN 0 AND 100),
   notes_top TEXT[] NOT NULL DEFAULT '{}',
   notes_heart TEXT[] NOT NULL DEFAULT '{}',
   notes_base TEXT[] NOT NULL DEFAULT '{}',
@@ -72,9 +74,9 @@ CREATE POLICY "Service role can manage products"
 CREATE TABLE IF NOT EXISTS variants (
   variant_id TEXT PRIMARY KEY,
   product_id TEXT NOT NULL REFERENCES products(product_id) ON DELETE CASCADE,
-  size_ml INTEGER NOT NULL,
-  price NUMERIC(10,2) NOT NULL CHECK (price >= 0),
-  stock INTEGER NOT NULL DEFAULT 0,
+  size_ml INTEGER NOT NULL CHECK (size_ml > 0),
+  price NUMERIC(10,2) NOT NULL CHECK (price > 0),
+  stock INTEGER NOT NULL DEFAULT 0 CHECK (stock >= 0),
   sku TEXT UNIQUE NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );

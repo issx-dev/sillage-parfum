@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    // Never serve catalog pages from the client Router Cache: prices and
+    // stock come from the database and must be fresh on every navigation.
+    staleTimes: { dynamic: 0, static: 0 },
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

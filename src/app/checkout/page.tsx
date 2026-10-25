@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { formatPrice, getShippingCents } from "@/lib/utils";
+import { syncCart } from "@/lib/cart-sync";
 
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
@@ -39,6 +40,20 @@ export default function CheckoutPage() {
     setError("");
 
     try {
+      // The database is the source of truth: refresh prices/stock first and
+      // let the customer review the new total if anything changed.
+      const summary = await syncCart({ notify: false });
+      if (summary?.changed) {
+        const parts = [
+          summary.removed.length ? `Ya no disponible: ${summary.removed.join(", ")}` : "",
+          summary.reduced.length ? `Cantidad ajustada al stock: ${summary.reduced.join(", ")}` : "",
+          summary.repriced.length ? `Precio actualizado: ${summary.repriced.join(", ")}` : "",
+        ].filter(Boolean);
+        setError(`Tu carrito ha cambiado. ${parts.join(" · ")}. Revisa el total y vuelve a pulsar pagar.`);
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

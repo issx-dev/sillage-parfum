@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { CartItem } from "@/types";
+import type { CartItem, CartSyncEntry } from "@/types";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 
 export interface CartStore {
@@ -14,10 +14,18 @@ export interface CartStore {
   getTotal: () => number;
   getItemCount: () => number;
   getFreeShippingRemaining: () => number;
+  applyServerState: (entries: CartSyncEntry[]) => CartSyncSummary;
   setHasHydrated: (state: boolean) => void;
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
+}
+
+export interface CartSyncSummary {
+  changed: boolean;
+  removed: string[]; // names of lines dropped (gone or out of stock)
+  repriced: string[]; // names whose price changed
+  reduced: string[]; // names whose quantity was cut to the available stock
 }
 
 function isCartItem(item: unknown): item is CartItem {
@@ -88,6 +96,43 @@ export const useCartStore = create<CartStore>()(
 
       getFreeShippingRemaining: () => {
         return Math.max(0, FREE_SHIPPING_THRESHOLD - get().getTotal());
+      },
+
+      applyServerState: (entries) => {
+        const summary: CartSyncSummary = { changed: false, removed: [], repriced: [], reduced: [] };
+        const byId = new Map(entries.map((e) => [e.variantId, e]));
+        const next: CartItem[] = [];
+
+        for (const item of get().items) {
+          const entry = byId.get(item.variantId);
+          if (!entry) {
+            next.push(item); // not part of this sync response; keep as is
+            continue;
+          }
+          if (!entry.available || entry.stock <= 0) {
+            summary.removed.push(item.name);
+            continue;
+          }
+          const quantity = Math.min(item.quantity, entry.stock);
+          if (quantity !== item.quantity) summary.reduced.push(entry.name);
+          if (entry.price !== item.price) summary.repriced.push(entry.name);
+          next.push({
+            ...item,
+            productId: entry.productId,
+            slug: entry.slug,
+            name: entry.name,
+            brand: entry.brand,
+            image: entry.image,
+            size_ml: entry.size_ml,
+            price: entry.price,
+            quantity,
+          });
+        }
+
+        summary.changed =
+          summary.removed.length + summary.repriced.length + summary.reduced.length > 0;
+        if (JSON.stringify(next) !== JSON.stringify(get().items)) set({ items: next });
+        return summary;
       },
 
       setHasHydrated: (state) => set({ _hasHydrated: state }),

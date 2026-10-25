@@ -4,12 +4,17 @@ import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { PromoBar } from "@/components/layout/PromoBar";
 import { Navbar } from "@/components/layout/Navbar";
+import { CartSync } from "@/components/layout/CartSync";
+import { LiveRefresh } from "@/components/layout/LiveRefresh";
 import { CartDrawerWrapper } from "@/components/layout/CartDrawerWrapper";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "sonner";
 import { getProductBySlug } from "@/lib/data";
 import { SITE_URL } from "@/lib/site-config";
 import type { Product } from "@/types";
+
+// Catalog data lives in the database: never prerender or cache it.
+export const dynamic = "force-dynamic";
 
 const RECOMMENDED_SLUGS = [
   "sauvage-dior-edt",
@@ -97,6 +102,8 @@ export default async function RootLayout({
           <Navbar recommendedProducts={await getRecommendedProducts()} />
         </header>
         <CartDrawerWrapper />
+        <CartSync />
+        <LiveRefresh />
         <main>{children}</main>
         <Footer />
         <Toaster

@@ -288,9 +288,12 @@ describe("getFeaturedProducts", () => {
     const featuredProducts = Array.from({ length: 8 }, (_, i) =>
       makeProductRow({ product_id: `feat-${i}`, badge: "top_ventas" })
     );
-    mockProductAndVariantQueries(featuredProducts, [
-      makeVariantRow({ product_id: "feat-0" }),
-    ]);
+    mockProductAndVariantQueries(
+      featuredProducts,
+      featuredProducts.map((_, i) =>
+        makeVariantRow({ variant_id: `fv-${i}`, product_id: `feat-${i}`, sku: `FV-${i}` })
+      )
+    );
 
     await getFeaturedProducts(8);
 
@@ -305,15 +308,48 @@ describe("getFeaturedProducts", () => {
     const featuredProducts = Array.from({ length: 8 }, (_, i) =>
       makeProductRow({ product_id: `feat-${i}`, badge: "top_ventas" })
     );
-    mockProductAndVariantQueries(featuredProducts, [
-      makeVariantRow({ product_id: "feat-0" }),
-    ]);
+    mockProductAndVariantQueries(
+      featuredProducts,
+      featuredProducts.map((_, i) =>
+        makeVariantRow({ variant_id: `fv-${i}`, product_id: `feat-${i}`, sku: `FV-${i}` })
+      )
+    );
 
     const products = await getFeaturedProducts(8);
 
     expect(products).toHaveLength(8);
     expect(products[0]!.badge).toBe("top_ventas");
     expect(products[0]!.variants).toHaveLength(1);
+  });
+});
+
+describe("sellable-variant filtering", () => {
+  it("drops variants with zero/NULL/negative price and hides products left without variants", async () => {
+    mockProductAndVariantQueries(
+      [makeProductRow({ product_id: "ok" }), makeProductRow({ product_id: "free" })],
+      [
+        makeVariantRow({ variant_id: "ok-1", product_id: "ok", price: 50 }),
+        makeVariantRow({ variant_id: "ok-0", product_id: "ok", price: 0, sku: "S0" }),
+        makeVariantRow({ variant_id: "free-1", product_id: "free", price: null as unknown as number, sku: "S1" }),
+      ]
+    );
+
+    const products = await getProducts();
+
+    expect(products.map((p) => p.id)).toEqual(["ok"]);
+    expect(products[0]!.variants.map((v) => v.id)).toEqual(["ok-1"]);
+  });
+
+  it("clamps discount_percent to 0-100 and stock to >= 0", async () => {
+    mockProductAndVariantQueries(
+      [makeProductRow({ product_id: "p", discount_percent: 150 })],
+      [makeVariantRow({ product_id: "p", stock: -3 })]
+    );
+
+    const [product] = await getProducts();
+
+    expect(product!.discount_percent).toBe(100);
+    expect(product!.variants[0]!.stock).toBe(0);
   });
 });
 
@@ -345,9 +381,12 @@ describe("getDiscoverProducts", () => {
     const discoverProducts = Array.from({ length: 8 }, (_, i) =>
       makeProductRow({ product_id: `disc-${i}`, badge: "nuevo" })
     );
-    mockProductAndVariantQueries(discoverProducts, [
-      makeVariantRow({ product_id: "disc-0" }),
-    ]);
+    mockProductAndVariantQueries(
+      discoverProducts,
+      discoverProducts.map((_, i) =>
+        makeVariantRow({ variant_id: `dv-${i}`, product_id: `disc-${i}`, sku: `DV-${i}` })
+      )
+    );
 
     await getDiscoverProducts(8);
 
@@ -362,9 +401,12 @@ describe("getDiscoverProducts", () => {
     const discoverProducts = Array.from({ length: 8 }, (_, i) =>
       makeProductRow({ product_id: `disc-${i}`, badge: "nuevo" })
     );
-    mockProductAndVariantQueries(discoverProducts, [
-      makeVariantRow({ product_id: "disc-0" }),
-    ]);
+    mockProductAndVariantQueries(
+      discoverProducts,
+      discoverProducts.map((_, i) =>
+        makeVariantRow({ variant_id: `dv-${i}`, product_id: `disc-${i}`, sku: `DV-${i}` })
+      )
+    );
 
     const products = await getDiscoverProducts(8);
     expect(products).toHaveLength(8);

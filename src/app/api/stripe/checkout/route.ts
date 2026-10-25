@@ -2,7 +2,7 @@ import "server-only";
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getVariant } from "@/lib/data";
-import { getUnitPriceCents } from "@/lib/utils";
+import { getUnitPriceCents, getShippingCents } from "@/lib/utils";
 import type { CartItem } from "@/types";
 
 const MAX_QUANTITY_PER_ITEM = 10;
@@ -43,6 +43,16 @@ export async function POST(request: NextRequest) {
         );
       }
       const { product, variant } = found;
+      const quantity = Math.min(
+        Math.max(1, Math.floor(Number(item.quantity) || 1)),
+        MAX_QUANTITY_PER_ITEM
+      );
+      if (variant.stock < quantity) {
+        return NextResponse.json(
+          { error: `Stock insuficiente para ${product.name} (${variant.size_ml}ml)` },
+          { status: 409 }
+        );
+      }
       resolvedItems.push({
         productId: product.id,
         variantId: variant.id,
@@ -52,10 +62,7 @@ export async function POST(request: NextRequest) {
         unitAmountCents: getUnitPriceCents(variant.price, product.discount_percent),
         sku: variant.sku,
         ...(product.images?.[0] ? { image: product.images[0] } : {}),
-        quantity: Math.min(
-          Math.max(1, Math.floor(Number(item.quantity) || 1)),
-          MAX_QUANTITY_PER_ITEM
-        ),
+        quantity,
       });
     }
 
@@ -72,6 +79,12 @@ export async function POST(request: NextRequest) {
       ? origin
       : (process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000");
     const cleanBaseUrl = baseUrl.replace(/\/$/, "");
+
+    const subtotalCents = resolvedItems.reduce(
+      (sum, i) => sum + i.unitAmountCents * i.quantity,
+      0
+    );
+    const shippingCents = getShippingCents(subtotalCents);
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -99,6 +112,16 @@ export async function POST(request: NextRequest) {
       shipping_address_collection: {
         allowed_countries: ["ES"],
       },
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: { amount: shippingCents, currency: "eur" },
+            display_name:
+              shippingCents === 0 ? "Envío gratis (península)" : "Envío estándar (península)",
+          },
+        },
+      ],
       metadata: {
         items: JSON.stringify(
           resolvedItems.map((i) => ({

@@ -6,7 +6,7 @@ import { Sheet, SheetContent } from "@/components/ui/Sheet";
 import Link from "next/link";
 import Image from "next/image";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getShippingCents } from "@/lib/utils";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useState, useEffect } from "react";
@@ -30,6 +30,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const total = getTotal();
   const freeShippingRemaining = Math.max(0, FREE_SHIPPING_THRESHOLD - total);
 
+  const shippingCost = getShippingCents(Math.round(total * 100)) / 100;
   const shippingProgress = Math.min(100, (total / FREE_SHIPPING_THRESHOLD) * 100);
 
   return (
@@ -151,10 +152,18 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               </div>
             )}
 
-            {/* Subtotal */}
-            <div className="flex justify-between items-center mb-4">
+            {/* Subtotal + shipping */}
+            <div className="flex justify-between items-center mb-1 text-sm">
               <span className="text-gray-mid">Subtotal</span>
-              <span className="text-xl font-serif font-semibold">{formatPrice(total)}</span>
+              <span>{formatPrice(total)}</span>
+            </div>
+            <div className="flex justify-between items-center mb-4 text-sm">
+              <span className="text-gray-mid">Envío (solo península)</span>
+              <span>{shippingCost === 0 ? "Gratis" : formatPrice(shippingCost)}</span>
+            </div>
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-gray-mid">Total</span>
+              <span className="text-xl font-serif font-semibold">{formatPrice(total + shippingCost)}</span>
             </div>
 
             {/* CTA */}

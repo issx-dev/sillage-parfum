@@ -157,6 +157,24 @@ describe("POST /api/stripe/webhook", () => {
     expect(mockSaveOrder).toHaveBeenCalledTimes(1);
   });
 
+  it("blocks order save when the shipping charged does not match the rule", async () => {
+    const items = [{ variantId: "v1", productId: "p1", sku: "sku-1", quantity: 1 }];
+    const mockEvent = makeCheckoutEvent(3000, items);
+    (mockEvent.data.object as any).total_details = { amount_shipping: 0 }; // 30 € cart must pay 5 €
+    mockConstructEvent.mockReturnValue(mockEvent as any);
+    mockQuery.mockResolvedValueOnce([{ id: "v1", price: 30, discount_percent: 0 }]);
+
+    const response = await POST(
+      new NextRequest("http://localhost:3000/api/stripe/webhook", {
+        method: "POST",
+        body: JSON.stringify(mockEvent),
+        headers: { "stripe-signature": "valid_sig" },
+      })
+    );
+    expect(response.status).toBe(400);
+    expect(mockSaveOrder).not.toHaveBeenCalled();
+  });
+
   it("blocks order save when prices do not match amount_total", async () => {
     const items = [
       { variantId: "v1", productId: "p1", sku: "sku-1", quantity: 1 },

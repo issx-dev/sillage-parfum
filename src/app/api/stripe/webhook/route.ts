@@ -4,7 +4,8 @@ import { stripe } from "@/lib/stripe";
 import { saveOrder } from "@/lib/data/orders";
 import { query } from "@/lib/db";
 import { env } from "@/lib/env";
-import { getUnitPriceCents } from "@/lib/utils";
+import { getUnitPriceCents, getShippingCents } from "@/lib/utils";
+import { NON_PENINSULAR_POSTAL_PREFIXES } from "@/lib/constants";
 import type { Order } from "@/types";
 
 export async function POST(request: NextRequest) {
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
 
       if (variantIds.length > 0) {
         const priceRows = (await query(
-          "SELECT v.variant_id AS id, v.price, p.discount_percent FROM variants v JOIN products p ON p.product_id = v.product_id WHERE v.variant_id = ANY($1)",
+          "SELECT v.variant_id AS id, v.price::float8 AS price, p.discount_percent FROM variants v JOIN products p ON p.product_id = v.product_id WHERE v.variant_id = ANY($1)",
           [variantIds]
         )) as Array<{ id: string; price: number; discount_percent: number }>;
 
@@ -107,6 +108,20 @@ export async function POST(request: NextRequest) {
         // coupons don't make a paid order fail verification.
         const actualTotalCents = session.amount_subtotal ?? session.amount_total ?? 0;
 
+        const shippingCharged = session.total_details?.amount_shipping;
+        if (
+          shippingCharged !== undefined &&
+          shippingCharged !== getShippingCents(expectedTotalCents)
+        ) {
+          console.error(
+            `[Webhook CRITICAL] Shipping mismatch: expected ${getShippingCents(expectedTotalCents)} cents, got ${shippingCharged} cents`
+          );
+          return NextResponse.json(
+            { error: "Price verification failed" },
+            { status: 400 }
+          );
+        }
+
         if (expectedTotalCents !== actualTotalCents) {
           console.error(
             `[Webhook CRITICAL] Price mismatch: expected ${expectedTotalCents} cents, got ${actualTotalCents} cents`
@@ -117,6 +132,18 @@ export async function POST(request: NextRequest) {
           );
         }
       }
+    }
+
+    // Stripe can only restrict shipping by country, so flag orders shipped
+    // outside the peninsula (we do not deliver there) for manual handling.
+    const postalCode = session.shipping_details?.address?.postal_code?.trim();
+    if (
+      postalCode &&
+      NON_PENINSULAR_POSTAL_PREFIXES.includes(postalCode.slice(0, 2))
+    ) {
+      console.error(
+        `[Webhook CRITICAL] Non-peninsular shipping address (${postalCode}) on session ${session.id}: refund or contact customer`
+      );
     }
 
     const result = await saveOrder(order, event.id);

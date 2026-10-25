@@ -130,6 +130,40 @@ describe("POST /api/stripe/checkout", () => {
     expect(params.line_items[0].quantity).toBe(2);
   });
 
+  it("adds the flat shipping fee below the free-shipping threshold", async () => {
+    mockGetVariant.mockResolvedValueOnce({ product: mockProduct, variant: mockVariant });
+    mockCreate.mockResolvedValueOnce({ id: "cs", url: "https://checkout.stripe.com/x" } as any);
+    const req = (qty: number) =>
+      new NextRequest("http://localhost:3000/api/stripe/checkout", {
+        method: "POST",
+        body: JSON.stringify({ items: [{ productId: "sauvage-dior", variantId: "sauvage-050", quantity: qty }] }),
+        headers: { origin: "http://localhost:3000" },
+      });
+    // Variant is 79 € → above the 50 € threshold → free shipping.
+    await POST(req(1));
+    let params = mockCreate.mock.calls[0]![0] as any;
+    expect(params.shipping_options[0].shipping_rate_data.fixed_amount.amount).toBe(0);
+
+    mockGetVariant.mockResolvedValueOnce({ product: mockProduct, variant: { ...mockVariant, price: 30 } });
+    mockCreate.mockResolvedValueOnce({ id: "cs", url: "https://checkout.stripe.com/x" } as any);
+    await POST(req(1));
+    params = mockCreate.mock.calls[1]![0] as any;
+    expect(params.shipping_options[0].shipping_rate_data.fixed_amount.amount).toBe(500);
+  });
+
+  it("rejects quantities above available stock with 409", async () => {
+    mockGetVariant.mockResolvedValueOnce({ product: mockProduct, variant: { ...mockVariant, stock: 1 } });
+    const response = await POST(
+      new NextRequest("http://localhost:3000/api/stripe/checkout", {
+        method: "POST",
+        body: JSON.stringify({ items: [{ productId: "sauvage-dior", variantId: "sauvage-050", quantity: 3 }] }),
+        headers: { origin: "http://localhost:3000" },
+      })
+    );
+    expect(response.status).toBe(409);
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
+
   it("rejects empty cart with 400", async () => {
     const request = new NextRequest("http://localhost:3000/api/stripe/checkout", {
       method: "POST",

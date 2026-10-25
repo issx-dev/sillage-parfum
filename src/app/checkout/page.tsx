@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useCartStore } from "@/store/cartStore";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getShippingCents } from "@/lib/utils";
 
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import { ShoppingBag, CreditCard } from "lucide-react";
 export default function CheckoutPage() {
   const items = useCartStore((s) => s.items);
   const total = useCartStore((s) => s.getTotal());
+  const shippingCost = getShippingCents(Math.round(total * 100)) / 100;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -76,9 +77,13 @@ export default function CheckoutPage() {
                 </li>
               ))}
             </ul>
-            <div className="border-t border-gray-light pt-4 flex justify-between">
+            <div className="border-t border-gray-light pt-4 flex justify-between text-sm">
+              <span>Envío (solo península)</span>
+              <span>{shippingCost === 0 ? "Gratis" : formatPrice(shippingCost)}</span>
+            </div>
+            <div className="pt-2 flex justify-between">
               <span className="font-medium">Total</span>
-              <span className="font-serif text-xl">{formatPrice(total)}</span>
+              <span className="font-serif text-xl">{formatPrice(total + shippingCost)}</span>
             </div>
           </div>
 

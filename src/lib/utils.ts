@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from "@/lib/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -45,4 +46,13 @@ export function getUnitPriceCents(price: number, discountPercent: number): numbe
   if (!Number.isFinite(discountPercent) || discountPercent <= 0) return baseCents;
   const clamped = Math.min(100, discountPercent);
   return Math.round(baseCents * (1 - clamped / 100));
+}
+
+/**
+ * Shipping fee in cents for a given items subtotal (after product discounts).
+ * Free from FREE_SHIPPING_THRESHOLD; otherwise the flat peninsular fee.
+ */
+export function getShippingCents(subtotalCents: number): number {
+  if (subtotalCents <= 0) return 0;
+  return subtotalCents >= FREE_SHIPPING_THRESHOLD * 100 ? 0 : SHIPPING_COST * 100;
 }

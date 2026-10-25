@@ -77,7 +77,7 @@ async function hydrateProductsWithVariants(
   const productIds = productRows.map((r) => r.product_id);
 
   const variantRows = (await db`
-    SELECT variant_id, product_id, size_ml, price, stock, sku 
+    SELECT variant_id, product_id, size_ml, price::float8 AS price, stock, sku 
     FROM variants 
     WHERE product_id = ANY(${productIds}) 
     ORDER BY size_ml

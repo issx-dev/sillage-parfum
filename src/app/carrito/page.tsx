@@ -4,13 +4,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getShippingCents } from "@/lib/utils";
+import { FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function CarritoPage() {
   const items = useCartStore((s) => s.items);
   const total = useCartStore((s) => s.getTotal());
+  const shippingCost = getShippingCents(Math.round(total * 100)) / 100;
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const freeShippingRemaining = useCartStore((s) => s.getFreeShippingRemaining());
@@ -137,7 +139,7 @@ export default function CarritoPage() {
                   <div className="h-1 bg-gray-light rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gold origin-left transition-transform duration-300"
-                      style={{ transform: `scaleX(${total / 50})` }}
+                      style={{ transform: `scaleX(${Math.min(total / FREE_SHIPPING_THRESHOLD, 1)})` }}
                     />
                   </div>
                 </div>
@@ -145,9 +147,17 @@ export default function CarritoPage() {
                 <p className="text-sm text-gold mb-4">¡Envío gratis aplicado!</p>
               )}
 
-              <div className="flex justify-between py-4 border-t border-gray-light">
+              <div className="flex justify-between pt-4 border-t border-gray-light text-sm">
                 <span>Subtotal</span>
-                <span className="font-serif text-xl">{formatPrice(total)}</span>
+                <span>{formatPrice(total)}</span>
+              </div>
+              <div className="flex justify-between py-2 text-sm">
+                <span>Envío (solo península)</span>
+                <span>{shippingCost === 0 ? "Gratis" : formatPrice(shippingCost)}</span>
+              </div>
+              <div className="flex justify-between py-4 border-t border-gray-light">
+                <span>Total</span>
+                <span className="font-serif text-xl">{formatPrice(total + shippingCost)}</span>
               </div>
 
               <Link href="/checkout">

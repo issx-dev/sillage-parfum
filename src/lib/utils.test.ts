@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { cn, formatPrice, formatSessionId, applyDiscount, getUnitPriceCents } from "./utils";
+import { cn, formatPrice, formatSessionId, applyDiscount, getUnitPriceCents, getShippingCents } from "./utils";
 
 describe("cn (className merger)", () => {
   it("joins truthy strings with a space", () => {
@@ -141,5 +141,13 @@ describe("getUnitPriceCents", () => {
 
   it("matches applyDiscount", () => {
     expect(applyDiscount(99, 15) * 100).toBe(getUnitPriceCents(99, 15));
+  });
+});
+
+describe("getShippingCents", () => {
+  it("charges 5 € below the threshold and is free from 50 €", () => {
+    expect(getShippingCents(4999)).toBe(500);
+    expect(getShippingCents(5000)).toBe(0);
+    expect(getShippingCents(0)).toBe(0);
   });
 });

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Heart, ArrowRight } from "lucide-react";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { cn, formatPrice } from "@/lib/utils";
+import { cn, formatPrice, applyDiscount } from "@/lib/utils";
 import type { Product } from "@/types";
 
 interface WishlistViewProps {
@@ -74,9 +74,7 @@ export function WishlistView({ allProducts }: WishlistViewProps) {
             const primaryVariant =
               product.variants.find((v) => v.stock > 0) ?? product.variants[0]!;
             const hasDiscount = product.discount_percent > 0;
-            const currentPrice = hasDiscount
-              ? primaryVariant.price * (1 - product.discount_percent / 100)
-              : primaryVariant.price;
+            const currentPrice = applyDiscount(primaryVariant.price, product.discount_percent);
 
             return (
               <div key={product.id} className="relative group">

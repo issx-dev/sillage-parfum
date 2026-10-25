@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { cn, formatPrice, formatSessionId, applyDiscount } from "./utils";
+import { cn, formatPrice, formatSessionId, applyDiscount, getUnitPriceCents } from "./utils";
 
 describe("cn (className merger)", () => {
   it("joins truthy strings with a space", () => {
@@ -128,5 +128,18 @@ describe("applyDiscount", () => {
 
   it("treats NaN discountPercent as 0", () => {
     expect(applyDiscount(50, NaN)).toBe(50);
+  });
+});
+
+
+describe("getUnitPriceCents", () => {
+  it("returns integer cents with the discount applied", () => {
+    expect(getUnitPriceCents(100, 20)).toBe(8000);
+    expect(getUnitPriceCents(99, 15)).toBe(8415);
+    expect(getUnitPriceCents(65, 0)).toBe(6500);
+  });
+
+  it("matches applyDiscount", () => {
+    expect(applyDiscount(99, 15) * 100).toBe(getUnitPriceCents(99, 15));
   });
 });

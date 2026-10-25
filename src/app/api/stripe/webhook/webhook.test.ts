@@ -57,6 +57,7 @@ function makeCheckoutEvent(
       object: {
         id: "cs_test_123",
         amount_total: amountTotal,
+        amount_subtotal: amountTotal,
         customer_email: "test@example.com",
         customer_details: { email: "test@example.com" },
         metadata: { items: JSON.stringify(items) },
@@ -111,8 +112,8 @@ describe("POST /api/stripe/webhook", () => {
     const mockEvent = makeCheckoutEvent(16000, items);
     mockConstructEvent.mockReturnValue(mockEvent as any);
     mockQuery.mockResolvedValueOnce([
-      { id: "v1", price: 90 },
-      { id: "v2", price: 70 },
+      { id: "v1", price: 90, discount_percent: 0 },
+      { id: "v2", price: 70, discount_percent: 0 },
     ]);
     mockSaveOrder.mockResolvedValueOnce({ success: true, isDuplicate: false });
 
@@ -135,6 +136,27 @@ describe("POST /api/stripe/webhook", () => {
 
   // ─── Spec §3.1 Scenario 2: Price mismatch blocks order save ───
 
+  it("verifies against discounted prices and tolerates promotion codes", async () => {
+    const items = [{ variantId: "v1", productId: "p1", sku: "sku-1", quantity: 2 }];
+
+    // 100 € with 20% off → 80.00 × 2 = 16000 subtotal; a coupon lowers amount_total.
+    const mockEvent = makeCheckoutEvent(16000, items);
+    (mockEvent.data.object as any).amount_total = 12000;
+    mockConstructEvent.mockReturnValue(mockEvent as any);
+    mockQuery.mockResolvedValueOnce([{ id: "v1", price: 100, discount_percent: 20 }]);
+    mockSaveOrder.mockResolvedValueOnce({ success: true, isDuplicate: false });
+
+    const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {
+      method: "POST",
+      body: JSON.stringify(mockEvent),
+      headers: { "stripe-signature": "valid_sig" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    expect(mockSaveOrder).toHaveBeenCalledTimes(1);
+  });
+
   it("blocks order save when prices do not match amount_total", async () => {
     const items = [
       { variantId: "v1", productId: "p1", sku: "sku-1", quantity: 1 },
@@ -146,8 +168,8 @@ describe("POST /api/stripe/webhook", () => {
     const mockEvent = makeCheckoutEvent(15000, items);
     mockConstructEvent.mockReturnValue(mockEvent as any);
     mockQuery.mockResolvedValueOnce([
-      { id: "v1", price: 90 },
-      { id: "v2", price: 70 },
+      { id: "v1", price: 90, discount_percent: 0 },
+      { id: "v2", price: 70, discount_percent: 0 },
     ]);
 
     const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {
@@ -172,7 +194,7 @@ describe("POST /api/stripe/webhook", () => {
     // DB only finds v1, not "gone"
     const mockEvent = makeCheckoutEvent(16000, items);
     mockConstructEvent.mockReturnValue(mockEvent as any);
-    mockQuery.mockResolvedValueOnce([{ id: "v1", price: 90 }]);
+    mockQuery.mockResolvedValueOnce([{ id: "v1", price: 90, discount_percent: 0 }]);
 
     const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {
       method: "POST",
@@ -297,7 +319,7 @@ describe("POST /api/stripe/webhook", () => {
     // Price 79 × qty 2 = 158.00 → 15800 cents
     const mockEvent = makeCheckoutEvent(15800, items);
     mockConstructEvent.mockReturnValue(mockEvent as any);
-    mockQuery.mockResolvedValueOnce([{ id: "v1", price: 79 }]);
+    mockQuery.mockResolvedValueOnce([{ id: "v1", price: 79, discount_percent: 0 }]);
     mockSaveOrder.mockResolvedValueOnce({ success: true, isDuplicate: false });
 
     const request = new NextRequest("http://localhost:3000/api/stripe/webhook", {

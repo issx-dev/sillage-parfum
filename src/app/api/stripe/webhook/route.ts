@@ -4,6 +4,7 @@ import { stripe } from "@/lib/stripe";
 import { saveOrder } from "@/lib/data/orders";
 import { query } from "@/lib/db";
 import { env } from "@/lib/env";
+import { getUnitPriceCents } from "@/lib/utils";
 import type { Order } from "@/types";
 
 export async function POST(request: NextRequest) {
@@ -77,9 +78,9 @@ export async function POST(request: NextRequest) {
 
       if (variantIds.length > 0) {
         const priceRows = (await query(
-          "SELECT id, price FROM variants WHERE id = ANY($1)",
+          "SELECT v.variant_id AS id, v.price, p.discount_percent FROM variants v JOIN products p ON p.product_id = v.product_id WHERE v.variant_id = ANY($1)",
           [variantIds]
-        )) as Array<{ id: string; price: number }>;
+        )) as Array<{ id: string; price: number; discount_percent: number }>;
 
         // Check that all ordered variants were found in the DB.
         if (priceRows.length !== new Set(variantIds).size) {
@@ -93,14 +94,18 @@ export async function POST(request: NextRequest) {
         }
 
         // Calculate expected total in cents to avoid floating-point drift.
-        const priceMap = new Map(priceRows.map((r) => [r.id, r.price]));
+        const priceMap = new Map(
+          priceRows.map((r) => [r.id, getUnitPriceCents(r.price, r.discount_percent)])
+        );
         const expectedTotalCents = parsedItems.reduce(
           (sum, item) =>
-            sum + Math.round((priceMap.get(item.variantId) ?? 0) * 100) * item.quantity,
+            sum + (priceMap.get(item.variantId) ?? 0) * item.quantity,
           0
         );
 
-        const actualTotalCents = session.amount_total ?? 0;
+        // Compare against the subtotal (before promotion codes), so legitimate
+        // coupons don't make a paid order fail verification.
+        const actualTotalCents = session.amount_subtotal ?? session.amount_total ?? 0;
 
         if (expectedTotalCents !== actualTotalCents) {
           console.error(

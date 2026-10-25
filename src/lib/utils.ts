@@ -31,9 +31,18 @@ export function formatSessionId(sessionId: string): string {
  * to identity (no discount) — never returns a negative price.
  */
 export function applyDiscount(price: number, discountPercent: number): number {
+  return getUnitPriceCents(price, discountPercent) / 100;
+}
+
+/**
+ * Final unit price in integer cents after the product discount.
+ * Single source of truth for what the storefront shows, what checkout
+ * charges and what the webhook verifies.
+ */
+export function getUnitPriceCents(price: number, discountPercent: number): number {
   if (!Number.isFinite(price) || price < 0) return 0;
-  if (!Number.isFinite(discountPercent) || discountPercent <= 0) return price;
+  const baseCents = Math.round(price * 100);
+  if (!Number.isFinite(discountPercent) || discountPercent <= 0) return baseCents;
   const clamped = Math.min(100, discountPercent);
-  // Round to 2 decimals to match the cent precision used everywhere else.
-  return Math.round(price * (1 - clamped / 100) * 100) / 100;
+  return Math.round(baseCents * (1 - clamped / 100));
 }

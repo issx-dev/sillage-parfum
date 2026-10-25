@@ -66,7 +66,7 @@ export async function saveOrder(
     // Decrement stock for each variant in the order.
     for (const item of order.items) {
       const stockResult = await txQuery(
-        `UPDATE variants SET stock = stock - $1 WHERE id = $2 AND stock >= $1 RETURNING id`,
+        `UPDATE variants SET stock = stock - $1 WHERE variant_id = $2 AND stock >= $1 RETURNING variant_id`,
         [item.quantity, item.variantId]
       );
       if (stockResult.length === 0) {

@@ -2,6 +2,7 @@ import "server-only";
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getVariant } from "@/lib/data";
+import { getUnitPriceCents } from "@/lib/utils";
 import type { CartItem } from "@/types";
 
 const MAX_QUANTITY_PER_ITEM = 10;
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
       productName: string;
       brand: string;
       size_ml: number;
-      price: number;
+      unitAmountCents: number;
       sku: string;
       image?: string;
       quantity: number;
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
         productName: product.name,
         brand: product.brand,
         size_ml: variant.size_ml,
-        price: variant.price,
+        unitAmountCents: getUnitPriceCents(variant.price, product.discount_percent),
         sku: variant.sku,
         ...(product.images?.[0] ? { image: product.images[0] } : {}),
         quantity: Math.min(
@@ -88,7 +89,7 @@ export async function POST(request: NextRequest) {
               name: `${item.productName} - ${item.size_ml}ml`,
               ...(imageUrl ? { images: [imageUrl] } : {}),
             },
-            unit_amount: Math.round(item.price * 100),
+            unit_amount: item.unitAmountCents,
           },
           quantity: item.quantity,
         };

@@ -135,7 +135,7 @@ describe("saveOrder", () => {
     expect(update1[0]).toContain("UPDATE variants");
     expect(update1[0]).toContain("stock = stock - $1");
     expect(update1[0]).toContain("stock >= $1");
-    expect(update1[0]).toContain("RETURNING id");
+    expect(update1[0]).toContain("WHERE variant_id = $2");
     expect(update1[1]).toEqual([1, "v1"]); // [quantity, variantId]
 
     const update2 = mockQuery.mock.calls[2]!;

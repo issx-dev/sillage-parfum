@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Search, X, ArrowUpRight } from "lucide-react";
 import type { Product } from "@/types";
-import { formatPrice, cn } from "@/lib/utils";
+import { formatPrice, applyDiscount, cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -196,9 +196,7 @@ function ResultRow({
 }) {
   const defaultVariant = product.variants[0]!;
   const hasDiscount = product.discount_percent > 0;
-  const currentPrice = hasDiscount
-    ? defaultVariant.price * (1 - product.discount_percent / 100)
-    : defaultVariant.price;
+  const currentPrice = applyDiscount(defaultVariant.price, product.discount_percent);
 
   return (
     <Link

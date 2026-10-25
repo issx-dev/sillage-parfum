@@ -108,6 +108,28 @@ describe("POST /api/stripe/checkout", () => {
     expect(sessionParams.allow_promotion_codes).toBe(true);
   });
 
+  it("charges the discounted unit price", async () => {
+    mockGetVariant.mockResolvedValueOnce({
+      product: { ...mockProduct, discount_percent: 20 },
+      variant: { ...mockVariant, price: 100 },
+    });
+    mockCreate.mockResolvedValueOnce({ id: "cs_test", url: "https://checkout.stripe.com/x" } as any);
+
+    const request = new NextRequest("http://localhost:3000/api/stripe/checkout", {
+      method: "POST",
+      body: JSON.stringify({
+        items: [{ productId: "sauvage-dior", variantId: "sauvage-050", quantity: 2 }],
+      }),
+      headers: { origin: "http://localhost:3000" },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+    const params = mockCreate.mock.calls[0]![0] as any;
+    expect(params.line_items[0].price_data.unit_amount).toBe(8000);
+    expect(params.line_items[0].quantity).toBe(2);
+  });
+
   it("rejects empty cart with 400", async () => {
     const request = new NextRequest("http://localhost:3000/api/stripe/checkout", {
       method: "POST",

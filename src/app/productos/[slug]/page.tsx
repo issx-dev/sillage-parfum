@@ -17,9 +17,10 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const product = await getProductBySlug(params.slug);
-  if (!product) return { title: "Producto no encontrado" };
-
-  if (!product.variants || product.variants.length === 0) {
+  // Throwing here (metadata resolves before the body streams) makes the
+  // response a real 404; notFound() only inside the page would leave a 200
+  // "soft 404" because of the root loading.tsx.
+  if (!product || !product.variants || product.variants.length === 0) {
     notFound();
   }
   const lowestPrice = Math.min(...product.variants.map((v) => v.price));

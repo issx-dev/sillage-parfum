@@ -13,7 +13,10 @@ async function checkRateLimit(
   path: string
 ): Promise<RateLimitResult | null> {
   // Stripe routes: 10/min per IP
-  const isStripe = path.startsWith("/api/stripe/");
+  // The webhook is called by Stripe's servers (shared IPs, bursts at peak
+  // times) and is authenticated by its signature, so it must not be throttled.
+  const isStripe =
+    path.startsWith("/api/stripe/") && !path.startsWith("/api/stripe/webhook");
   // Search routes: 30/min per IP
   const isSearch = path.startsWith("/api/search") || path.startsWith("/api/cart/");
 

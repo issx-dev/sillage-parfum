@@ -46,7 +46,7 @@ jobs:
 
       - name: Setup Database Schema and Seed
         run: |
-          PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d ci -f docs/database/schema.sql
+          PGPASSWORD=postgres psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U postgres -d ci -f docs/database/schema.sql
           pnpm seed
         env:
           STRIPE_SECRET_KEY: sk_test_ci_placeholder

@@ -27,12 +27,15 @@ CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders (created_at DESC);
 -- Enable Row Level Security
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 
--- Policy: Only service role can read/write orders
-CREATE POLICY "Service role can manage orders"
-  ON orders
-  FOR ALL
-  USING (auth.role() = 'service_role')
-  WITH CHECK (auth.role() = 'service_role');
+-- Policy: Only service role can read/write orders (skipped on plain Postgres,
+-- where the Supabase `service_role` role does not exist).
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
+    DROP POLICY IF EXISTS "Service role can manage orders" ON orders;
+    CREATE POLICY "Service role can manage orders" ON orders FOR ALL TO service_role USING (true) WITH CHECK (true);
+  END IF;
+END $$;
 
 -- Products Table Schema
 CREATE TABLE IF NOT EXISTS products (
@@ -59,16 +62,19 @@ CREATE INDEX IF NOT EXISTS idx_products_slug ON products (slug);
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Allow public read access to products, write only by service role
-CREATE POLICY "Allow public read access to products"
-  ON products FOR SELECT
-  TO public
-  USING (true);
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "Allow public read access to products" ON products;
+    CREATE POLICY "Allow public read access to products" ON products FOR SELECT TO public USING (true);
+END $$;
 
-CREATE POLICY "Service role can manage products"
-  ON products FOR ALL
-  TO service_role
-  USING (true)
-  WITH CHECK (true);
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
+    DROP POLICY IF EXISTS "Service role can manage products" ON products;
+    CREATE POLICY "Service role can manage products" ON products FOR ALL TO service_role USING (true) WITH CHECK (true);
+  END IF;
+END $$;
 
 -- Variants Table Schema
 CREATE TABLE IF NOT EXISTS variants (
@@ -88,13 +94,16 @@ CREATE INDEX IF NOT EXISTS idx_variants_product_id ON variants (product_id);
 ALTER TABLE variants ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Allow public read access to variants, write only by service role
-CREATE POLICY "Allow public read access to variants"
-  ON variants FOR SELECT
-  TO public
-  USING (true);
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "Allow public read access to variants" ON variants;
+    CREATE POLICY "Allow public read access to variants" ON variants FOR SELECT TO public USING (true);
+END $$;
 
-CREATE POLICY "Service role can manage variants"
-  ON variants FOR ALL
-  TO service_role
-  USING (true)
-  WITH CHECK (true);
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
+    DROP POLICY IF EXISTS "Service role can manage variants" ON variants;
+    CREATE POLICY "Service role can manage variants" ON variants FOR ALL TO service_role USING (true) WITH CHECK (true);
+  END IF;
+END $$;

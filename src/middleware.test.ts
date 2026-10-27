@@ -218,3 +218,32 @@ describe("inMemoryRateLimit — stale entry cleanup", () => {
     expect(rateLimitMap.get("mixed-d")?.length).toBe(1);
   });
 });
+import { NextRequest } from "next/server";
+import { middleware } from "./middleware";
+
+describe("middleware rate limiting scope", () => {
+  const call = (path: string) =>
+    middleware(
+      new NextRequest(`http://localhost:3000${path}`, {
+        method: "POST",
+        headers: { "x-forwarded-for": "203.0.113.9" },
+      })
+    );
+
+  beforeEach(() => {
+    rateLimitMap.clear();
+  });
+
+  it("never throttles the Stripe webhook (authenticated by signature)", async () => {
+    const statuses = [];
+    for (let i = 0; i < 15; i++) statuses.push((await call("/api/stripe/webhook")).status);
+    expect(statuses.every((s) => s === 200)).toBe(true);
+  });
+
+  it("still throttles checkout after 10 requests per minute", async () => {
+    const statuses = [];
+    for (let i = 0; i < 12; i++) statuses.push((await call("/api/stripe/checkout")).status);
+    expect(statuses.slice(0, 10).every((s) => s === 200)).toBe(true);
+    expect(statuses.slice(10)).toEqual([429, 429]);
+  });
+});

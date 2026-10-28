@@ -54,7 +54,7 @@ export default async function CuponesPage() {
         <div>
           <h2 className="font-serif text-3xl font-bold text-warm-900">Cupones</h2>
           <p className="mt-1 text-sm tabular-nums text-warm-500">
-            Válidos en Stripe y contra reembolso — sin deploy
+            Valen con tarjeta y en contrareembolso. Los cambios aplican al siguiente pedido
           </p>
         </div>
         <Link href="/admin/cupones/nuevo">

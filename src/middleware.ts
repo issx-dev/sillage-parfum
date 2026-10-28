@@ -57,8 +57,12 @@ async function checkRateLimit(
   ip: string,
   path: string
 ): Promise<RateLimitResult | null> {
-  // Auth routes: 5/min per IP+bucket (H1 — anti brute-force / enumeración).
-  const isAuth = path.startsWith("/api/auth/");
+  // Credential endpoints: 5/min per IP+bucket (H1 — anti brute-force / enumeración).
+  // Only the routes that accept a password are throttled that hard: /api/auth/me
+  // is the session probe the account page calls on every visit (and logout), so
+  // sharing the 5/min bucket made normal navigation look like a logged-out user (429).
+  const isAuth = path.startsWith("/api/auth/login") || path.startsWith("/api/auth/register");
+  const isSession = path.startsWith("/api/auth/me") || path.startsWith("/api/auth/logout");
   // Stripe routes: 10/min per IP
   // The webhook is called by Stripe's servers (shared IPs, bursts at peak
   // times) and is authenticated by its signature, so it must not be throttled.
@@ -67,10 +71,10 @@ async function checkRateLimit(
   // Search routes: 30/min per IP
   const isSearch = path.startsWith("/api/search") || path.startsWith("/api/cart/");
 
-  if (!isAuth && !isStripe && !isSearch) return null;
+  if (!isAuth && !isSession && !isStripe && !isSearch) return null;
 
-  const bucket = isAuth ? "auth" : isStripe ? "stripe" : "search";
-  const limit = isAuth ? 5 : isStripe ? 10 : 30;
+  const bucket = isAuth ? "auth" : isSession ? "session" : isStripe ? "stripe" : "search";
+  const limit = isAuth ? 5 : isSession ? 60 : isStripe ? 10 : 30;
 
   // Try Upstash Ratelimit if env vars are available
   const redisUrl = process.env.UPSTASH_REDIS_REST_URL;

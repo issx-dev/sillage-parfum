@@ -12,6 +12,11 @@ import { EmailLeadModal } from "./EmailLeadModal";
 describe("EmailLeadModal", () => {
   beforeEach(() => {
     localStorage.clear();
+    // The cookie banner has been answered, so the modal may arm its 5 s timer.
+    localStorage.setItem(
+      "sillage-consent",
+      JSON.stringify({ necessary: true, analytics: false, marketing: false, decidedAt: "2026-01-01T00:00:00Z" })
+    );
     vi.useFakeTimers();
     vi.stubGlobal(
       "fetch",
@@ -46,6 +51,28 @@ describe("EmailLeadModal", () => {
     await vi.advanceTimersByTimeAsync(0);
     expect(screen.getByText(/cupón activado/i)).toBeInTheDocument();
     expect(localStorage.getItem("chogan_discount_code")).toBe("BIENVENIDA10");
+  });
+
+  it("waits for the cookie banner decision before opening", async () => {
+    localStorage.removeItem("sillage-consent");
+    render(<EmailLeadModal />);
+
+    await vi.advanceTimersByTimeAsync(20000);
+    expect(screen.queryByPlaceholderText(/correo/i)).not.toBeInTheDocument();
+
+    window.dispatchEvent(new Event("sillage-consent-decided"));
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(screen.getByPlaceholderText(/correo/i)).toBeInTheDocument();
+  });
+
+  it("closes with Escape and remembers it", async () => {
+    render(<EmailLeadModal />);
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(localStorage.getItem("chogan_lead_dismissed")).toBe("true");
   });
 
   it("treats an already-subscribed email (409) as success", async () => {

@@ -60,7 +60,7 @@ describe("AccountPage", () => {
 
     expect(await screen.findByRole("heading", { name: "Ana Ruiz" })).toBeInTheDocument();
     expect(screen.getByText("Pagado")).toBeInTheDocument();
-    expect(screen.getByText("Enviado")).toBeInTheDocument();
+    expect(screen.getByText("En camino")).toBeInTheDocument();
     expect(screen.getAllByText(/56,70/).length).toBeGreaterThan(0);
     expect(screen.getByText(/Contrareembolso/)).toBeInTheDocument();
   });

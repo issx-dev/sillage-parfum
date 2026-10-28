@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-const CONSENT_KEY = "sillage-consent";
+export const CONSENT_KEY = "sillage-consent";
+export const CONSENT_DECIDED_EVENT = "sillage-consent-decided";
 
 interface Consent {
   necessary: true;
@@ -41,6 +42,8 @@ function saveConsent(analytics: boolean, marketing: boolean): void {
   } catch {
     /* Sin almacenamiento no hay persistencia: el banner volverá a salir. */
   }
+  // Lets other overlays (e.g. the newsletter modal) wait until this one is dealt with.
+  window.dispatchEvent(new Event(CONSENT_DECIDED_EVENT));
 }
 
 /**

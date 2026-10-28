@@ -7,6 +7,7 @@ import { query } from "@/lib/db";
 import {
   countProducts,
   countVariantStock,
+  readOrderDetail,
   readProductsPage,
   readStockCounts,
   readVariantStock,
@@ -68,5 +69,56 @@ describe("product filters", () => {
   it("min price ignores invalid (<= 0) variants", async () => {
     await readProductsPage({});
     expect(mockQuery.mock.calls[0]![0]).toContain("MIN(v.price) FILTER (WHERE v.price > 0)");
+  });
+});
+
+describe("readOrderDetail", () => {
+  const baseRow = {
+    id: "o1", stripe_event_id: "evt", stripe_session_id: "cs_1", customer_email: "a@b.c",
+    amount_total: 4000, currency: "eur", payment_status: "paid", fulfillment_status: "pendiente",
+    created_at: "2026-10-28T10:00:00Z",
+  };
+
+  it("fills name/size/price for legacy orders that only stored ids", async () => {
+    mockQuery.mockResolvedValueOnce([
+      { ...baseRow, order_data: { items: [{ variantId: "v1", productId: "p1", sku: "S", quantity: 1 }] } },
+    ] as unknown[]);
+    mockQuery.mockResolvedValueOnce([
+      { variant_id: "v1", name: "Ruby Love", brand: "Chogan", size_ml: 70, price: "35.00", discount_percent: 0 },
+    ] as unknown[]);
+
+    const order = await readOrderDetail("o1");
+
+    expect(order!.items[0]).toMatchObject({ name: "Ruby Love", size_ml: 70, price: 35, quantity: 1 });
+    expect(Number.isFinite(order!.items[0]!.price)).toBe(true);
+  });
+
+  it("never yields NaN for a deleted variant and keeps address/payment data", async () => {
+    mockQuery.mockResolvedValueOnce([
+      {
+        ...baseRow,
+        order_data: {
+          items: [{ variantId: "gone", productId: "p", quantity: 2 }],
+          paymentMethod: "cod",
+          couponCode: "SILLAGE2",
+          shipping: { firstName: "Ana", lastName: "G", address: "Calle 1", city: "Madrid", postalCode: "28001", phone: "600" },
+        },
+      },
+    ] as unknown[]);
+    mockQuery.mockResolvedValueOnce([] as unknown[]);
+
+    const order = await readOrderDetail("o1");
+
+    expect(order!.items[0]).toMatchObject({ name: "Producto eliminado", price: 0 });
+    expect(order).toMatchObject({ paymentMethod: "cod", couponCode: "SILLAGE2" });
+    expect(order!.shipping?.postalCode).toBe("28001");
+  });
+
+  it("does not query the catalogue when items already carry a snapshot", async () => {
+    mockQuery.mockResolvedValueOnce([
+      { ...baseRow, order_data: { items: [{ variantId: "v1", name: "X", price: 10, size_ml: 50, quantity: 1 }] } },
+    ] as unknown[]);
+    await readOrderDetail("o1");
+    expect(mockQuery).toHaveBeenCalledTimes(1);
   });
 });

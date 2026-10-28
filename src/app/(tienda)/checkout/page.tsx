@@ -28,7 +28,8 @@ export default function CheckoutPage() {
   const [couponError, setCouponError] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [subscribeNewsletter, setSubscribeNewsletter] = useState(true);
+  // Opt-in: a pre-ticked box is not valid consent under RGPD/AEPD.
+  const [subscribeNewsletter, setSubscribeNewsletter] = useState(false);
 
   // Form Fields (Gymshark + Sillage Luxury Checkout)
   const [email, setEmail] = useState("");
@@ -347,6 +348,15 @@ export default function CheckoutPage() {
               <div className="space-y-4">
                 {/* Opción 1: Contra reembolso */}
                 <div
+                  role="radio"
+                  aria-checked={paymentMethod === "cod"}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setPaymentMethod("cod");
+                    }
+                  }}
                   onClick={() => setPaymentMethod("cod")}
                   className={`flex items-center justify-between p-4 rounded-md border cursor-pointer transition-all ${
                     paymentMethod === "cod"
@@ -367,59 +377,40 @@ export default function CheckoutPage() {
                   <span className="text-xs text-gray-mid font-light">Pago al recibir</span>
                 </div>
 
-                {/* Aceptación de condiciones (obligatoria para pagar) */}
-                <label className="flex items-start gap-2.5 text-xs text-charcoal/80 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={acceptedTerms}
-                    onChange={(e) => setAcceptedTerms(e.target.checked)}
-                    className="mt-0.5 rounded border-warm-300 text-gold-dark focus:ring-gold"
-                  />
-                  <span>
-                    He leído y acepto las{" "}
-                    <Link href="/legal/condiciones" target="_blank" className="font-medium text-gold-dark underline-offset-4 hover:underline">
-                      Condiciones de compra
-                    </Link>
-                    , el <Link href="/legal/aviso" target="_blank" className="font-medium text-gold-dark underline-offset-4 hover:underline">Aviso legal</Link> y la{" "}
-                    <Link href="/legal/privacidad" target="_blank" className="font-medium text-gold-dark underline-offset-4 hover:underline">
-                      Política de privacidad
-                    </Link>
-                    .
-                  </span>
-                </label>
-
-                {/* Botón de confirmación para Contra Reembolso */}
-                {paymentMethod === "cod" && (
-                  <button
-                    type="submit"
-                    disabled={loading || !acceptedTerms}
-                    className="w-full py-4 bg-charcoal hover:bg-black text-white font-semibold text-xs uppercase tracking-[0.18em] rounded-md shadow-md transition-all cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {loading ? "Procesando pedido..." : "PAGAR AHORA (CONTRA REEMBOLSO)"}
-                  </button>
-                )}
-
-                {/* Separador - o - */}
-                <div className="relative flex items-center justify-center py-2">
-                  <div className="border-t border-warm-200 w-full" />
-                  <span className="absolute bg-cream/20 px-4 text-xs font-serif italic text-gray-mid">
-                    o
-                  </span>
-                </div>
-
-                {/* Opción 2: Pagar con Stripe */}
+                {/* Opción 2: Tarjeta (Stripe) */}
                 <div className="space-y-3">
-                  <button
-                    type="button"
-                    onClick={handleStripeCheckout}
-                    disabled={loading || !acceptedTerms}
-                    className="w-full py-4 px-6 bg-slate-900 hover:bg-black text-white font-semibold text-xs uppercase tracking-[0.18em] rounded-md shadow-md transition-all flex items-center justify-center gap-2.5 cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                  <div
+                    role="radio"
+                    aria-checked={paymentMethod === "stripe"}
+                    tabIndex={0}
+                    onClick={() => setPaymentMethod("stripe")}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setPaymentMethod("stripe");
+                      }
+                    }}
+                    className={`flex items-center justify-between p-4 rounded-md border cursor-pointer transition-all ${
+                      paymentMethod === "stripe"
+                        ? "border-charcoal bg-warm-100/50 shadow-xs"
+                        : "border-warm-200 hover:border-warm-300 bg-white"
+                    }`}
                   >
-                    <CreditCard className="w-4.5 h-4.5 text-gold" />
-                    <span>PAGAR CON STRIPE</span>
-                  </button>
+                    <div className="flex items-center gap-3">
+                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                        paymentMethod === "stripe" ? "border-charcoal bg-charcoal" : "border-warm-300"
+                      }`}>
+                        {paymentMethod === "stripe" && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                      </div>
+                      <span className="font-medium text-sm text-charcoal flex items-center gap-2">
+                        <CreditCard className="w-4 h-4 text-gold-dark" /> Tarjeta
+                      </span>
+                    </div>
+                    <span className="text-xs text-gray-mid font-light">Pago seguro con Stripe</span>
+                  </div>
 
                   {/* FAQ / Módulo Informativo de Stripe */}
+                  {paymentMethod === "stripe" && (
                   <div className="bg-white border border-warm-200/80 rounded-md p-4 space-y-2.5">
                     <button
                       type="button"
@@ -444,6 +435,7 @@ export default function CheckoutPage() {
                       </div>
                     )}
                   </div>
+                  )}
                 </div>
 
               </div>
@@ -485,6 +477,8 @@ export default function CheckoutPage() {
               </div>
             </div>
 
+            {paymentMethod === "cod" ? (
+              <>
             {/* 3. ENTREGA (DIRECCIÓN) */}
             <div className="space-y-3 sm:space-y-4 pt-1">
               <h2 className="text-[11px] uppercase tracking-[0.2em] font-bold text-charcoal">
@@ -586,11 +580,65 @@ export default function CheckoutPage() {
               </div>
             </div>
 
+              </>
+            ) : (
+              <p className="rounded-md border border-warm-200 bg-white p-4 text-sm text-charcoal/80">
+                Introducirás la dirección de envío en la página de pago seguro de Stripe. Solo enviamos a la península.
+              </p>
+            )}
+
             {error && (
               <div className="p-4 bg-terracotta/10 text-terracotta rounded-md text-xs border border-terracotta/20 font-medium">
                 {error}
               </div>
             )}
+
+            {/* Condiciones + botón único de confirmación (al final, tras rellenar los datos) */}
+            <div className="space-y-4">
+                <label className="flex items-start gap-2.5 text-xs text-charcoal/80 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={acceptedTerms}
+                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                    className="mt-0.5 rounded border-warm-300 text-gold-dark focus:ring-gold"
+                  />
+                  <span>
+                    He leído y acepto las{" "}
+                    <Link href="/legal/condiciones" target="_blank" className="font-medium text-gold-dark underline-offset-4 hover:underline">
+                      Condiciones de compra
+                    </Link>
+                    , el <Link href="/legal/aviso" target="_blank" className="font-medium text-gold-dark underline-offset-4 hover:underline">Aviso legal</Link> y la{" "}
+                    <Link href="/legal/privacidad" target="_blank" className="font-medium text-gold-dark underline-offset-4 hover:underline">
+                      Política de privacidad
+                    </Link>
+                    .
+                  </span>
+                </label>
+
+
+              {paymentMethod === "cod" ? (
+                <button
+                  type="submit"
+                  disabled={loading || !acceptedTerms}
+                  className="w-full py-4 bg-charcoal hover:bg-black text-white font-semibold text-xs uppercase tracking-[0.18em] rounded-md shadow-md transition-all cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? "Procesando pedido..." : `Confirmar pedido · ${formatPrice(grandTotal)}`}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleStripeCheckout}
+                  disabled={loading || !acceptedTerms}
+                  className="w-full py-4 px-6 bg-charcoal hover:bg-black text-white font-semibold text-xs uppercase tracking-[0.18em] rounded-md shadow-md transition-all flex items-center justify-center gap-2.5 cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <CreditCard className="w-4 h-4 text-gold" aria-hidden />
+                  <span>{loading ? "Conectando..." : `Pagar con tarjeta · ${formatPrice(grandTotal)}`}</span>
+                </button>
+              )}
+              {!acceptedTerms && (
+                <p className="text-center text-xs text-gray-mid">Acepta las condiciones para continuar.</p>
+              )}
+            </div>
 
             {/* Links legales al pie del formulario */}
             <div className="pt-6 border-t border-warm-200/50 text-center text-xs text-gray-mid space-x-3">

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { X, Gift, Sparkles, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { CONSENT_KEY, CONSENT_DECIDED_EVENT } from "@/components/layout/CookieBanner";
 
 export function EmailLeadModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,14 +14,40 @@ export function EmailLeadModal() {
 
   useEffect(() => {
     // Check if user already dismissed or submitted lead modal
-    const hasSeenModal = localStorage.getItem("chogan_lead_dismissed");
-    if (!hasSeenModal) {
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-      }, 5000); // Trigger after 5 seconds of browsing
-      return () => clearTimeout(timer);
+    if (localStorage.getItem("chogan_lead_dismissed")) return;
+
+    // One interruption at a time: wait until the cookie banner has been answered.
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const arm = () => {
+      timer = setTimeout(() => setIsOpen(true), 5000); // 5 s after the cookie decision
+    };
+    const decided = () => {
+      try {
+        return localStorage.getItem(CONSENT_KEY) !== null;
+      } catch {
+        return true;
+      }
+    };
+    if (decided()) {
+      arm();
+    } else {
+      window.addEventListener(CONSENT_DECIDED_EVENT, arm, { once: true });
     }
+    return () => {
+      if (timer) clearTimeout(timer);
+      window.removeEventListener(CONSENT_DECIDED_EVENT, arm);
+    };
   }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const handleClose = () => {
     setIsOpen(false);
@@ -60,7 +87,12 @@ export function EmailLeadModal() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Regalo de bienvenida"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in"
+    >
       <div className="relative w-full max-w-md bg-white rounded-card shadow-2xl overflow-hidden border border-gold/30">
         <button
           onClick={handleClose}

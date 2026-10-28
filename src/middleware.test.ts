@@ -261,3 +261,30 @@ describe("middleware rate limiting scope", () => {
     expect(statuses.slice(10)).toEqual([429, 429]);
   });
 });
+
+describe("auth rate limiting scope", () => {
+  const call = (path: string) =>
+    middleware(
+      new NextRequest(`http://localhost:3000${path}`, {
+        method: "POST",
+        headers: { "x-forwarded-for": "198.51.100.7" },
+      })
+    );
+
+  beforeEach(() => {
+    rateLimitMap.clear();
+  });
+
+  it("keeps login throttled at 5/min", async () => {
+    const statuses = [];
+    for (let i = 0; i < 7; i++) statuses.push((await call("/api/auth/login")).status);
+    expect(statuses.slice(0, 5).every((s) => s === 200)).toBe(true);
+    expect(statuses.slice(5)).toEqual([429, 429]);
+  });
+
+  it("does not lock out the session probe (/api/auth/me) after a few page views", async () => {
+    const statuses = [];
+    for (let i = 0; i < 20; i++) statuses.push((await call("/api/auth/me")).status);
+    expect(statuses.every((s) => s === 200)).toBe(true);
+  });
+});

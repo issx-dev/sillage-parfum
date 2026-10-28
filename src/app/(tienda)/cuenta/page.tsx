@@ -1,5 +1,6 @@
 "use client";
 
+import { SHIPPING_SUMMARY, DELIVERY_TIME } from "@/lib/shipping-copy";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -43,16 +44,16 @@ interface MineOrder {
 
 const PAYMENT_LABELS: Record<string, { label: string; cls: string }> = {
   paid: { label: "Pagado", cls: "bg-green-50 text-green-700 border-green-200" },
-  pending: { label: "Pendiente de pago", cls: "bg-amber-50 text-amber-700 border-amber-200" },
+  pending: { label: "Pago al recibir", cls: "bg-amber-50 text-amber-700 border-amber-200" },
   refunded: { label: "Reembolsado", cls: "bg-gray-100 text-gray-600 border-gray-200" },
   failed: { label: "Fallido", cls: "bg-red-50 text-red-600 border-red-200" },
 };
 
 const FULFILLMENT_LABELS: Record<string, { label: string; cls: string }> = {
-  pendiente: { label: "Pendiente", cls: "bg-warm-100 text-charcoal border-warm-200" },
+  pendiente: { label: "Pedido recibido", cls: "bg-warm-100 text-charcoal border-warm-200" },
   en_preparacion: { label: "En preparación", cls: "bg-blue-50 text-blue-700 border-blue-200" },
-  enviado: { label: "Enviado", cls: "bg-violet-50 text-violet-700 border-violet-200" },
-  recibido: { label: "Recibido", cls: "bg-green-50 text-green-700 border-green-200" },
+  enviado: { label: "En camino", cls: "bg-violet-50 text-violet-700 border-violet-200" },
+  recibido: { label: "Entregado", cls: "bg-green-50 text-green-700 border-green-200" },
 };
 
 function StatusBadge({ value, map }: { value: string; map: Record<string, { label: string; cls: string }> }) {
@@ -340,12 +341,12 @@ export default function AccountPage() {
 
             <section className="bg-black text-cream p-6">
               <h3 className="font-serif text-base flex items-center gap-2 border-b border-white/10 pb-2 mb-3">
-                <ShieldCheck className="w-4 h-4 text-gold" /> Beneficios VIP
+                <ShieldCheck className="w-4 h-4 text-gold" /> Tu compra
               </h3>
               <ul className="text-xs space-y-2 text-cream/80">
-                <li>✓ Envíos prioritarios 24-48h</li>
-                <li>✓ Opción de pago contra reembolso</li>
-                <li>✓ Acceso anticipado a promociones 2×63€</li>
+                <li>{SHIPPING_SUMMARY}, entrega en {DELIVERY_TIME}</li>
+                <li>Pago con tarjeta o contrareembolso</li>
+                <li>Devolución en 14 días</li>
               </ul>
             </section>
           </div>

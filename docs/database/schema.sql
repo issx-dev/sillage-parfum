@@ -161,3 +161,29 @@ BEGIN
     CREATE POLICY "Service role can manage newsletter_subscribers" ON newsletter_subscribers FOR ALL TO service_role USING (true) WITH CHECK (true);
   END IF;
 END $$;
+
+-- Coupons (backoffice /admin/cupones; read by the checkout via coupon-store.ts).
+-- The DB wins over the in-code fallback: a coupon that is not here (or inactive) is invalid,
+-- so the two coupons the storefront advertises are seeded below.
+CREATE TABLE IF NOT EXISTS coupons (
+  code TEXT PRIMARY KEY CHECK (code = upper(code) AND length(code) BETWEEN 3 AND 24),
+  percent_off INTEGER NOT NULL CHECK (percent_off BETWEEN 1 AND 90),
+  first_order_only BOOLEAN NOT NULL DEFAULT FALSE,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE coupons ENABLE ROW LEVEL SECURITY;
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
+    DROP POLICY IF EXISTS "Service role can manage coupons" ON coupons;
+    CREATE POLICY "Service role can manage coupons" ON coupons FOR ALL TO service_role USING (true) WITH CHECK (true);
+  END IF;
+END $$;
+
+INSERT INTO coupons (code, percent_off, first_order_only) VALUES
+  ('SILLAGE2', 10, FALSE),
+  ('BIENVENIDA10', 10, TRUE)
+ON CONFLICT (code) DO NOTHING;

@@ -1,4 +1,5 @@
 import "server-only";
+import { LOW_STOCK_THRESHOLD, type StockLevel, type ProductFilter } from "./stock-level";
 import { query, transaction } from "@/lib/db";
 import type { Order } from "@/types";
 import { mapFulfillmentStatus, type FulfillmentStatus } from "@/lib/data/fulfillment";
@@ -98,26 +99,38 @@ interface VariantStockDbRow {
 const STOCK_SELECT = `v.variant_id, v.product_id, p.name AS product_name, p.slug AS product_slug, p.images[1] AS product_image, v.size_ml, v.price, v.stock, v.sku
          FROM variants v JOIN products p ON p.product_id = v.product_id`;
 
-/** Stock real por variante (DB `variants` × `products`). Sin fallbacks locales. */
+function stockConds(search: string | undefined, level: StockLevel): { where: string; values: unknown[] } {
+  const q = search?.trim();
+  const conds: string[] = [];
+  const values: unknown[] = [];
+  if (q) {
+    values.push(`%${q}%`);
+    conds.push(`(p.name ILIKE $1 OR v.sku ILIKE $1 OR p.inspiration ILIKE $1)`);
+  }
+  if (level === "out") conds.push("v.stock = 0");
+  if (level === "low") conds.push(`v.stock BETWEEN 1 AND ${LOW_STOCK_THRESHOLD}`);
+  return { where: conds.length ? `WHERE ${conds.join(" AND ")}` : "", values };
+}
+
+/**
+ * Stock real por variante (DB `variants` x `products`). Sin fallbacks locales.
+ * Con un nivel (`out`/`low`) los más urgentes salen primero.
+ */
 export async function readVariantStock(
   search?: string,
-  opts?: { limit?: number; offset?: number }
+  opts?: { limit?: number; offset?: number; level?: StockLevel }
 ): Promise<VariantStockRow[]> {
-  const q = search?.trim();
+  const level = opts?.level ?? "all";
   const limit = Math.min(Math.max(opts?.limit ?? 50, 1), 100);
   const offset = Math.max(opts?.offset ?? 0, 0);
-  const rows = q
-    ? ((await query(
-        `SELECT ${STOCK_SELECT}
-         WHERE p.name ILIKE $1 OR v.sku ILIKE $1 OR p.inspiration ILIKE $1
-         ORDER BY p.name ASC, v.size_ml ASC LIMIT $2 OFFSET $3`,
-        [`%${q}%`, limit, offset]
-      )) as unknown as VariantStockDbRow[])
-    : ((await query(
-        `SELECT ${STOCK_SELECT}
-         ORDER BY p.name ASC, v.size_ml ASC LIMIT $1 OFFSET $2`,
-        [limit, offset]
-      )) as unknown as VariantStockDbRow[]);
+  const { where, values } = stockConds(search, level);
+  const order = level === "all" ? "p.name ASC, v.size_ml ASC" : "v.stock ASC, p.name ASC, v.size_ml ASC";
+  const rows = (await query(
+    `SELECT ${STOCK_SELECT}
+     ${where}
+     ORDER BY ${order} LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
+    [...values, limit, offset]
+  )) as unknown as VariantStockDbRow[];
 
   return rows.map((row) => ({
     variant_id: row.variant_id,
@@ -132,19 +145,26 @@ export async function readVariantStock(
   }));
 }
 
-/** Nº total de variantes (con el mismo filtro de búsqueda) para paginar. */
-export async function countVariantStock(search?: string): Promise<number> {
-  const q = search?.trim();
-  const rows = q
-    ? ((await query(
-        `SELECT COUNT(*)::int AS n FROM variants v JOIN products p ON p.product_id = v.product_id
-         WHERE p.name ILIKE $1 OR v.sku ILIKE $1 OR p.inspiration ILIKE $1`,
-        [`%${q}%`]
-      )) as unknown as { n: number }[])
-    : ((await query(
-        `SELECT COUNT(*)::int AS n FROM variants v`
-      )) as unknown as { n: number }[]);
+/** Nº total de variantes (con el mismo filtro) para paginar. */
+export async function countVariantStock(search?: string, level: StockLevel = "all"): Promise<number> {
+  const { where, values } = stockConds(search, level);
+  const rows = (await query(
+    `SELECT COUNT(*)::int AS n FROM variants v JOIN products p ON p.product_id = v.product_id ${where}`,
+    values
+  )) as unknown as { n: number }[];
   return rows[0]?.n ?? 0;
+}
+
+/** Recuentos globales (no solo de la página) para los filtros rápidos de stock. */
+export async function readStockCounts(): Promise<{ total: number; out: number; low: number }> {
+  const rows = (await query(
+    `SELECT COUNT(*)::int AS total,
+            COUNT(*) FILTER (WHERE stock = 0)::int AS out_n,
+            COUNT(*) FILTER (WHERE stock BETWEEN 1 AND ${LOW_STOCK_THRESHOLD})::int AS low_n
+     FROM variants`
+  )) as unknown as { total: number; out_n: number; low_n: number }[];
+  const r = rows[0];
+  return { total: r?.total ?? 0, out: r?.out_n ?? 0, low: r?.low_n ?? 0 };
 }
 
 // ── Productos (CRUD del panel) ────────────────────────────────────
@@ -165,11 +185,13 @@ export interface AdminProductRow {
   notes_base: string[];
   inspiration: string | null;
   variant_count: number;
+  /** Variantes con precio > 0: sin ninguna, la tienda oculta el producto. */
+  valid_variant_count: number;
   total_stock: number;
   min_price: number | null;
 }
 
-export interface AdminProductDetail extends Omit<AdminProductRow, "variant_count" | "total_stock" | "min_price"> {
+export interface AdminProductDetail extends Omit<AdminProductRow, "variant_count" | "valid_variant_count" | "total_stock" | "min_price"> {
   variants: {
     variant_id: string;
     size_ml: number;
@@ -197,6 +219,7 @@ interface AdminProductDbRow {
   notes_base: string[];
   inspiration: string | null;
   variant_count: string | number;
+  valid_variant_count: string | number;
   total_stock: string | number;
   min_price: string | number | null;
 }
@@ -218,58 +241,94 @@ function mapAdminProductRow(row: AdminProductDbRow): AdminProductRow {
     notes_base: row.notes_base ?? [],
     inspiration: row.inspiration ?? null,
     variant_count: Number(row.variant_count),
+    valid_variant_count: Number(row.valid_variant_count),
     total_stock: Number(row.total_stock),
     min_price: row.min_price === null ? null : Number(row.min_price),
   };
 }
 
+const PRODUCT_COLS_P = PRODUCT_COLUMNS.split(",").map((c) => `p.${c.trim()}`).join(", ");
+
+function productConds(
+  search: string | undefined,
+  filter: ProductFilter
+): { where: string; having: string; values: unknown[] } {
+  const q = search?.trim();
+  const conds: string[] = [];
+  const values: unknown[] = [];
+  if (q) {
+    values.push(`%${q}%`);
+    conds.push(
+      `(p.name ILIKE $1 OR p.brand ILIKE $1 OR p.slug ILIKE $1 OR p.inspiration ILIKE $1 OR EXISTS (SELECT 1 FROM variants v2 WHERE v2.product_id = p.product_id AND v2.sku ILIKE $1))`
+    );
+  }
+  if (filter === "sale") conds.push("p.discount_percent > 0");
+  // `hidden` = the storefront does not show it: no variant with a positive price.
+  const having =
+    filter === "out"
+      ? "HAVING COALESCE(SUM(v.stock), 0) = 0"
+      : filter === "hidden"
+        ? "HAVING COUNT(v.variant_id) FILTER (WHERE v.price > 0) = 0"
+        : "";
+  return { where: conds.length ? `WHERE ${conds.join(" AND ")}` : "", having, values };
+}
+
 /** Lista paginada de productos con agregados de variantes. */
 export async function readProductsPage(opts?: {
   search?: string;
+  filter?: ProductFilter;
   limit?: number;
   offset?: number;
 }): Promise<AdminProductRow[]> {
-  const q = opts?.search?.trim();
   const limit = Math.min(Math.max(opts?.limit ?? 20, 1), 100);
   const offset = Math.max(opts?.offset ?? 0, 0);
-  const base = `FROM products p LEFT JOIN variants v ON v.product_id = p.product_id`;
-  const rows = q
-    ? ((await query(
-        `SELECT ${PRODUCT_COLUMNS.split(",").map((c) => `p.${c.trim()}`).join(", ")},
-          COUNT(v.variant_id)::int AS variant_count,
-          COALESCE(SUM(v.stock), 0)::int AS total_stock,
-          MIN(v.price) AS min_price
-         ${base} WHERE p.name ILIKE $1 OR p.brand ILIKE $1 OR p.slug ILIKE $1 OR p.inspiration ILIKE $1
-         OR EXISTS (SELECT 1 FROM variants v2 WHERE v2.product_id = p.product_id AND v2.sku ILIKE $1)
-         GROUP BY ${PRODUCT_COLUMNS.split(",").map((c) => `p.${c.trim()}`).join(", ")}
-         ORDER BY p.created_at DESC, p.name ASC LIMIT $2 OFFSET $3`,
-        [`%${q}%`, limit, offset]
-      )) as unknown as AdminProductDbRow[])
-    : ((await query(
-        `SELECT ${PRODUCT_COLUMNS.split(",").map((c) => `p.${c.trim()}`).join(", ")},
-          COUNT(v.variant_id)::int AS variant_count,
-          COALESCE(SUM(v.stock), 0)::int AS total_stock,
-          MIN(v.price) AS min_price
-         ${base}
-         GROUP BY ${PRODUCT_COLUMNS.split(",").map((c) => `p.${c.trim()}`).join(", ")}
-         ORDER BY p.created_at DESC, p.name ASC LIMIT $1 OFFSET $2`,
-        [limit, offset]
-      )) as unknown as AdminProductDbRow[]);
+  const { where, having, values } = productConds(opts?.search, opts?.filter ?? "all");
+  const rows = (await query(
+    `SELECT ${PRODUCT_COLS_P},
+      COUNT(v.variant_id)::int AS variant_count,
+      COUNT(v.variant_id) FILTER (WHERE v.price > 0)::int AS valid_variant_count,
+      COALESCE(SUM(v.stock), 0)::int AS total_stock,
+      MIN(v.price) FILTER (WHERE v.price > 0) AS min_price
+     FROM products p LEFT JOIN variants v ON v.product_id = p.product_id
+     ${where}
+     GROUP BY ${PRODUCT_COLS_P}
+     ${having}
+     ORDER BY p.created_at DESC, p.name ASC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
+    [...values, limit, offset]
+  )) as unknown as AdminProductDbRow[];
   return rows.map(mapAdminProductRow);
 }
 
 /** Nº total de productos (mismo filtro) para paginar. */
-export async function countProducts(search?: string): Promise<number> {
-  const q = search?.trim();
-  const rows = q
-    ? ((await query(
-        `SELECT COUNT(*)::int AS n FROM products p WHERE p.name ILIKE $1 OR p.brand ILIKE $1 OR p.slug ILIKE $1 OR p.inspiration ILIKE $1 OR EXISTS (SELECT 1 FROM variants v2 WHERE v2.product_id = p.product_id AND v2.sku ILIKE $1)`,
-        [`%${q}%`]
-      )) as unknown as { n: number }[])
-    : ((await query(`SELECT COUNT(*)::int AS n FROM products`)) as unknown as {
-        n: number;
-      }[]);
+export async function countProducts(search?: string, filter: ProductFilter = "all"): Promise<number> {
+  const { where, having, values } = productConds(search, filter);
+  const rows = (await query(
+    `SELECT COUNT(*)::int AS n FROM (
+       SELECT p.product_id FROM products p LEFT JOIN variants v ON v.product_id = p.product_id
+       ${where} GROUP BY p.product_id ${having}
+     ) t`,
+    values
+  )) as unknown as { n: number }[];
   return rows[0]?.n ?? 0;
+}
+
+/** Recuentos globales para los filtros rápidos del catálogo. */
+export async function readProductCounts(): Promise<{ total: number; out: number; hidden: number; sale: number }> {
+  const rows = (await query(
+    `SELECT COUNT(*)::int AS total,
+            COUNT(*) FILTER (WHERE stock_total = 0)::int AS out_n,
+            COUNT(*) FILTER (WHERE valid_n = 0)::int AS hidden_n,
+            COUNT(*) FILTER (WHERE discount > 0)::int AS sale_n
+     FROM (
+       SELECT p.product_id, p.discount_percent AS discount,
+              COALESCE(SUM(v.stock), 0) AS stock_total,
+              COUNT(v.variant_id) FILTER (WHERE v.price > 0) AS valid_n
+       FROM products p LEFT JOIN variants v ON v.product_id = p.product_id
+       GROUP BY p.product_id, p.discount_percent
+     ) t`
+  )) as unknown as { total: number; out_n: number; hidden_n: number; sale_n: number }[];
+  const r = rows[0];
+  return { total: r?.total ?? 0, out: r?.out_n ?? 0, hidden: r?.hidden_n ?? 0, sale: r?.sale_n ?? 0 };
 }
 
 /** Un producto con sus variantes para la pantalla de edición. */

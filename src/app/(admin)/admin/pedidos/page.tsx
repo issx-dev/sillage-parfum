@@ -27,6 +27,7 @@ import {
   type FulfillmentStatus,
 } from "@/lib/data/fulfillment";
 import { Pagination } from "../_components/Pagination";
+import { FilterChips } from "../_components/FilterChips";
 
 export const metadata: Metadata = {
   title: "Pedidos | Administración SILLAGE",
@@ -185,28 +186,15 @@ async function QuickFilters({ estado, envio, q }: { estado: StatusFilter; envio:
     })),
   ];
   return (
-    <nav aria-label="Filtros rápidos de pedidos" className="flex flex-wrap gap-2">
-      {chips.map((chip) => {
-        const active = envio === chip.envio;
-        return (
-          <Link
-            key={chip.envio}
-            href={hrefFor({ estado: estado === "all" ? "all" : estado, envio: chip.envio, q }, 1)}
-            aria-current={active ? "page" : undefined}
-            className={`inline-flex min-h-[40px] items-center gap-2 rounded-full border px-4 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-dark ${
-              active
-                ? "border-charcoal bg-charcoal text-cream"
-                : "border-warm-300 bg-white text-warm-800 hover:border-warm-500"
-            }`}
-          >
-            {chip.label}
-            {chip.count !== null && (
-              <span className={`tabular-nums text-xs ${active ? "text-cream/80" : "text-warm-500"}`}>{chip.count}</span>
-            )}
-          </Link>
-        );
-      })}
-    </nav>
+    <FilterChips
+      label="Filtros rápidos de pedidos"
+      chips={chips.map((chip) => ({
+        label: chip.label,
+        count: chip.count,
+        active: envio === chip.envio,
+        href: hrefFor({ estado: estado === "all" ? "all" : estado, envio: chip.envio, q }, 1),
+      }))}
+    />
   );
 }
 

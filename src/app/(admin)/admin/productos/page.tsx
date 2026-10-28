@@ -4,9 +4,11 @@ import { SafeImage } from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Plus } from "lucide-react";
-import { countProducts, readProductsPage } from "../_lib/queries";
+import { countProducts, readProductCounts, readProductsPage } from "../_lib/queries";
+import { isProductFilter, LOW_STOCK_THRESHOLD, type ProductFilter } from "../_lib/stock-level";
+import { FilterChips } from "../_components/FilterChips";
 import { getAdminUser } from "../_lib/admin-auth";
-import { formatPrice } from "@/lib/utils";
+import { applyDiscount, formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,12 +36,13 @@ export const dynamic = "force-dynamic";
 const PAGE_SIZE = 20;
 
 interface ProductosPageProps {
-  searchParams: { q?: string; page?: string };
+  searchParams: { q?: string; filtro?: string; page?: string };
 }
 
-function hrefFor(q: string, page: number): string {
+function hrefFor(q: string, filtro: ProductFilter, page: number): string {
   const params = new URLSearchParams();
   if (q) params.set("q", q);
+  if (filtro !== "all") params.set("filtro", filtro);
   if (page > 1) params.set("page", String(page));
   const qs = params.toString();
   return qs ? `/admin/productos?${qs}` : "/admin/productos";
@@ -51,6 +54,7 @@ export default async function ProductosPage({ searchParams }: ProductosPageProps
     redirect("/login");
   }
   const search = (searchParams.q ?? "").trim();
+  const filtro: ProductFilter = isProductFilter(searchParams.filtro) ? searchParams.filtro : "all";
   const rawPage = Number.parseInt(searchParams.page ?? "1", 10);
   const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
@@ -62,7 +66,7 @@ export default async function ProductosPage({ searchParams }: ProductosPageProps
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="font-serif text-3xl font-bold text-warm-900">Productos</h2>
-          <p className="mt-1 text-sm tabular-nums text-warm-500">Catálogo con búsqueda instantánea</p>
+          <p className="mt-1 text-sm text-warm-500">Lo que la tienda muestra, y lo que necesita atención</p>
         </div>
         <Link href="/admin/productos/nuevo">
           <Button size="sm">
@@ -70,6 +74,9 @@ export default async function ProductosPage({ searchParams }: ProductosPageProps
           </Button>
         </Link>
       </div>
+      <Suspense fallback={null}>
+        <CatalogoChips filtro={filtro} search={search} />
+      </Suspense>
       <Card>
         <CardHeader>
           <CardTitle>Catálogo</CardTitle>
@@ -89,13 +96,53 @@ export default async function ProductosPage({ searchParams }: ProductosPageProps
         </CardHeader>
         <CardContent>
           {/* Solo esta región se refresca al filtrar; cabecera y filtros ni se inmutan. */}
-          <Suspense key={`${search}::${page}`} fallback={<ResultadosSkeleton />}>
-            <CatalogoResultados search={search} page={page} />
+          <Suspense key={`${search}::${filtro}::${page}`} fallback={<ResultadosSkeleton />}>
+            <CatalogoResultados search={search} filtro={filtro} page={page} />
           </Suspense>
         </CardContent>
       </Card>
     </div>
   );
+}
+
+async function CatalogoChips({ filtro, search }: { filtro: ProductFilter; search: string }) {
+  const counts = await readProductCounts().catch(() => null);
+  const items: { label: string; filtro: ProductFilter; count: number | null }[] = [
+    { label: "Todos", filtro: "all", count: counts?.total ?? null },
+    { label: "En oferta", filtro: "sale", count: counts?.sale ?? null },
+    { label: "Sin stock", filtro: "out", count: counts?.out ?? null },
+    { label: "Ocultos en la tienda", filtro: "hidden", count: counts?.hidden ?? null },
+  ];
+  return (
+    <FilterChips
+      label="Filtros rápidos del catálogo"
+      chips={items.map((i) => ({
+        label: i.label,
+        count: i.count,
+        active: filtro === i.filtro,
+        href: hrefFor(search, i.filtro, 1),
+      }))}
+    />
+  );
+}
+
+function PriceFrom({ price, discount }: { price: number | null; discount: number }) {
+  if (price === null) return <span className="text-warm-500">Sin precio</span>;
+  if (discount > 0) {
+    return (
+      <span className="tabular-nums">
+        {formatPrice(applyDiscount(price, discount))}
+        <span className="ml-1.5 text-xs text-warm-500 line-through">{formatPrice(price)}</span>
+      </span>
+    );
+  }
+  return <span className="tabular-nums">{formatPrice(price)}</span>;
+}
+
+function StockCell({ stock }: { stock: number }) {
+  if (stock === 0) return <Badge variant="danger">Sin stock</Badge>;
+  if (stock <= LOW_STOCK_THRESHOLD) return <Badge variant="warning">{stock} (bajo)</Badge>;
+  return <span className="tabular-nums">{stock}</span>;
 }
 
 function ResultadosSkeleton() {
@@ -108,16 +155,17 @@ function ResultadosSkeleton() {
   );
 }
 
-async function CatalogoResultados({ search, page }: { search: string; page: number }) {
+async function CatalogoResultados({ search, filtro, page }: { search: string; filtro: ProductFilter; page: number }) {
   let rows: Awaited<ReturnType<typeof readProductsPage>> | null = null;
   let total = 0;
   let loadError: string | null = null;
   try {
-    total = await countProducts(search || undefined);
+    total = await countProducts(search || undefined, filtro);
     const totalPagesPre = Math.max(1, Math.ceil(total / PAGE_SIZE));
     const queryPage = Math.min(page, totalPagesPre);
     rows = await readProductsPage({
       search: search || undefined,
+      filter: filtro,
       limit: PAGE_SIZE,
       offset: (queryPage - 1) * PAGE_SIZE,
     });
@@ -138,12 +186,62 @@ async function CatalogoResultados({ search, page }: { search: string; page: numb
   if (!rows || (rows.length === 0 && total === 0)) {
     return (
       <p className="p-4 text-sm text-warm-500">
-        {search ? "Ningún producto coincide con la búsqueda." : "Aún no hay productos. Crea el primero."}
+        {search || filtro !== "all" ? "Ningún producto coincide con los filtros." : "Aún no hay productos. Crea el primero."}
       </p>
     );
   }
   return (
     <div className="space-y-4">
+      {/* Móvil: tarjetas con lo esencial y la acción a mano */}
+      <ul className="space-y-3 md:hidden">
+        {rows.map((p) => (
+          <li key={p.product_id} className="rounded-card border border-warm-200 bg-warm-50 p-4">
+            <div className="flex items-start gap-3">
+              {p.images[0] ? (
+                <SafeImage
+                  src={p.images[0]}
+                  alt=""
+                  width={56}
+                  height={56}
+                  className="h-14 w-14 shrink-0 rounded-lg border border-warm-200 object-cover"
+                />
+              ) : (
+                <span
+                  aria-hidden
+                  className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-warm-200 bg-warm-100 font-serif text-lg font-bold text-warm-500"
+                >
+                  {p.name.charAt(0)}
+                </span>
+              )}
+              <div className="min-w-0 flex-1">
+                <ProductQuickEdit productId={p.product_id} productName={p.name} />
+                <p className="text-sm text-warm-600">{p.brand}</p>
+                <p className="mt-1 text-sm">
+                  <PriceFrom price={p.min_price} discount={p.discount_percent} />
+                  <span className="mx-2 text-warm-400" aria-hidden>
+                    ·
+                  </span>
+                  <StockCell stock={p.total_stock} />
+                </p>
+              </div>
+            </div>
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+              <span className="flex flex-wrap gap-1.5">
+                {p.valid_variant_count === 0 && <Badge variant="danger">Oculto: sin variante con precio</Badge>}
+                {p.discount_percent > 0 && <Badge variant="warning">-{p.discount_percent}%</Badge>}
+              </span>
+              <Link
+                href={`/admin/productos/${p.product_id}`}
+                className="inline-flex min-h-[44px] items-center text-sm font-medium text-gold-dark underline-offset-4 hover:underline"
+              >
+                Editar variantes y precios
+              </Link>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="hidden md:block">
       <Table>
         <TableHeader>
           <TableRow>
@@ -184,15 +282,19 @@ async function CatalogoResultados({ search, page }: { search: string; page: numb
                       {p.badge ? ` · ${p.badge.replace("_", " ")}` : ""}
                       {p.inspiration ? ` · Inspirado en ${p.inspiration}` : ""}
                     </span>
+                    <span className="mt-1 flex flex-wrap gap-1.5">
+                      {p.valid_variant_count === 0 && <Badge variant="danger">Oculto: sin variante con precio</Badge>}
+                      {p.discount_percent > 0 && <Badge variant="warning">-{p.discount_percent}%</Badge>}
+                    </span>
                   </span>
                 </span>
               </TableCell>
               <TableCell>{p.brand}</TableCell>
-              <TableCell className="text-right tabular-nums">
-                {p.min_price === null ? "—" : formatPrice(p.min_price)}
+              <TableCell className="text-right">
+                <PriceFrom price={p.min_price} discount={p.discount_percent} />
               </TableCell>
-              <TableCell className="text-right tabular-nums">
-                {p.total_stock === 0 ? <Badge variant="danger">0</Badge> : String(p.total_stock)}
+              <TableCell className="text-right">
+                <StockCell stock={p.total_stock} />
               </TableCell>
               <TableCell className="text-right">
                 <Link
@@ -206,10 +308,11 @@ async function CatalogoResultados({ search, page }: { search: string; page: numb
           ))}
         </TableBody>
       </Table>
+      </div>
       <Pagination
         page={safePage}
         totalPages={totalPages}
-        hrefFor={(pg) => hrefFor(search, pg)}
+        hrefFor={(pg) => hrefFor(search, filtro, pg)}
         totalLabel={`${total} productos`}
       />
     </div>

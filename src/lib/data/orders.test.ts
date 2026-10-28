@@ -110,6 +110,21 @@ describe("saveOrder", () => {
     expect(insertCall[0]).toContain("ON CONFLICT");
   });
 
+  it("inserts order_data as real jsonb and is idempotent on the session id", async () => {
+    mockQuery.mockResolvedValueOnce([{ id: "uuid" }]);
+    mockQuery.mockResolvedValueOnce([{ variant_id: "v1" }]);
+
+    await saveOrder(
+      { id: "cs_1", items: [{ variantId: "v1", productId: "p", quantity: 1 } as any], total: 10, status: "paid", customerEmail: "a@b.c", createdAt: "" } as any,
+      "evt_1"
+    );
+
+    const sql = mockQuery.mock.calls[0]![0] as string;
+    // postgres.js double-encodes a JSON string bound to a jsonb param; the text cast avoids it.
+    expect(sql).toContain("($7::text)::jsonb");
+    expect(sql).toContain("WHERE NOT EXISTS (SELECT 1 FROM orders WHERE stripe_session_id");
+  });
+
   it("decrements stock for each variant in a multi-item order", async () => {
     mockQuery.mockResolvedValueOnce([{ id: "ord-uuid" }]); // INSERT
     mockQuery.mockResolvedValueOnce([{ id: "v1" }]); // UPDATE v1

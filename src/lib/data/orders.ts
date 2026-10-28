@@ -144,7 +144,10 @@ export async function saveOrder(
     });
 
     const result = await txQuery(
-      `INSERT INTO orders (stripe_event_id, stripe_session_id, customer_email, amount_total, currency, payment_status, order_data) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (stripe_event_id) DO NOTHING RETURNING id`,
+      // Idempotent on the event id AND on the session id: the same checkout
+      // session delivered under a different event id (manual replay, second
+      // endpoint) must not create a second order or decrement stock twice.
+      `INSERT INTO orders (stripe_event_id, stripe_session_id, customer_email, amount_total, currency, payment_status, order_data) SELECT $1::text, $2::text, $3::text, $4::integer, $5::text, $6::text, ($7::text)::jsonb WHERE NOT EXISTS (SELECT 1 FROM orders WHERE stripe_session_id = $2::text) ON CONFLICT (stripe_event_id) DO NOTHING RETURNING id`,
       [eventId, order.id, order.customerEmail ?? "", amountCents, "eur", order.status, orderData]
     );
 

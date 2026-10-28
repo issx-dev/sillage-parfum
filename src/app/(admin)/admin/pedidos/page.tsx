@@ -43,6 +43,20 @@ function formatDate(iso: string): string {
   return date.toLocaleString("es-ES", { dateStyle: "medium", timeStyle: "short" });
 }
 
+function orderRef(id: string): string {
+  return `#${id.replace(/-/g, "").slice(0, 8).toUpperCase()}`;
+}
+
+const PAYMENT_LABELS: Record<string, string> = { cod: "Contrareembolso", stripe: "Tarjeta" };
+
+function paymentLabel(method: string | undefined): string {
+  return (method && PAYMENT_LABELS[method]) || "Tarjeta";
+}
+
+function itemCount(items: { quantity: number }[]): number {
+  return items.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0);
+}
+
 interface PedidosPageProps {
   searchParams: { estado?: string; envio?: string; q?: string; page?: string };
 }
@@ -84,9 +98,12 @@ export default async function PedidosPage({ searchParams }: PedidosPageProps) {
       <div>
         <h2 className="font-serif text-3xl font-bold text-warm-900">Pedidos</h2>
         <p className="mt-1 text-sm tabular-nums text-warm-500">
-          Filtros instantáneos por estado, envío y email
+          Lo que hay por preparar, enviar y cobrar
         </p>
       </div>
+      <Suspense fallback={null}>
+        <QuickFilters estado={estado} envio={envio} q={emailQuery} />
+      </Suspense>
       <Card>
         <CardHeader>
           <CardTitle>Listado</CardTitle>
@@ -147,6 +164,49 @@ export default async function PedidosPage({ searchParams }: PedidosPageProps) {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+/**
+ * Chips de un clic para lo que el operador hace a diario: ver lo que está
+ * por preparar, en preparación o ya enviado, con su recuento.
+ */
+async function QuickFilters({ estado, envio, q }: { estado: StatusFilter; envio: FulfillmentFilter; q: string }) {
+  const counts = await Promise.all(
+    FULFILLMENT_STATUSES.map((s) => countOrders({ fulfillment: s }).catch(() => null))
+  ).catch(() => null);
+  const total = await countOrders({}).catch(() => null);
+  const chips: { label: string; envio: FulfillmentFilter; count: number | null }[] = [
+    { label: "Todos", envio: "all", count: total },
+    ...FULFILLMENT_STATUSES.map((s, i) => ({
+      label: s === "pendiente" ? "Por preparar" : FULFILLMENT_LABELS[s],
+      envio: s as FulfillmentFilter,
+      count: counts ? counts[i] ?? null : null,
+    })),
+  ];
+  return (
+    <nav aria-label="Filtros rápidos de pedidos" className="flex flex-wrap gap-2">
+      {chips.map((chip) => {
+        const active = envio === chip.envio;
+        return (
+          <Link
+            key={chip.envio}
+            href={hrefFor({ estado: estado === "all" ? "all" : estado, envio: chip.envio, q }, 1)}
+            aria-current={active ? "page" : undefined}
+            className={`inline-flex min-h-[40px] items-center gap-2 rounded-full border px-4 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-dark ${
+              active
+                ? "border-charcoal bg-charcoal text-cream"
+                : "border-warm-300 bg-white text-warm-800 hover:border-warm-500"
+            }`}
+          >
+            {chip.label}
+            {chip.count !== null && (
+              <span className={`tabular-nums text-xs ${active ? "text-cream/80" : "text-warm-500"}`}>{chip.count}</span>
+            )}
+          </Link>
+        );
+      })}
+    </nav>
   );
 }
 
@@ -214,49 +274,83 @@ async function PedidosResultados({
   }
   return (
     <div className="space-y-4">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Email</TableHead>
-            <TableHead className="text-right">Total</TableHead>
-            <TableHead>Estado</TableHead>
-            <TableHead>Envío</TableHead>
-            <TableHead>Fecha</TableHead>
-            <TableHead className="text-right">
-              <span className="sr-only">Detalle</span>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {orders.map((order) => (
-            <TableRow key={order.id}>
-              <TableCell className="font-medium">
-                {order.customerEmail ?? "—"}
-              </TableCell>
-              <TableCell className="text-right tabular-nums">
-                {formatPrice(order.total)}
-              </TableCell>
-              <TableCell>
+      {/* Móvil: tarjetas táctiles (toda la tarjeta es un enlace) */}
+      <ul className="space-y-3 md:hidden">
+        {orders.map((order) => (
+          <li key={order.id}>
+            <Link
+              href={`/admin/pedidos/${order.id}`}
+              className="block rounded-card border border-warm-200 bg-white p-4 transition-colors hover:border-warm-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-dark"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-mono text-xs text-warm-500">{orderRef(order.id)}</p>
+                  <p className="truncate text-sm font-medium text-warm-900">{order.customerEmail ?? "Sin email"}</p>
+                </div>
+                <p className="shrink-0 text-base font-semibold tabular-nums text-warm-900">{formatPrice(order.total)}</p>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
                 <Badge variant={statusBadgeVariant(order.status)}>{STATUS_LABELS[order.status]}</Badge>
-              </TableCell>
-              <TableCell>
                 <Badge variant={fulfillmentBadgeVariant(order.fulfillment ?? "pendiente")}>
                   {FULFILLMENT_LABELS[order.fulfillment ?? "pendiente"]}
                 </Badge>
-              </TableCell>
-              <TableCell className="whitespace-nowrap">{formatDate(order.createdAt)}</TableCell>
-              <TableCell className="text-right">
-                <Link
-                  href={`/admin/pedidos/${order.id}`}
-                  className="text-sm font-medium text-gold-dark underline-offset-4 hover:underline"
-                >
-                  Ver detalle
-                </Link>
-              </TableCell>
+              </div>
+              <p className="mt-2 text-xs text-warm-500">
+                {paymentLabel(order.paymentMethod)} · {itemCount(order.items)} uds · {formatDate(order.createdAt)}
+              </p>
+            </Link>
+          </li>
+        ))}
+      </ul>
+
+      <div className="hidden md:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Pedido</TableHead>
+              <TableHead>Cliente</TableHead>
+              <TableHead className="text-right">Total</TableHead>
+              <TableHead>Pago</TableHead>
+              <TableHead>Estado</TableHead>
+              <TableHead>Envío</TableHead>
+              <TableHead>Fecha</TableHead>
+              <TableHead className="text-right">
+                <span className="sr-only">Detalle</span>
+              </TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {orders.map((order) => (
+              <TableRow key={order.id}>
+                <TableCell className="font-mono text-xs text-warm-600">{orderRef(order.id)}</TableCell>
+                <TableCell>
+                  <span className="block max-w-[14rem] truncate font-medium">{order.customerEmail ?? "Sin email"}</span>
+                  <span className="text-xs text-warm-500">{itemCount(order.items)} uds</span>
+                </TableCell>
+                <TableCell className="text-right tabular-nums">{formatPrice(order.total)}</TableCell>
+                <TableCell className="whitespace-nowrap text-sm">{paymentLabel(order.paymentMethod)}</TableCell>
+                <TableCell>
+                  <Badge variant={statusBadgeVariant(order.status)}>{STATUS_LABELS[order.status]}</Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant={fulfillmentBadgeVariant(order.fulfillment ?? "pendiente")}>
+                    {FULFILLMENT_LABELS[order.fulfillment ?? "pendiente"]}
+                  </Badge>
+                </TableCell>
+                <TableCell className="whitespace-nowrap text-sm">{formatDate(order.createdAt)}</TableCell>
+                <TableCell className="text-right">
+                  <Link
+                    href={`/admin/pedidos/${order.id}`}
+                    className="inline-flex min-h-[40px] items-center text-sm font-medium text-gold-dark underline-offset-4 hover:underline"
+                  >
+                    Ver detalle
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
       <Pagination
         page={safePage}
         totalPages={totalPages}

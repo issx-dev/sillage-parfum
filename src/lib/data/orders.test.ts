@@ -12,7 +12,7 @@ vi.mock("@/lib/db", () => {
   };
 });
 
-import { readOrders, saveOrder, markOrderRefundedByPaymentIntent } from "./orders";
+import { readOrders, saveOrder, markOrderRefundedByPaymentIntent, countOrders } from "./orders";
 import { query, transaction } from "@/lib/db";
 import type { CartItem } from "@/types";
 
@@ -351,5 +351,27 @@ describe("readOrders", () => {
 
     const orders = await readOrders();
     expect(orders).toEqual([]);
+  });
+});
+
+describe("countOrders (logistics queue)", () => {
+  const mockQuery = vi.mocked(query);
+
+  beforeEach(() => {
+    mockQuery.mockReset();
+    mockQuery.mockResolvedValue([{ n: 3 }] as unknown[]);
+  });
+
+  it("only counts paid/pending orders as por preparar / en preparación", async () => {
+    await countOrders({ fulfillment: "pendiente" });
+    expect(mockQuery.mock.calls[0]![0]).toContain("payment_status IN ('paid', 'pending')");
+
+    await countOrders({ fulfillment: "en_preparacion" });
+    expect(mockQuery.mock.calls[1]![0]).toContain("payment_status IN ('paid', 'pending')");
+  });
+
+  it("does not restrict payment status for shipped/received orders", async () => {
+    await countOrders({ fulfillment: "enviado" });
+    expect(mockQuery.mock.calls[0]![0]).not.toContain("payment_status IN");
   });
 });

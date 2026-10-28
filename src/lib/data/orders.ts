@@ -46,6 +46,11 @@ function buildOrdersWhere(filter: { status?: Order["status"]; fulfillment?: Fulf
   if (filter.fulfillment) {
     conds.push(`fulfillment_status = $${values.length + 1}`);
     values.push(filter.fulfillment);
+    // A refunded/failed order is not in the logistics queue: "por preparar" and
+    // "en preparación" only list orders that are paid or pending (cash on delivery).
+    if ((filter.fulfillment === "pendiente" || filter.fulfillment === "en_preparacion") && !filter.status) {
+      conds.push(`payment_status IN ('paid', 'pending')`);
+    }
   }
   if (filter.email) {
     conds.push(`customer_email ILIKE $${values.length + 1}`);

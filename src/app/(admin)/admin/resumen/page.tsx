@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowRight, TriangleAlert } from "lucide-react";
+import { ArrowRight, PackageCheck, Banknote, TriangleAlert } from "lucide-react";
 import { readOrders } from "@/lib/data/orders";
 import { getAdminUser } from "../_lib/admin-auth";
 import { computeResumen } from "../_lib/stats";
@@ -19,6 +19,48 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 const LOW_STOCK_THRESHOLD = 5;
+
+function plural(n: number, one: string, many: string): string {
+  return `${n} ${n === 1 ? one : many}`;
+}
+
+function shortDay(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString("es-ES", { day: "numeric", month: "short", timeZone: "UTC" });
+}
+
+/** A to-do tile: what needs doing today, with a direct link to do it. */
+function Task({
+  href,
+  icon: Icon,
+  title,
+  detail,
+  tone,
+}: {
+  href: string;
+  icon: typeof PackageCheck;
+  title: string;
+  detail: string;
+  tone: "action" | "calm";
+}) {
+  return (
+    <Link
+      href={href}
+      className={`flex min-h-[72px] items-center gap-4 rounded-card border p-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-dark ${
+        tone === "action"
+          ? "border-gold-dark/40 bg-warm-50 hover:border-gold-dark"
+          : "border-warm-200 bg-white hover:border-warm-400"
+      }`}
+    >
+      <Icon className="h-5 w-5 shrink-0 text-gold-dark" aria-hidden />
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-semibold text-warm-900">{title}</span>
+        <span className="block text-sm text-warm-600">{detail}</span>
+      </span>
+      <ArrowRight className="h-4 w-4 shrink-0 text-warm-500" aria-hidden />
+    </Link>
+  );
+}
 
 function Kpi({ label, value, hint }: { label: string; value: string; hint: string }) {
   return (
@@ -54,6 +96,14 @@ export default async function ResumenPage() {
     .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
     .slice(0, 5);
 
+  // Lo que hay que hacer hoy. Se pueden vender muchos pedidos contrareembolso:
+  // están "pendientes" de cobro pero ya hay que prepararlos.
+  const toPrepare = orders.filter(
+    (o) => (o.fulfillment ?? "pendiente") === "pendiente" && (o.status === "paid" || o.status === "pending")
+  );
+  const codPending = orders.filter((o) => o.status === "pending" && o.paymentMethod === "cod");
+  const codPendingAmount = codPending.reduce((sum, o) => sum + o.total, 0);
+
   const lowStock =
     stockResult.status === "fulfilled"
       ? stockResult.value.filter((r) => r.stock <= LOW_STOCK_THRESHOLD)
@@ -68,14 +118,40 @@ export default async function ResumenPage() {
         <p className="mt-1 text-sm text-warm-500">Así va la maison hoy.</p>
       </div>
 
+      <section aria-labelledby="hoy-toca" className="space-y-3">
+        <h3 id="hoy-toca" className="text-[11px] font-semibold uppercase tracking-[0.18em] text-warm-600">
+          Hoy toca
+        </h3>
+        <div className="grid gap-3 md:grid-cols-2">
+          <Task
+            href="/admin/pedidos?envio=pendiente"
+            icon={PackageCheck}
+            tone={toPrepare.length > 0 ? "action" : "calm"}
+            title={toPrepare.length > 0 ? `${plural(toPrepare.length, "pedido", "pedidos")} por preparar` : "Nada por preparar"}
+            detail={toPrepare.length > 0 ? "Pagados o contrareembolso, aún sin preparar" : "Todos los pedidos están en marcha"}
+          />
+          <Task
+            href="/admin/pedidos?estado=pending"
+            icon={Banknote}
+            tone="calm"
+            title={
+              codPending.length > 0
+                ? `${formatPrice(codPendingAmount)} por cobrar en contrareembolso`
+                : "Sin cobros pendientes"
+            }
+            detail={codPending.length > 0 ? `${plural(codPending.length, "pedido", "pedidos")} a cobrar en la entrega` : "No hay contrareembolsos abiertos"}
+          />
+        </div>
+      </section>
+
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-        <Kpi label="Ingresos" value={formatPrice(stats.ingresos)} hint={`${stats.numPagados} pedidos cobrados`} />
-        <Kpi label="Pedidos" value={String(stats.numPedidos)} hint="todos los estados" />
+        <Kpi label="Ingresos" value={formatPrice(stats.ingresos)} hint={`${plural(stats.numPagados, "pedido cobrado", "pedidos cobrados")} con tarjeta`} />
+        <Kpi label="Pedidos" value={String(stats.numPedidos)} hint="incluye contrareembolso" />
         <Kpi label="Ticket medio" value={formatPrice(stats.ticketMedio)} hint="sobre pedidos cobrados" />
         <Kpi
           label="Reembolsos"
           value={formatPrice(stats.reembolsos.amount)}
-          hint={`${stats.reembolsos.count} devueltos · ${stats.fallidos} fallidos`}
+          hint={`${plural(stats.reembolsos.count, "devuelto", "devueltos")} · ${plural(stats.fallidos, "fallido", "fallidos")}`}
         />
       </div>
 
@@ -88,7 +164,7 @@ export default async function ResumenPage() {
           <span>
             <strong className="font-semibold">{lowStock.length} variantes con stock bajo</strong>
             {lowStock.slice(0, 3).map((r) => ` · ${r.product_name} (${r.size_ml}ml: ${r.stock})`).join("")}
-            {lowStock.length > 3 ? "…" : ""} — revisar stock
+            {lowStock.length > 3 ? "…" : ""}. Revisar stock
           </span>
         </Link>
       ) : null}
@@ -96,7 +172,7 @@ export default async function ResumenPage() {
       <Card>
         <CardHeader>
           <div className="flex items-baseline justify-between gap-3">
-            <CardTitle>Ingresos · últimos 14 días</CardTitle>
+            <CardTitle>Ingresos cobrados, últimos 14 días</CardTitle>
             <p className="text-sm tabular-nums text-warm-500">
               total <strong className="font-semibold text-warm-900">{formatPrice(stats.ingresos)}</strong>
             </p>
@@ -119,8 +195,9 @@ export default async function ResumenPage() {
             ))}
           </div>
           <div className="mt-2 flex justify-between text-xs tabular-nums text-warm-500">
-            <span>{stats.serie[0]?.day ?? ""}</span>
-            <span>{stats.serie[stats.serie.length - 1]?.day ?? ""}</span>
+            <span>{shortDay(stats.serie[0]?.day ?? "")}</span>
+            <span>máx. diario {formatPrice(maxDay === 1 && stats.ingresos === 0 ? 0 : maxDay)}</span>
+            <span>{shortDay(stats.serie[stats.serie.length - 1]?.day ?? "")}</span>
           </div>
         </CardContent>
       </Card>
@@ -149,7 +226,7 @@ export default async function ResumenPage() {
                     className="flex items-center justify-between gap-3 px-5 py-3.5 transition-colors hover:bg-warm-100/60"
                   >
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-warm-900">{o.customerEmail ?? "—"}</p>
+                      <p className="truncate text-sm font-medium text-warm-900">{o.customerEmail ?? "Sin email"}</p>
                       <p className="mt-0.5 text-xs tabular-nums text-warm-500">
                         {new Date(o.createdAt).toLocaleString("es-ES", { dateStyle: "medium", timeStyle: "short" })}
                       </p>

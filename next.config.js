@@ -1,9 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // H11: no anunciar framework/versión en la cabecera `X-Powered-By`.
+  poweredByHeader: false,
+  // H14: las Server Actions (/admin mutaciones) solo aceptan peticiones
+  // originadas en estos hosts. Sin esto, cualquier origen podría invocarlas.
+  // Env-driven: el deploy de rama no tiene dominio fijo hasta comprar el
+  // definitivo. Define SERVER_ACTIONS_ALLOWED_ORIGINS="dominio.com,www.dominio.com"
+  // en el entorno; vacío = solo mismo origen (suficiente para un deploy
+  // de un solo dominio). Nunca localhost en producción.
   experimental: {
     // Never serve catalog pages from the client Router Cache: prices and
     // stock come from the database and must be fresh on every navigation.
     staleTimes: { dynamic: 0, static: 0 },
+    serverActions: {
+      allowedOrigins:
+        process.env.NODE_ENV === "production"
+          ? (process.env.SERVER_ACTIONS_ALLOWED_ORIGINS ?? "")
+              .split(",")
+              .map((h) => h.trim())
+              .filter(Boolean)
+          : ["localhost:3000", "127.0.0.1:3000", "sillage.com", "www.sillage.com"],
+    },
   },
   images: {
     formats: ["image/avif", "image/webp"],
@@ -11,6 +28,17 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+      },
+      // CDN de fichas de fabricante que el admin pega en productos.
+      // hosts arbitrarios fuera de esta lista los cubre SafeImage (<img>).
+      {
+        protocol: "https",
+        hostname: "media.sephora.eu",
+      },
+      // Subidas del equipo a Supabase Storage (ver SafeImage).
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
       },
     ],
   },

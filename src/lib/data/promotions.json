@@ -1,0 +1,26 @@
+[
+  {
+    "id": "promo-multibuy-2",
+    "name": "Combina 2 perfumes de 70ml por 63€",
+    "type": "MULTIBUY",
+    "minimumQuantity": 2,
+    "size_ml": 70,
+    "bundlePrice": 63,
+    "saving": 7
+  },
+  {
+    "id": "promo-multibuy-3",
+    "name": "Combina 3 perfumes de 70ml por 84€",
+    "type": "MULTIBUY",
+    "minimumQuantity": 3,
+    "size_ml": 70,
+    "bundlePrice": 84,
+    "saving": 21
+  },
+  {
+    "id": "promo-shipping-threshold",
+    "name": "Envío gratis a partir de 50€",
+    "type": "FREE_SHIPPING_THRESHOLD",
+    "threshold": 50
+  }
+]

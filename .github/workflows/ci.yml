@@ -2,9 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/chogan-checkout-auth-migration]
   pull_request:
-    branches: [main]
 
 jobs:
   build:
@@ -55,6 +54,7 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/ci
           UPSTASH_REDIS_REST_URL: https://ci.upstash.io
           UPSTASH_REDIS_REST_TOKEN: ci_placeholder
+          JWT_SECRET: ci_placeholder_jwt_secret_min_32_characters_long
 
       - name: Lint
         run: pnpm lint
@@ -68,6 +68,7 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/ci
           UPSTASH_REDIS_REST_URL: https://ci.upstash.io
           UPSTASH_REDIS_REST_TOKEN: ci_placeholder
+          JWT_SECRET: ci_placeholder_jwt_secret_min_32_characters_long
 
       - name: Test
         run: pnpm test
@@ -78,3 +79,4 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/ci
           UPSTASH_REDIS_REST_URL: https://ci.upstash.io
           UPSTASH_REDIS_REST_TOKEN: ci_placeholder
+          JWT_SECRET: ci_placeholder_jwt_secret_min_32_characters_long

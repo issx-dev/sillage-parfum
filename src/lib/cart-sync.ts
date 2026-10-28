@@ -1,6 +1,6 @@
 "use client";
 
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { useCartStore, type CartSyncSummary } from "@/store/cartStore";
 import type { CartSyncEntry } from "@/types";
 
@@ -29,9 +29,9 @@ export function syncCart({ notify = true }: { notify?: boolean } = {}): Promise<
       const data = (await response.json()) as { items: CartSyncEntry[] };
       const summary = useCartStore.getState().applyServerState(data.items);
       if (notify && summary.changed) {
-        if (summary.removed.length) toast.warning(`Ya no disponible y retirado del carrito: ${summary.removed.join(", ")}`);
-        if (summary.reduced.length) toast.warning(`Cantidad ajustada al stock: ${summary.reduced.join(", ")}`);
-        if (summary.repriced.length) toast.info(`Precio actualizado: ${summary.repriced.join(", ")}`);
+        if (summary.removed.length) toast.error(`Ya no disponible y retirado del carrito: ${summary.removed.join(", ")}`);
+        if (summary.reduced.length) toast.error(`Cantidad ajustada al stock: ${summary.reduced.join(", ")}`);
+        if (summary.repriced.length) toast(`Precio actualizado: ${summary.repriced.join(", ")}`);
       }
       return summary;
     } catch {

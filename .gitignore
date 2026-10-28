@@ -51,7 +51,22 @@ dev-tools/
 coverage/
 *.lcov
 
+# Catalog source binaries (only the markdown catalogs in resources/ are tracked)
+resources/*.pdf
+resources/chogan-parfums/
+
 # Runtime data (orders JSON written by webhook handler — not source)
 /data/
 # Local AI runtime state
 .atl/
+
+# Playwright E2E (contiene JWT de sesion: jamas commitear)
+tests/e2e/.auth/
+test-results/
+
+# Backups locales de env (pueden contener secretos: jamas commitear)
+.env*.bak
+.env*.bak-*
+
+# CodeGraph daemon state
+.codegraph/

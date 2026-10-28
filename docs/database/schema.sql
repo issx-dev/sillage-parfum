@@ -1,9 +1,12 @@
 -- SILLAGE Parfumerie: Orders Table Schema
 -- Run this against your Supabase/PostgreSQL database before deploying.
 
--- Enable UUID generation
+-- Enable required extensions (canon completo verificado 2026-09-13 contra preview hqensmmyjpasurqsuegy)
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
--- Required by searchProducts() (accent-insensitive search).
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+-- supabase_vault y plpgsql son preinstaladas por la plataforma (vault / pg_catalog); se listan como requeridas.
+-- Accent-insensitive search (searchProducts usa unaccent() en columnas)
 CREATE EXTENSION IF NOT EXISTS unaccent;
 
 CREATE TABLE IF NOT EXISTS orders (
@@ -14,6 +17,8 @@ CREATE TABLE IF NOT EXISTS orders (
   amount_total INTEGER NOT NULL,
   currency TEXT NOT NULL DEFAULT 'eur',
   payment_status TEXT NOT NULL DEFAULT 'paid',
+  fulfillment_status TEXT NOT NULL DEFAULT 'pendiente'
+    CHECK (fulfillment_status IN ('pendiente', 'en_preparacion', 'enviado', 'recibido')),
   order_data JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -24,11 +29,17 @@ CREATE INDEX IF NOT EXISTS idx_orders_stripe_session_id ON orders (stripe_sessio
 -- Index for sorting by creation date
 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders (created_at DESC);
 
+-- Fulfillment (circuito logístico; independiente de payment_status).
+-- En bases ya creadas, la migración idempotente es:
+--   ALTER TABLE orders ADD COLUMN IF NOT EXISTS fulfillment_status TEXT
+--     NOT NULL DEFAULT 'pendiente'
+--     CHECK (fulfillment_status IN ('pendiente','en_preparacion','enviado','recibido'));
+CREATE INDEX IF NOT EXISTS idx_orders_fulfillment_status ON orders (fulfillment_status);
+
 -- Enable Row Level Security
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 
--- Policy: Only service role can read/write orders (skipped on plain Postgres,
--- where the Supabase `service_role` role does not exist).
+-- Policy: Only service role can read/write orders
 DO $$
 BEGIN
   IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
@@ -52,6 +63,7 @@ CREATE TABLE IF NOT EXISTS products (
   notes_top TEXT[] NOT NULL DEFAULT '{}',
   notes_heart TEXT[] NOT NULL DEFAULT '{}',
   notes_base TEXT[] NOT NULL DEFAULT '{}',
+  inspiration TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -65,7 +77,7 @@ ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 DO $$
 BEGIN
   DROP POLICY IF EXISTS "Allow public read access to products" ON products;
-    CREATE POLICY "Allow public read access to products" ON products FOR SELECT TO public USING (true);
+  CREATE POLICY "Allow public read access to products" ON products FOR SELECT TO public USING (true);
 END $$;
 
 DO $$
@@ -97,7 +109,7 @@ ALTER TABLE variants ENABLE ROW LEVEL SECURITY;
 DO $$
 BEGIN
   DROP POLICY IF EXISTS "Allow public read access to variants" ON variants;
-    CREATE POLICY "Allow public read access to variants" ON variants FOR SELECT TO public USING (true);
+  CREATE POLICY "Allow public read access to variants" ON variants FOR SELECT TO public USING (true);
 END $$;
 
 DO $$
@@ -105,5 +117,47 @@ BEGIN
   IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
     DROP POLICY IF EXISTS "Service role can manage variants" ON variants;
     CREATE POLICY "Service role can manage variants" ON variants FOR ALL TO service_role USING (true) WITH CHECK (true);
+  END IF;
+END $$;
+
+-- Users Table Schema (auth real: register/login persisten en Postgres)
+-- email se guarda normalizado (lower(trim())) desde las rutas API.
+-- Seed de admin (manual, fuera de scope automatizar):
+--   UPDATE users SET role='admin' WHERE email='admin@example.com';
+CREATE TABLE IF NOT EXISTS users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'customer' CHECK (role IN ('customer', 'admin')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
+    DROP POLICY IF EXISTS "Service role can manage users" ON users;
+    CREATE POLICY "Service role can manage users" ON users FOR ALL TO service_role USING (true) WITH CHECK (true);
+  END IF;
+END $$;
+
+-- Newsletter subscribers (captación EmailLeadModal → POST /api/newsletter).
+-- email se guarda normalizado (lower(trim())) desde la ruta API; el UNIQUE
+-- garantiza un solo registro por email y la ruta responde 409 elegante.
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  source TEXT NOT NULL DEFAULT 'lead_modal',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_email ON newsletter_subscribers (email);
+ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
+    DROP POLICY IF EXISTS "Service role can manage newsletter_subscribers" ON newsletter_subscribers;
+    CREATE POLICY "Service role can manage newsletter_subscribers" ON newsletter_subscribers FOR ALL TO service_role USING (true) WITH CHECK (true);
   END IF;
 END $$;

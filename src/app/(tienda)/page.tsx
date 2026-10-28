@@ -1,0 +1,102 @@
+import { HeroSection } from "@/components/home/HeroSection";
+import { ProductCarousel } from "@/components/home/ProductCarousel";
+import { EditorialSplitSingle } from "@/components/home/EditorialSplitSingle";
+import { CategoriesGrid } from "@/components/home/CategoriesGrid";
+import { Newsletter } from "@/components/home/Newsletter";
+import { ChoganInfoBanner } from "@/components/chogan/ChoganInfoBanner";
+import { ChoganFAQ } from "@/components/chogan/ChoganFAQ";
+import { EmailLeadModal } from "@/components/marketing/EmailLeadModal";
+import { getFeaturedProducts, getNewArrivals, getDiscoverProducts } from "@/lib/data";
+import type { Metadata } from "next";
+
+// Catalog data lives in the database: never prerender or cache it.
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
+
+
+export default async function HomePage() {
+  const featured = await getFeaturedProducts(6);
+  const newArrivals = await getNewArrivals();
+  const discover = await getDiscoverProducts(8);
+  // Merge featured + new arrivals for main carousel, deduplicating by slug
+  const seen = new Set<string>();
+  const allProducts = [...featured, ...newArrivals].filter((p) => {
+    if (seen.has(p.slug)) return false;
+    seen.add(p.slug);
+    return true;
+  }).slice(0, 8);
+
+  return (
+    <>
+      {/* 1. HeroSection — dark background, VIDEO hero */}
+      <HeroSection />
+
+      {/* 2. ProductCarousel (light) — Bestsellers & Novedades */}
+      <ProductCarousel
+        variant="light"
+        products={allProducts}
+        eyebrow="selección sillage"
+        title="Lo más elegido"
+        subtitle="Bestsellers y novedades seleccionados por su carácter excepcional."
+      />
+
+      {/* 3. EditorialSplitSingle — dark background, ONE powerful brand story */}
+      <EditorialSplitSingle
+        label="la collection masculine"
+        title="La fuerza de la sutileza"
+        description="Aromas que redefinen la elegancia contemporánea. Un tributo a la frescura magnética y al carácter atemporal del hombre moderno."
+        ctaText="Descubrir fragancias masculinas"
+        href="/productos?gender=masculino"
+        imageSrc="/images/collections/masculine.jpg"
+        imageAlt="Colección Masculina Premium Sillage"
+        reverse={false}
+        imagePosition="right"
+        variant="dark"
+      />
+
+      {/* Feminine editorial — cream background, reverse layout */}
+      <EditorialSplitSingle
+        label="la collection féminine"
+        title="La sutileza que perdura"
+        description="Una oda a la feminidad atemporal. Aromas que capturan la esencia etérea de la mujer contemporánea con ingredientes nobles y composiciones envolventes."
+        ctaText="Descubrir fragancias femeninas"
+        href="/productos?gender=femenino"
+        imageSrc="/images/collections/feminine.jpg"
+        imageAlt="Colección Femenina Premium Sillage"
+        reverse={true}
+        imagePosition="left"
+        variant="light"
+      />
+
+      {/* 4. CategoriesGrid — cream/warm background, clean grid of fragrance families */}
+      <CategoriesGrid />
+
+      {/* Chogan Value Banner & FAQ */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <ChoganInfoBanner />
+        <ChoganFAQ />
+      </div>
+
+      {/* 5. ProductCarousel (dark) — distinct products from featured */}
+      <ProductCarousel
+        variant="dark"
+        products={discover}
+        eyebrow="continuación"
+        title="Descubre más"
+        subtitle="Explora nuestra selección de fragancias que definen tendencias."
+        showStatusBadges={false}
+      />
+
+      {/* 6. Newsletter — cream/warm background, Member's Club framing */}
+      <Newsletter />
+
+      {/* Email Lead Capture Modal */}
+      <EmailLeadModal />
+    </>
+  );
+}

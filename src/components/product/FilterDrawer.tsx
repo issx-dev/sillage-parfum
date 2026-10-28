@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -37,7 +37,15 @@ interface FilterDrawerProps {
   activeFiltersCount: number;
 }
 
-export function FilterDrawer({ gender, family, badge, activeFiltersCount }: FilterDrawerProps) {
+export function FilterDrawer(props: FilterDrawerProps) {
+  return (
+    <Suspense>
+      <FilterDrawerInner {...props} />
+    </Suspense>
+  );
+}
+
+function FilterDrawerInner({ gender, family, badge, activeFiltersCount }: FilterDrawerProps) {
   const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
 

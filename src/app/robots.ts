@@ -8,7 +8,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/carrito", "/checkout", "/api/"],
+        // Privado/transaccional: nunca en índice — /admin además lleva
+        // noindex en su layout como defensa en profundidad.
+        disallow: ["/carrito", "/checkout", "/api/", "/admin", "/cuenta", "/login", "/registro"],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

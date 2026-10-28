@@ -3,7 +3,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
-import { Search, Heart, ShoppingBag, Menu, X } from "lucide-react";
+import { Search, Heart, ShoppingBag, Menu, X, User } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
@@ -189,6 +189,20 @@ export function Navbar({ recommendedProducts = [] }: NavbarProps) {
                     </span>
                   )}
                 </span>
+              </Link>
+
+              {/* User Account */}
+              <Link
+                href="/cuenta"
+                className={cn(
+                  "p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors duration-300 active:scale-95",
+                  isSolid
+                    ? "text-charcoal/80 hover:text-gold"
+                    : "text-cream/80 hover:text-gold"
+                )}
+                aria-label="Mi Cuenta"
+              >
+                <User className="w-5 h-5" />
               </Link>
 
               <button

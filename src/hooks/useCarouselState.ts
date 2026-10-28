@@ -19,12 +19,10 @@ interface UseCarouselStateReturn<T extends HTMLElement> {
  * native touch scrolling for mobile, arrow-button scrolling, edge detection,
  * and progress tracking.
  *
- * Strategy: hybrid. On touch devices (pointerType === "touch") we let the
- * browser handle scroll natively with hardware inertia via overflow-x-auto +
- * snap-x. On mouse we use PointerEvent capture to implement drag-to-pan.
- *
- * Returns a ref to attach to the scroll container plus all state
- * and event handlers a consumer needs.
+ * Hybrid strategy:
+ * On touch devices (pointerType === "touch") we let the browser handle native scroll.
+ * On mouse/pen we allow drag-to-pan, but click events on child Links fire seamlessly
+ * if the user simply clicks without moving past a threshold.
  */
 export function useCarouselState<T extends HTMLElement = HTMLDivElement>(): UseCarouselStateReturn<T> {
   const ref = useRef<T>(null);
@@ -36,7 +34,7 @@ export function useCarouselState<T extends HTMLElement = HTMLDivElement>(): UseC
   const dragStart = useRef(0);
   const dragScrollLeft = useRef(0);
   const startX = useRef(0);
-  const isDraggingState = useRef(false);
+  const isMovedFar = useRef(false);
 
   const updateState = useCallback(() => {
     const el = ref.current;
@@ -60,14 +58,12 @@ export function useCarouselState<T extends HTMLElement = HTMLDivElement>(): UseC
     el.addEventListener("scroll", updateState, { passive: true });
     window.addEventListener("resize", updateState);
 
-    // Click prevention: when a drag exceeds the 6px threshold,
-    // suppress the subsequent click on capture phase so card links
-    // don't fire after a drag gesture.
+    // Suppress click on capture phase ONLY when a real drag (movement > 6px) took place
     const handlePreventClick = (e: MouseEvent) => {
-      if (isDraggingState.current) {
+      if (isMovedFar.current) {
         e.preventDefault();
         e.stopPropagation();
-        isDraggingState.current = false;
+        isMovedFar.current = false;
       }
     };
 
@@ -91,19 +87,17 @@ export function useCarouselState<T extends HTMLElement = HTMLDivElement>(): UseC
   }, []);
 
   const handlePointerDown = useCallback((e: React.PointerEvent<T>) => {
-    // Delegate touch gestures to native browser scroll (hardware inertia).
+    // Delegate touch gestures to native browser scroll
     if (e.pointerType === "touch") return;
 
     const el = ref.current;
     if (!el) return;
 
     setIsDragging(true);
-    isDraggingState.current = false;
+    isMovedFar.current = false;
     startX.current = e.pageX;
     dragStart.current = e.pageX - el.offsetLeft;
     dragScrollLeft.current = el.scrollLeft;
-
-    e.currentTarget.setPointerCapture(e.pointerId);
   }, []);
 
   const handlePointerMove = useCallback((e: React.PointerEvent<T>) => {
@@ -113,17 +107,29 @@ export function useCarouselState<T extends HTMLElement = HTMLDivElement>(): UseC
 
     const distance = Math.abs(e.pageX - startX.current);
     if (distance > 6) {
-      isDraggingState.current = true;
+      if (!isMovedFar.current) {
+        isMovedFar.current = true;
+        try {
+          e.currentTarget.setPointerCapture(e.pointerId);
+        } catch {
+          // pointer capture fallback
+        }
+      }
+      const x = e.pageX - el.offsetLeft;
+      const walk = (x - dragStart.current) * 1.5;
+      el.scrollLeft = dragScrollLeft.current - walk;
     }
-
-    const x = e.pageX - el.offsetLeft;
-    const walk = (x - dragStart.current) * 1.5;
-    el.scrollLeft = dragScrollLeft.current - walk;
   }, [isDragging]);
 
   const handlePointerUpOrLeave = useCallback((e: React.PointerEvent<T>) => {
     if (isDragging) {
-      e.currentTarget.releasePointerCapture(e.pointerId);
+      if (isMovedFar.current) {
+        try {
+          e.currentTarget.releasePointerCapture(e.pointerId);
+        } catch {
+          // fallback
+        }
+      }
       setIsDragging(false);
     }
   }, [isDragging]);

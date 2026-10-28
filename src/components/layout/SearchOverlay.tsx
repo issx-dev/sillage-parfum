@@ -3,7 +3,7 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { VisuallyHidden } from "@/components/ui/VisuallyHidden";
 import { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { Search, X, ArrowUpRight } from "lucide-react";
 import type { Product } from "@/types";
@@ -14,14 +14,14 @@ import { formatPrice, applyDiscount, cn } from "@/lib/utils";
 // ---------------------------------------------------------------------------
 
 const PLACEHOLDER_CYCLE = [
-  "Sauvage · Dior",
+  "Volare · Chogan 122",
   "notas de ámbar",
   "familia amaderada",
-  "Tom Ford",
+  "30% Extrait de Parfum",
   "bergamota & vetiver",
 ];
 
-const SUGGESTED_TERMS = ["Floral", "Amaderado", "Chanel", "Tom Ford", "Fresco", "Aldehídos"];
+const SUGGESTED_TERMS = ["Floral", "Amaderado", "Fresco", "Oriental", "Extrait de Parfum"];
 
 // Recommended products are shipped as initial props from the server (Navbar)
 // to avoid an extra round-trip on first open.
@@ -131,7 +131,7 @@ function RecommendedCard({
         className="group relative flex flex-col bg-warm-50/60 border border-warm-200/60 hover:border-gold/40 transition-[border-color] duration-500 overflow-hidden"
       >
         <div className="relative aspect-[4/5] bg-warm-100 flex items-center justify-center overflow-hidden">
-          <Image
+          <SafeImage
             src={product.images[0] ?? "/images/og-default.jpg"}
             alt={product.name}
             fill
@@ -164,7 +164,7 @@ function RecommendedCard({
       className="group flex items-center gap-3 py-3.5 border-b border-warm-200/60 last:border-0 transition-colors duration-300"
     >
       <div className="relative w-12 h-12 bg-warm-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
-        <Image
+        <SafeImage
           src={product.images[0] ?? "/images/og-default.jpg"}
           alt={product.name}
           fill
@@ -205,7 +205,7 @@ function ResultRow({
       className="group flex items-center gap-4 py-4 border-b border-warm-200/60 last:border-0 transition-colors duration-300"
     >
 <div className="relative w-14 h-14 bg-warm-100 flex-shrink-0 overflow-hidden">
-            <Image
+            <SafeImage
               src={product.images[0] ?? "/images/og-default.jpg"}
               alt={product.name}
               fill
@@ -335,23 +335,24 @@ export function SearchOverlay({
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={`Buscar ${placeholder}...`}
                 className={cn(
-                  "w-full bg-transparent py-3 pr-10 text-xl sm:text-2xl md:text-4xl",
+                  "w-full bg-transparent py-3 pr-14 text-xl sm:text-2xl md:text-4xl",
                   "text-charcoal placeholder-warm-400 font-serif font-light",
                   "border-b border-warm-300 focus:border-gold",
                   "focus-visible:ring-1 focus-visible:ring-gold focus:outline-none transition-colors duration-500",
                   "tracking-wide leading-tight"
                 )}
               />
-              <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-warm-400 group-focus-within/input:text-gold transition-colors duration-300" />
 
-              {query && (
+              {query ? (
                 <button
                   onClick={() => setQuery("")}
-                  className="absolute right-7 top-1/2 -translate-y-1/2 text-[10px] uppercase tracking-[0.15em] text-warm-400 hover:text-warm-600 transition-colors duration-200"
-                  aria-label="Limpiar"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 p-1.5 text-warm-400 hover:text-gold transition-colors duration-200 cursor-pointer"
+                  aria-label="Limpiar búsqueda"
                 >
-                  ×
+                  <X className="w-5 h-5 stroke-[1.5]" />
                 </button>
+              ) : (
+                <Search className="absolute right-0 top-1/2 -translate-y-1/2 w-5 h-5 text-warm-400 group-focus-within/input:text-gold transition-colors duration-300 pointer-events-none" />
               )}
 
               <div className="absolute bottom-0 left-0 h-[1px] w-0 bg-gold group-focus-within/input:w-full transition-[width] duration-700 ease-out" />

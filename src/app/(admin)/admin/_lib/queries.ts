@@ -1,6 +1,7 @@
 import "server-only";
 import { LOW_STOCK_THRESHOLD, type StockLevel, type ProductFilter } from "./stock-level";
 import { query, transaction } from "@/lib/db";
+import { applyDiscount } from "@/lib/utils";
 import type { Order } from "@/types";
 import { mapFulfillmentStatus, type FulfillmentStatus } from "@/lib/data/fulfillment";
 
@@ -40,8 +41,45 @@ interface OrderDetailRow {
   currency: string;
   payment_status: string;
   fulfillment_status: string | null;
-  order_data: { items?: Order["items"] } | null;
+  order_data: {
+    items?: Order["items"];
+    paymentMethod?: Order["paymentMethod"];
+    couponCode?: string;
+    paymentIntent?: string | null;
+    shipping?: Order["shipping"];
+  } | null;
   created_at: string;
+}
+
+/**
+ * Orders saved before items were snapshotted only have ids and quantities.
+ * Fill name / size / unit price from the catalogue so the detail never shows
+ * blanks or NaN; deleted variants keep a neutral label.
+ */
+async function enrichOrderItems(items: Order["items"]): Promise<Order["items"]> {
+  const missing = items.filter((i) => !i.name || !Number.isFinite(Number(i.price)));
+  if (missing.length === 0) return items;
+  const ids = Array.from(new Set(missing.map((i) => i.variantId).filter(Boolean)));
+  const rows = ids.length
+    ? ((await query(
+        `SELECT v.variant_id, p.name, p.brand, v.size_ml, v.price, COALESCE(p.discount_percent, 0) AS discount_percent
+         FROM variants v JOIN products p ON p.product_id = v.product_id WHERE v.variant_id = ANY($1)`,
+        [ids]
+      )) as unknown as { variant_id: string; name: string; brand: string; size_ml: number; price: string | number; discount_percent: number }[])
+    : [];
+  const byId = new Map(rows.map((r) => [r.variant_id, r]));
+  return items.map((i) => {
+    if (i.name && Number.isFinite(Number(i.price))) return i;
+    const r = byId.get(i.variantId);
+    if (!r) return { ...i, name: i.name || "Producto eliminado", price: Number.isFinite(Number(i.price)) ? Number(i.price) : 0 };
+    return {
+      ...i,
+      name: i.name || r.name,
+      brand: i.brand || r.brand,
+      size_ml: Number(i.size_ml) || Number(r.size_ml),
+      price: Number.isFinite(Number(i.price)) ? Number(i.price) : applyDiscount(Number(r.price), Number(r.discount_percent)),
+    };
+  });
 }
 
 /**
@@ -62,9 +100,12 @@ export async function readOrderDetail(id: string): Promise<OrderDetail | null> {
     id: row.id,
     stripe_event_id: row.stripe_event_id,
     stripe_session_id: row.stripe_session_id,
-    items: row.order_data?.items ?? [],
+    items: await enrichOrderItems(row.order_data?.items ?? []),
     total: Number(row.amount_total) / 100,
     currency: row.currency,
+    ...(row.order_data?.paymentMethod ? { paymentMethod: row.order_data.paymentMethod } : {}),
+    ...(row.order_data?.couponCode ? { couponCode: row.order_data.couponCode } : {}),
+    ...(row.order_data?.shipping ? { shipping: row.order_data.shipping } : {}),
     status: mapPaymentStatus(row.payment_status),
     fulfillment: mapFulfillmentStatus(row.fulfillment_status),
     customerEmail: row.customer_email,

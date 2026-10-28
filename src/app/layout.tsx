@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site-config";
+import { SHIPPING_META } from "@/lib/shipping-copy";
 
 const siteUrl = SITE_URL;
 
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "SILLAGE — Perfumería de Lujo",
   description:
-    "Una colección seleccionada de fragancias de las mejores casas del mundo. Envío en 24h y productos 100% originales.",
+    `Una colección seleccionada de fragancias de las mejores casas del mundo. ${SHIPPING_META} Productos 100% originales.`,
   keywords: ["perfumería", "lujo", "fragancias", "perfumes", "SILLAGE"],
   icons: {
     icon: "/favicon.svg",
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "SILLAGE — Perfumería de Lujo",
-    description: "Una colección seleccionada de fragancias de las mejores casas del mundo. Envío en 24h.",
+    description: `Una colección seleccionada de fragancias de las mejores casas del mundo. ${SHIPPING_META}`,
     url: siteUrl,
     siteName: "SILLAGE",
     locale: "es_ES",
@@ -55,7 +56,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "SILLAGE — Perfumería de Lujo",
-    description: "Una colección seleccionada de fragancias de las mejores casas del mundo. Envío en 24h.",
+    description: `Una colección seleccionada de fragancias de las mejores casas del mundo. ${SHIPPING_META}`,
     images: [`${siteUrl}/images/og-default.jpg`],
   },
 };

@@ -370,6 +370,59 @@ describe("POST /api/stripe/webhook", () => {
     expect(mockSaveOrder.mock.calls[0]![0].items).toHaveLength(12);
   });
 
+  it("snapshots item names/prices and the shipping address on the order", async () => {
+    const items = [{ variantId: "v1", productId: "p1", sku: "sku-1", quantity: 2 }];
+    const event: any = makeCheckoutEvent(21500, items, "evt_snapshot");
+    event.data.object.total_details = { amount_shipping: 0 };
+    // Newer Stripe API versions put the address under collected_information.
+    event.data.object.collected_information = {
+      shipping_details: {
+        name: "Ana García López",
+        phone: "600123456",
+        address: { line1: "Calle Real 1", line2: "2B", city: "Madrid", postal_code: "28001", country: "ES" },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+    mockQuery.mockResolvedValueOnce([
+      { variant_id: "v1", price: 100, size_ml: 50, name: "Sauvage", brand: "Dior", discount_percent: 0 },
+    ]);
+    mockSaveOrder.mockResolvedValueOnce({ success: true, isDuplicate: false });
+
+    const res = await POST(
+      new NextRequest("http://localhost:3000/api/stripe/webhook", {
+        method: "POST",
+        body: JSON.stringify(event),
+        headers: { "stripe-signature": "valid_sig" },
+      })
+    );
+    // 2 x 100 € = 200 € but the session total is 215 € => rejected before saving
+    expect(res.status).toBe(400);
+
+    event.data.object.amount_total = 20000;
+    mockConstructEvent.mockReturnValue(event);
+    mockQuery.mockResolvedValueOnce([
+      { variant_id: "v1", price: 100, size_ml: 50, name: "Sauvage", brand: "Dior", discount_percent: 0 },
+    ]);
+    const ok = await POST(
+      new NextRequest("http://localhost:3000/api/stripe/webhook", {
+        method: "POST",
+        body: JSON.stringify(event),
+        headers: { "stripe-signature": "valid_sig" },
+      })
+    );
+    expect(ok.status).toBe(200);
+    const saved = mockSaveOrder.mock.calls.at(-1)![0];
+    expect(saved.items[0]).toMatchObject({ name: "Sauvage", brand: "Dior", size_ml: 50, price: 100, quantity: 2 });
+    expect(saved.shipping).toEqual({
+      firstName: "Ana",
+      lastName: "García López",
+      address: "Calle Real 1, 2B",
+      city: "Madrid",
+      postalCode: "28001",
+      phone: "600123456",
+    });
+  });
+
   it("accepts the SILLAGE2 coupon total recorded in metadata", async () => {
     const items = [
       { variantId: "v1", productId: "p1", sku: "sku-1", quantity: 1 },

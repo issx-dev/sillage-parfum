@@ -23,8 +23,8 @@ const PROMOS: PromoMessage[] = [
     icon: <Sparkles className="w-3.5 h-3.5 text-gold/80 shrink-0" />,
   },
   {
-    text: "envío exprés de cortesía en compras superiores a 50€",
-    mobileText: "envío exprés de cortesía desde 50€",
+    text: "envío gratis en compras desde 50€ a la península",
+    mobileText: "envío gratis desde 50€",
     ctaText: "comprar",
     href: "/productos",
     icon: <Truck className="w-3.5 h-3.5 text-gold/80 shrink-0" />,

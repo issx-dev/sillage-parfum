@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 export default function CarritoPage() {
   const items = useCartStore((s) => s.items);
   const total = useCartStore((s) => s.getDiscountedTotal());
+  const savings = useCartStore((s) => s.getSavings());
   const shippingCost = getShippingCents(Math.round(total * 100)) / 100;
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
@@ -164,8 +165,14 @@ export default function CarritoPage() {
 
               <div className="flex justify-between pt-4 border-t border-gray-light text-sm">
                 <span>Subtotal</span>
-                <span>{formatPrice(total)}</span>
+                <span>{formatPrice(total + savings)}</span>
               </div>
+              {savings > 0 && (
+                <div className="flex justify-between pt-2 text-sm text-gold-dark">
+                  <span>Oferta multicompra</span>
+                  <span>-{formatPrice(savings)}</span>
+                </div>
+              )}
               <div className="flex justify-between py-2 text-sm">
                 <span>Envío (solo península)</span>
                 <span>{shippingCost === 0 ? "Gratis" : formatPrice(shippingCost)}</span>

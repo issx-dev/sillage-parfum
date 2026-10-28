@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
 
       if (variantIds.length > 0) {
         const priceRows = (await query(
-          `SELECT v.variant_id, v.price, v.size_ml, COALESCE(p.discount_percent, 0) AS discount_percent
+          `SELECT v.variant_id, v.price, v.size_ml, p.name, p.brand, COALESCE(p.discount_percent, 0) AS discount_percent
            FROM variants v LEFT JOIN products p ON p.product_id = v.product_id
            WHERE v.variant_id = ANY($1)`,
           [variantIds]
@@ -107,8 +107,25 @@ export async function POST(request: NextRequest) {
           variant_id: string;
           price: number | string;
           size_ml: number | string | null;
+          name?: string | null;
+          brand?: string | null;
           discount_percent: number | string | null;
         }>;
+
+        // Snapshot name/size/unit price on the order so the back office and
+        // the customer's order list never depend on the product still existing.
+        const rowById = new Map(priceRows.map((r) => [r.variant_id, r]));
+        order.items = (order.items as unknown as Array<Record<string, unknown>>).map((it) => {
+          const r = rowById.get(String(it.variantId));
+          if (!r) return it as unknown as Order["items"][number];
+          return {
+            ...it,
+            name: r.name ?? "",
+            brand: r.brand ?? "",
+            size_ml: Number(r.size_ml ?? 0),
+            price: applyDiscount(Number(r.price ?? 0), Number(r.discount_percent ?? 0)),
+          } as unknown as Order["items"][number];
+        });
 
         // Check that all ordered variants were found in the DB.
         if (priceRows.length !== new Set(variantIds).size) {
@@ -183,6 +200,19 @@ export async function POST(request: NextRequest) {
         collected_information?: { shipping_details?: Stripe.Checkout.Session.ShippingDetails };
       }).collected_information?.shipping_details;
     const postalCode = shipping?.address?.postal_code?.trim();
+    if (shipping?.address) {
+      // The operator needs the address to ship: Stripe orders had none stored.
+      const [firstName = "", ...rest] = (shipping.name ?? "").trim().split(/\s+/);
+      const a = shipping.address;
+      order.shipping = {
+        firstName,
+        lastName: rest.join(" "),
+        address: [a.line1, a.line2].filter(Boolean).join(", "),
+        city: a.city ?? "",
+        postalCode: a.postal_code ?? "",
+        phone: shipping.phone ?? session.customer_details?.phone ?? "",
+      };
+    }
     if (postalCode && NON_PENINSULAR_POSTAL_PREFIXES.includes(postalCode.slice(0, 2))) {
       console.error(
         `[Webhook CRITICAL] Non-peninsular shipping address (${postalCode}) on session ${session.id}: refund or contact customer`

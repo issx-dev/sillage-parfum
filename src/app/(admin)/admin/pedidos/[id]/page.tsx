@@ -21,6 +21,7 @@ import {
   fulfillmentBadgeVariant,
 } from "@/lib/data/fulfillment";
 import { getAdminUser } from "../../_lib/admin-auth";
+import { NON_PENINSULAR_POSTAL_PREFIXES } from "@/lib/constants";
 import { updateFulfillmentStatus, updateOrderStatus } from "../actions";
 import { ActionForm } from "../../_components/ActionForm";
 
@@ -57,6 +58,13 @@ export default async function PedidoDetailPage({ params }: PedidoDetailPageProps
   const order = await readOrderDetail(params.id);
   if (!order) notFound();
 
+  const itemsSum = order.items.reduce(
+    (sum, i) => sum + (Number.isFinite(i.price) ? i.price * i.quantity : 0),
+    0
+  );
+  // What the total adds or removes beyond list prices: shipping, bundles, coupons.
+  const adjustment = Math.round((order.total - itemsSum) * 100) / 100;
+
   const created = new Date(order.createdAt);
   const createdLabel = Number.isNaN(created.getTime())
     ? order.createdAt
@@ -87,16 +95,25 @@ export default async function PedidoDetailPage({ params }: PedidoDetailPageProps
           <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
             <div>
               <dt className="font-semibold text-warm-500">Cliente</dt>
-              <dd className="mt-1 text-warm-900">{order.customerEmail ?? "—"}</dd>
+              <dd className="mt-1 text-warm-900">{order.customerEmail ?? "Sin email"}</dd>
             </div>
             <div>
               <dt className="font-semibold text-warm-500">Fecha</dt>
               <dd className="mt-1 text-warm-900">{createdLabel}</dd>
             </div>
             <div>
-              <dt className="font-semibold text-warm-500">Sesión de Stripe</dt>
+              <dt className="font-semibold text-warm-500">Pago</dt>
+              <dd className="mt-1 text-warm-900">
+                {order.paymentMethod === "cod" ? "Contrareembolso" : "Tarjeta (Stripe)"}
+                {order.couponCode ? ` · cupón ${order.couponCode}` : ""}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-warm-500">
+                {order.paymentMethod === "cod" ? "Referencia" : "Sesión de Stripe"}
+              </dt>
               <dd className="mt-1 break-all font-mono text-xs text-warm-900">
-                {order.stripe_session_id ?? "—"}
+                {order.stripe_session_id ?? "Sin referencia"}
               </dd>
             </div>
             <div>
@@ -134,15 +151,71 @@ export default async function PedidoDetailPage({ params }: PedidoDetailPageProps
                     <TableCell>{item.size_ml} ml</TableCell>
                     <TableCell className="text-right tabular-nums">{item.quantity}</TableCell>
                     <TableCell className="text-right tabular-nums">
-                      {formatPrice(item.price)}
+                      {Number.isFinite(item.price) ? formatPrice(item.price) : "Sin precio"}
                     </TableCell>
                     <TableCell className="text-right tabular-nums">
-                      {formatPrice(item.price * item.quantity)}
+                      {Number.isFinite(item.price) ? formatPrice(item.price * item.quantity) : "Sin precio"}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+          )}
+          {order.items.length > 0 && (
+            <dl className="mt-4 ml-auto max-w-xs space-y-1.5 border-t border-warm-200 pt-4 text-sm">
+              <div className="flex justify-between text-warm-600">
+                <dt>Artículos (precio de lista)</dt>
+                <dd className="tabular-nums">{formatPrice(itemsSum)}</dd>
+              </div>
+              <div className="flex justify-between text-warm-600">
+                <dt>{adjustment >= 0 ? "Envío" : "Descuentos"}</dt>
+                <dd className="tabular-nums">
+                  {adjustment >= 0 ? "+" : "-"}
+                  {formatPrice(Math.abs(adjustment))}
+                </dd>
+              </div>
+              <div className="flex justify-between font-semibold text-warm-900">
+                <dt>Total del pedido</dt>
+                <dd className="tabular-nums">{formatPrice(order.total)}</dd>
+              </div>
+            </dl>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Entrega</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {order.shipping ? (
+            <address className="space-y-1 text-sm not-italic text-warm-900">
+              <p className="font-medium">
+                {order.shipping.firstName} {order.shipping.lastName}
+              </p>
+              <p>{order.shipping.address}</p>
+              <p>
+                {order.shipping.postalCode} {order.shipping.city}
+              </p>
+              {order.shipping.phone && (
+                <p>
+                  Teléfono:{" "}
+                  <a href={`tel:${order.shipping.phone}`} className="text-gold-dark underline underline-offset-4">
+                    {order.shipping.phone}
+                  </a>
+                </p>
+              )}
+              {order.shipping.notes && <p className="text-warm-600">Notas: {order.shipping.notes}</p>}
+              {NON_PENINSULAR_POSTAL_PREFIXES.includes(order.shipping.postalCode.trim().slice(0, 2)) && (
+                <p role="alert" className="mt-2 rounded-card bg-red-50 p-3 text-red-800">
+                  Código postal fuera de la península: no hacemos este envío. Reembolsa o contacta con el cliente.
+                </p>
+              )}
+            </address>
+          ) : (
+            <p className="text-sm text-warm-600">
+              Este pedido no guardó la dirección de envío. Consúltala en el panel de Stripe.
+            </p>
           )}
         </CardContent>
       </Card>

@@ -4,6 +4,7 @@ import { getProductBySlug, getProducts } from "@/lib/data";
 import type { Metadata } from "next";
 import { applyDiscount } from "@/lib/utils";
 import { SITE_URL } from "@/lib/site-config";
+import { DELIVERY_TIME } from "@/lib/shipping-copy";
 import { Wind, Heart, Layers } from "lucide-react";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { AddToCartWrapper } from "@/components/product/AddToCartWrapper";
@@ -202,7 +203,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <span className="text-gold-dark text-xs font-serif">→</span>
               </div>
               <div className="flex items-center justify-between py-2 border-b border-warm-200/30 text-xs sm:text-sm text-charcoal/70 font-sans tracking-wide">
-                <span>Envío express asegurado en 24h</span>
+                <span>Envío en {DELIVERY_TIME} a la península</span>
                 <span className="text-gold-dark text-xs font-serif">→</span>
               </div>
             </div>

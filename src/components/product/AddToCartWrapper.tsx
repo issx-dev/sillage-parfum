@@ -1,5 +1,6 @@
 "use client";
 
+import { DELIVERY_TIME } from "@/lib/shipping-copy";
 import { useState } from "react";
 import type { Product, Variant } from "@/types";
 import { cn, formatPrice, applyDiscount } from "@/lib/utils";
@@ -286,7 +287,7 @@ export function AddToCartWrapper({ product, firstVariant, hasDiscount }: Props) 
       <div className="grid grid-cols-3 gap-3 pt-3 border-t border-warm-200/60 text-center">
         <div className="p-2 space-y-1">
           <Truck className="w-5 h-5 text-gold-dark mx-auto mb-1" />
-          <span className="text-xs sm:text-sm font-medium text-charcoal block leading-tight">Envío 24–72 h</span>
+          <span className="text-xs sm:text-sm font-medium text-charcoal block leading-tight">Envío {DELIVERY_TIME}</span>
           <span className="text-[11px] sm:text-xs text-gray-mid block font-light">A toda España</span>
         </div>
         <div className="p-2 space-y-1">

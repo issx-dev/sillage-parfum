@@ -21,6 +21,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const getTotal = useCartStore((s) => s.getDiscountedTotal);
+  const getSavings = useCartStore((s) => s.getSavings);
   const cartHydrated = useCartStore((s) => s._hasHydrated);
 
   // Prevent hydration mismatch: only render cart content after mount
@@ -28,6 +29,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   useEffect(() => { setMounted(true); }, []);
 
   const total = getTotal();
+  const savings = getSavings();
   const freeShippingRemaining = Math.max(0, FREE_SHIPPING_THRESHOLD - total);
   const shippingCost = getShippingCents(Math.round(total * 100)) / 100;
   const shippingProgress = Math.min(100, (total / FREE_SHIPPING_THRESHOLD) * 100);
@@ -192,8 +194,14 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               <div className="space-y-1 pt-1 text-sm text-charcoal/80">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-mono">{formatPrice(total)}</span>
+                  <span className="font-mono">{formatPrice(total + savings)}</span>
                 </div>
+                {savings > 0 && (
+                  <div className="flex justify-between text-gold-dark">
+                    <span>Oferta multicompra</span>
+                    <span className="font-mono">-{formatPrice(savings)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span>Envío (solo península)</span>
                   <span className="font-mono">{shippingCost === 0 ? "Gratis" : formatPrice(shippingCost)}</span>

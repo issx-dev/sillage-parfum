@@ -25,7 +25,8 @@ export default function CondicionesPage() {
             <h2 className="text-base font-semibold text-warm-900 mb-3">2. Precios e impuestos</h2>
             <p>
               Todos los precios se muestran en euros e <strong>incluyen el IVA</strong> y
-              cualquier otro impuesto aplicable. El envío es <strong>gratuito</strong>;
+              cualquier otro impuesto aplicable. El envío cuesta <strong>5 €</strong> y es
+              <strong> gratuito desde 50 €</strong> de compra (una vez aplicados los descuentos);
               el total a pagar es el que ves desglosado antes de confirmar el pedido, sin
               cargos ocultos. Los descuentos y cupones se aplican sobre el subtotal y se
               muestran antes del pago.
@@ -47,7 +48,9 @@ export default function CondicionesPage() {
           <div>
             <h2 className="text-base font-semibold text-warm-900 mb-3">4. Envíos y entrega</h2>
             <p>
-              Enviamos a toda la Península y Baleares con empresa de mensajería. Recibirás
+              Enviamos únicamente a la <strong>península</strong> (no realizamos envíos a Baleares,
+              Canarias, Ceuta ni Melilla) con empresa de mensajería, con un plazo habitual de
+              24 a 72 horas. Recibirás
               la confirmación y el seguimiento por correo electrónico. Si hay cualquier
               retraso o incidencia te avisaremos y te propondremos una solución. Revisa
               el pedido al recibirlo y comunícanos cualquier daño en 48 horas con fotos

@@ -1,5 +1,6 @@
 import "server-only";
 import { NextRequest, NextResponse } from "next/server";
+import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { saveOrder } from "@/lib/data/orders";
 import { query } from "@/lib/db";
@@ -137,7 +138,14 @@ export async function POST(request: NextRequest) {
 
     // Stripe can only restrict shipping by country, so flag orders shipped
     // outside the peninsula (we do not deliver there) for manual handling.
-    const postalCode = session.shipping_details?.address?.postal_code?.trim();
+    // Newer Stripe API versions (account default, used by webhook endpoints that
+    // do not pin a version) moved this to `collected_information.shipping_details`.
+    const shipping =
+      session.shipping_details ??
+      (session as unknown as {
+        collected_information?: { shipping_details?: Stripe.Checkout.Session.ShippingDetails };
+      }).collected_information?.shipping_details;
+    const postalCode = shipping?.address?.postal_code?.trim();
     if (
       postalCode &&
       NON_PENINSULAR_POSTAL_PREFIXES.includes(postalCode.slice(0, 2))
